@@ -127,6 +127,7 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
             else: activations0 = NN.getActivationValue(model,layer2Consider-1,originalImage)
             string = directory_pic_string+"/"+str(imageIndex)+"_original_as_"+str(originalSpanass)
             (bl,newInput) = conv_solve_prep(model,dataBasics,string,originalLayer2Consider,layer2Consider,prevSpan,prevNumSpan,span,numSpan,cp,activations0,wv2Consider,bv2Consider,activations1)
+
             
         elif layerType == "Dense":  
             nprint("dense layer, back propogation ... ")
@@ -220,6 +221,7 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
 
                 path1 = "%s/%s_%s_modified_into_%s_with_confidence_%s.png"%(directory_pic_string,imageIndex,origClassStr,newClassStr,confident)
                 dataBasics.save(index[0],newInput, path1)
+
                 
                 # add a point whose class is wrong
                 wk.append(newInput)

@@ -57,6 +57,7 @@ def visualizeOneLayer(model,originalImage,layer2Consider):
             if dataset == "mnist": 
                 dataBasics.save(0,activations[nodeIndex],"%s/temp_%s_%s.png"%(directory_pic_string,layer2Consider,nodeIndex))
             else: 
+                #print activations[nodeIndex:nodeIndex+1].shape
                 dataBasics.save(0,activations[nodeIndex:nodeIndex+1],"%s/temp_%s_%s.png"%(directory_pic_string,layer2Consider,nodeIndex))
             #print "please refer to the file %s/temp_%s_%s.png for the image under processing ..."%(directory_pic_string,layer2Consider,nodeIndex)
             imageNames.append("%s/temp_%s_%s.png"%(directory_pic_string,layer2Consider,nodeIndex)) 

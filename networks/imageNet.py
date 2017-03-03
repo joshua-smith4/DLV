@@ -29,16 +29,27 @@ def save(layer,image,filename):
     import copy
     
     image_cv = copy.deepcopy(image)
+
+
+    if len(image_cv) == 3: 
     
-    image_cv = image_cv.transpose(1, 2, 0)
-    image_cv[:,:,0] += 103.939
-    image_cv[:,:,1] += 116.779
-    image_cv[:,:,2] += 123.68
+        image_cv = image_cv.transpose(1, 2, 0)
+    
+        image_cv[:,:,0] += 103.939
+        image_cv[:,:,1] += 116.779
+        image_cv[:,:,2] += 123.68
+        
+    else: 
+    
+        image_cv = image_cv.transpose(1, 2, 0)      
+        
+        image_cv[:,:,0] += 103.939  
     
     #print(np.amax(image_cv),np.amin(image_cv))
 
     
     cv2.imwrite(filename, image_cv)
+
 
     # from matplotlib import pyplot
     # import matplotlib as mpl

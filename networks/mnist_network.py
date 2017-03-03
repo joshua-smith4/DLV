@@ -8,9 +8,9 @@ import struct
 from array import array as pyarray
 from PIL import Image
 
-from keras.models import model_from_json
+from keras.models import model_from_json, Model
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Activation, Flatten
+from keras.layers import Input, Dense, Dropout, Activation, Flatten, UpSampling2D, Deconvolution2D
 from keras.layers import Convolution2D, MaxPooling2D
 from keras import backend as K
 from keras.utils import np_utils
@@ -102,6 +102,158 @@ def build_model():
     return model
 
 
+def build_model_autoencoder():
+    """
+    define neural network model
+    """
+    
+    input_img = Input(shape=(1, 28, 28))
+
+    x = Convolution2D(16, 3, 3, activation='relu', border_mode='same')(input_img)
+    x = MaxPooling2D((2, 2), border_mode='same')(x)
+    x = Convolution2D(8, 3, 3, activation='relu', border_mode='same')(x)
+    x = MaxPooling2D((2, 2), border_mode='same')(x)
+    x = Convolution2D(8, 3, 3, activation='relu', border_mode='same')(x)
+    encoded = MaxPooling2D((2, 2), border_mode='same')(x)
+
+# at this point the representation is (8, 4, 4) i.e. 128-dimensional
+
+    x = Convolution2D(8, 3, 3, activation='relu', border_mode='same')(encoded)
+    x = UpSampling2D((2, 2))(x)
+    x = Convolution2D(8, 3, 3, activation='relu', border_mode='same')(x)
+    x = UpSampling2D((2, 2))(x)
+    x = Convolution2D(16, 3, 3, activation='relu')(x)
+    x = UpSampling2D((2, 2))(x)
+    decoded = Convolution2D(1, 3, 3, activation='sigmoid', border_mode='same')(x)
+
+    autoencoder = Model(input_img, decoded)
+    autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
+
+    return autoencoder
+
+
+
+def dynamic_build_model(startLayer,inputShape):
+    """
+    define neural network model
+    """
+    firstLayerDone = False
+    model = Sequential()
+
+    if startLayer == 0 :
+        model.add(Convolution2D(nb_filters, nb_conv, nb_conv,
+                                border_mode='valid',
+                                input_shape=(1, img_rows, img_cols)))
+    else: 
+        startLayer -= 1
+        
+    if startLayer == 0 :
+        if firstLayerDone == False: 
+            model.add(Activation('relu',input_shape=inputShape))
+            firstLayerDone = True
+        else:  
+            model.add(Activation('relu'))
+    else: 
+        startLayer -= 1
+        
+    if startLayer == 0 :
+        if firstLayerDone == False: 
+            model.add(Convolution2D(nb_filters, nb_conv, nb_conv, input_shape=inputShape))
+            firstLayerDone = True
+        else:  
+            model.add(Convolution2D(nb_filters, nb_conv, nb_conv))
+    else: 
+        startLayer -= 1
+        
+    if startLayer == 0 :
+        if firstLayerDone == False: 
+            model.add(Activation('relu',input_shape=inputShape))
+            firstLayerDone = True
+        else:  
+            model.add(Activation('relu'))
+    else: 
+        startLayer -= 1
+        
+    if startLayer == 0 :
+        if firstLayerDone == False: 
+            model.add(MaxPooling2D(pool_size=(nb_pool, nb_pool),input_shape=inputShape))
+            firstLayerDone = True
+        else:  
+            model.add(MaxPooling2D(pool_size=(nb_pool, nb_pool)))
+    else: 
+        startLayer -= 1
+        
+    if startLayer == 0 :
+        if firstLayerDone == False: 
+            model.add(Dropout(0.25,input_shape=inputShape))
+            firstLayerDone = True
+        else:  
+            model.add(Dropout(0.25))
+    else: 
+        startLayer -= 1
+
+    if startLayer == 0 :
+        if firstLayerDone == False: 
+            model.add(Flatten(input_shape=inputShape))
+            firstLayerDone = True
+        else:  
+            model.add(Flatten())
+    else: 
+        startLayer -= 1
+        
+    if startLayer == 0 :
+        if firstLayerDone == False: 
+            model.add(Dense(128,input_shape=inputShape))
+            firstLayerDone = True
+        else:  
+            model.add(Dense(128))
+    else: 
+        startLayer -= 1
+        
+    if startLayer == 0 :
+        if firstLayerDone == False: 
+            model.add(Activation('relu',input_shape=inputShape))
+            firstLayerDone = True
+        else:  
+            model.add(Activation('relu'))
+    else: 
+        startLayer -= 1
+        
+    if startLayer == 0 :
+        if firstLayerDone == False: 
+            model.add(Dropout(0.5,input_shape=inputShape))
+            firstLayerDone = True
+        else:  
+            model.add(Dropout(0.5))
+    else: 
+        startLayer -= 1
+        
+    if startLayer == 0 :
+        if firstLayerDone == False: 
+            model.add(Dense(nb_classes,input_shape=inputShape))
+            firstLayerDone = True
+        else:  
+            model.add(Dense(nb_classes))
+    else: 
+        startLayer -= 1
+        
+    if startLayer == 0 :
+        if firstLayerDone == False: 
+            model.add(Activation('softmax',input_shape=inputShape))
+            firstLayerDone = True
+        else:  
+            model.add(Activation('softmax'))
+    else: 
+        startLayer -= 1
+
+    model.compile(loss='categorical_crossentropy',
+                  optimizer='adadelta',
+                  metrics=['accuracy'])
+
+    return model
+    
+
+
 
 def read_model_from_file(weightFile,modelFile):
     """
@@ -121,6 +273,24 @@ def read_model_from_file(weightFile,modelFile):
         model.layers[lvl].set_weights([weights['weights'][0, weight_1], weights['weights'][0, weight_2].flatten()])
 
     return model
+    
+def dynamic_read_model_from_file(cutmodel,weightFile,modelFile,startLayer):
+    """
+    define neural network model
+    :return: network model
+    """
+    
+    cutmodel.summary()
+    
+    weights = sio.loadmat(weightFile)
+    for (idx,lvl) in [(1,0),(2,2),(3,7),(4,10)]:
+        
+        weight_1 = 2 * idx - 2
+        weight_2 = 2 * idx - 1
+        if lvl-startLayer >= 0: 
+            cutmodel.layers[lvl-startLayer].set_weights([weights['weights'][0, weight_1], weights['weights'][0, weight_2].flatten()])
+
+    return cutmodel
     
 
     
@@ -170,7 +340,10 @@ def get_activations(model, layer, X_batch):
     
 def predictWithImage(model,newInput):
 
-    newInput2 = np.expand_dims(np.expand_dims(newInput, axis=0), axis=0)
+    if len(newInput.shape) == 2: 
+        newInput2 = np.expand_dims(np.expand_dims(newInput, axis=0), axis=0)
+    else: 
+        newInput2 = np.expand_dims(newInput, axis=0)
     predictValue = model.predict(newInput2)
     newClass = np.argmax(np.ravel(predictValue))
     confident = np.amax(np.ravel(predictValue))

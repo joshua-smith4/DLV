@@ -24,7 +24,7 @@ import keras.optimizers
 
 
 # visualisation
-from keras.utils.visualize_util import plot
+#from keras.utils.visualize_util import plot
 #
 from keras.datasets import mnist
 from keras.utils import np_utils
@@ -32,6 +32,7 @@ from keras.utils import np_utils
 # for training cifar10
 from keras.preprocessing.image import ImageDataGenerator
 
+from keras.callbacks import TensorBoard, LearningRateScheduler, ModelCheckpoint
 
 
 
@@ -48,14 +49,17 @@ def loadData():
     # whichMode == "train" training from the beginning 
     if whichMode == "train" and dataset == "mnist": 
     
-        (X_train, Y_train, X_test, Y_test, batch_size, nb_epoch) = NN.read_mnist_dataset()
-    
+        (X_train, Y_train, X_test, Y_test, batch_size, nb_epoch) = NN.read_dataset()
+        
+        #print X_train.shape, Y_train.shape, Y_train[0]
+
         print "Building network model ......"
-        model = NN.build_mnist_model()
+        #model = NN.build_model()
+        model = NN.build_model_autoencoder()
 
         start_time = time.time()
         model.fit(X_train, Y_train, batch_size=batch_size, nb_epoch=nb_epoch,
-                  verbose=1, validation_data=(X_test, Y_test))
+                  verbose=1, validation_data=(X_test, Y_test),callbacks=[TensorBoard(log_dir='/tmp/autoencoder')])
         score = model.evaluate(X_test, Y_test, verbose=0)
         print('Test score:', score[0])
         print('Test accuracy:', score[1])
@@ -63,15 +67,57 @@ def loadData():
         print("Training finished!")
     
         # save model
+        ae = "_autoencoder"  # "_normal"
         json_string = model.to_json()
-        open('%s/mnist.json'%(directory_model_string), 'w').write(json_string)
-        model.save_weights('%a/mnist.h5'%directory_model_string, overwrite=True)
-        sio.savemat('%s/mnist.mat'%directory_model_string, {'weights': model.get_weights()})
+        open('%s/mnist%s.json'%(directory_model_string,ae), 'w').write(json_string)
+        model.save_weights('%s/mnist%s.h5'%(directory_model_string,ae), overwrite=True)
+        sio.savemat('%s/mnist%s.mat'%(directory_model_string,ae), {'weights': model.get_weights()})
         print("Model saved!")
         
     elif whichMode == "read" and dataset == "mnist": 
         print("Start loading model ... ")
-        model = NN.read_model_from_file('%s/mnist.mat'%directory_model_string,'%s/mnist.json'%directory_model_string)
+        ae = "_autoencoder"  # "_normal"
+        model = NN.read_model_from_file('%s/mnist%s.mat'%(directory_model_string,ae),'%s/mnist.json'%directory_model_string)
+        print("Model loaded!")
+        #test(model)
+        
+    elif whichMode == "train" and dataset == "gtsrb": 
+    
+        X_train, Y_train = dataBasics.read_dataset()
+        
+        #print X_train.shape, Y_train.shape, Y_train[0]
+
+        print "Building network model ......"
+        model, batch_size, nb_epoch, lr = NN.build_model()
+        
+        def lr_schedule(epoch):
+            return lr*(0.1**int(epoch/10))
+
+        start_time = time.time()
+
+        model.fit(X_train, Y_train,
+                    batch_size=batch_size,
+                    nb_epoch=nb_epoch,
+                    validation_split=0.2,
+                    shuffle=True,
+                    callbacks=[LearningRateScheduler(lr_schedule),
+                                ModelCheckpoint('model.h5',save_best_only=True)]
+                  )
+
+        #score = model.evaluate(X_test, Y_test, verbose=0)
+    
+        # save model
+        ae =  "_normal" # "_autoencoder"  #
+        json_string = model.to_json()
+        open('%s/gtsrb%s.json'%(directory_model_string,ae), 'w').write(json_string)
+        model.save_weights('%s/gtsrb%s.h5'%(directory_model_string,ae), overwrite=True)
+        sio.savemat('%s/gtsrb%s.mat'%(directory_model_string,ae), {'weights': model.get_weights()})
+        print("Model saved!")
+        
+    elif whichMode == "read" and dataset == "gtsrb": 
+        print("Start loading model ... ")
+        ae =  "_normal" # "_autoencoder"  #
+        model = NN.read_model_from_file('%s/gtsrb%s.mat'%(directory_model_string,ae),'%s/gtsrb%s.json'%(directory_model_string,ae))
         print("Model loaded!")
         #test(model)
 
@@ -150,7 +196,7 @@ def loadData():
         model = NN.build_model(img_channels, img_rows, img_cols, nb_classes)
     
         # load weights
-        model.load_weights('imageNet/imageNet.h5')
+        model.load_weights('%s/imageNet.h5'%directory_model_string)
 
         # save model
         json_string = model.to_json()
@@ -208,6 +254,7 @@ def loadData():
 
     
     return (model)
+
 
         
 """

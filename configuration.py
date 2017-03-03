@@ -28,8 +28,10 @@ task = "safety_check"
 # which dataset to work with
 #dataset = "twoDcurve"
 dataset = "mnist"
+#dataset = "gtsrb"
 #dataset = "cifar10"
 #dataset = "imageNet"
+
 
 # decide whether to take an experimental configuration
 # for specific dataset
@@ -44,7 +46,15 @@ whichMode = "read"
 # work with a single image or a batch of images 
 #dataProcessing = "single"
 dataProcessing = "batch"
-dataProcessingBatchNum = 3
+dataProcessingBatchNum = 200
+
+# paramters for FGSM
+# exclusive with other functionalities
+#test_fgsm = True
+test_fgsm = False
+# if True, what is the variational parameter
+eps_fgsm = [0.05, 0.2, 0.5] 
+
 
 #######################################################
 #

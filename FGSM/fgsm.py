@@ -22,6 +22,7 @@ from basics import *
 from networkBasics import *
 
 from fgsm_loadData import fgsm_loadData
+from fgsm_dataCollection import *
 from attacks_th import fgsm
 from utils_th import batch_eval
 
@@ -29,6 +30,9 @@ import theano
 import theano.tensor as T
         
 def fgsm_main(model,eps):
+
+    dc = fgsm_dataCollection()
+
 
     # FGSM adversary examples
     import argparse
@@ -48,15 +52,33 @@ def fgsm_main(model,eps):
     predictions = model(x)
     
     adv_x = fgsm(x,predictions,eps)
-    X_test_adv, = batch_eval([x], [adv_x], [x_train], args=args)
+    x_train_adv, = batch_eval([x], [adv_x], [x_train], args=args)
+    
 
-    print X_test_adv.shape
-    y_predicted2 = model.predict(X_test_adv)
+    print x_train_adv.shape
+    y_predicted_adv = model.predict(x_train_adv)
 
     nd = 0 
+    sumOfeuD = 0 
+    sumOfl1D = 0
     for i in range(len(y_predicted)): 
-        if np.argmax(y_predicted[i]) != np.argmax(y_predicted2[i]): 
+        if np.argmax(y_predicted[i]) != np.argmax(y_predicted_adv[i]): 
             nd += 1
-    print "%s diff in %s examples"%(nd,len(y_predicted))    
+            sumOfeuD += euclideanDistance(x_train[i],x_train_adv[i])
+            sumOfl1D += l1Distance(x_train[i],x_train_adv[i])
+    print "%s diff in %s examples"%(nd,len(y_predicted))  
+    
+    # calculate the average Euclidean distance of the diff examples
+    eud = sumOfeuD / nd
+    l1d = sumOfl1D / nd
+    print "in %s diff examples, the average eclidean distance is %s"%(nd,eud)  
+    print "in %s diff examples, the average L1 distance is %s"%(nd,l1d)  
+    
+    
+    dc.updateEps(eps)
+    dc.updateEuclideanDistance(eud)
+    dc.updatel1Distance(l1d)
+    dc.summarise()
+    dc.close()
 
     return nd

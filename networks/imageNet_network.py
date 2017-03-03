@@ -155,7 +155,7 @@ def getImage(model,n_in_tests):
     traffic = "%s/imageNet/traffic_signs/"%directory_model_string
     street = "%s/imageNet/street_sign/"%directory_model_string
 
-    working_directory =   street # traffic #  directory #
+    working_directory =  directory # street # traffic #  
     allfiles = [file for file in os.listdir(working_directory) if file.endswith(".jpg") ] 
     im = cv2.resize(cv2.imread(working_directory+allfiles[n_in_tests]), (224, 224)).astype(np.float32)
     

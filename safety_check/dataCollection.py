@@ -22,6 +22,7 @@ class dataCollection:
         self.runningTime = {}
         self.manipulationPercentage = {}
         self.euclideanDistance = {}
+        self.l1Distance = {}
         self.confidence = {}
         self.fileHandler = open(self.fileName, 'w')
         
@@ -42,6 +43,9 @@ class dataCollection:
         
     def addEuclideanDistance(self, eudist):
         self.euclideanDistance[self.index,self.layer] = eudist
+        
+    def addl1Distance(self, l1dist):
+        self.l1Distance[self.index,self.layer] = l1dist
 
     def provideDetails(self): 
         self.fileHandler.write("running time: \n")
@@ -56,6 +60,10 @@ class dataCollection:
         for i,r in self.euclideanDistance.iteritems():
             self.fileHandler.write("%s:%s\n"%(i,r))
             
+        self.fileHandler.write("L1 distance: \n")
+        for i,r in self.l1Distance.iteritems():
+            self.fileHandler.write("%s:%s\n"%(i,r))
+            
         self.fileHandler.write("confidence: \n")
         for i,r in self.confidence.iteritems():
             self.fileHandler.write("%s:%s\n"%(i,r))
@@ -68,6 +76,8 @@ class dataCollection:
         self.fileHandler.write("average manipulation percentage: %s\n"%(amp))
         eudist = sum(self.euclideanDistance.values()) / len(self.euclideanDistance.values())
         self.fileHandler.write("average euclidean distance: %s\n"%(eudist))
+        l1dist = sum(self.l1Distance.values()) / len(self.l1Distance.values())
+        self.fileHandler.write("average L1 distance: %s\n"%(l1dist))
 
     def close(self):
         self.fileHandler.close()

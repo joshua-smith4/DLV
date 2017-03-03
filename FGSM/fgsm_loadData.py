@@ -45,8 +45,8 @@ def fgsm_loadData(model):
         
     elif dataset == "gtsrb":     
         X_train, Y_train = dataBasics.read_dataset()
-        X_train = X_train[:1000]
-        Y_train = Y_train[:1000]
+        #X_train = X_train[:1000]
+        #Y_train = Y_train[:1000]
 
         
     elif dataset == "cifar10": 
