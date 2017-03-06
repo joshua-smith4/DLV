@@ -46,7 +46,7 @@ whichMode = "read"
 # work with a single image or a batch of images 
 #dataProcessing = "single"
 dataProcessing = "batch"
-dataProcessingBatchNum = 200
+dataProcessingBatchNum = 1
 
 # paramters for FGSM
 # exclusive with other functionalities
