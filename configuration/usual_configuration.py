@@ -107,7 +107,7 @@ def usual_configuration(dataset):
 
         # which image to start with or work with 
         # from the database
-        startIndexOfImage = 3000
+        startIndexOfImage = 3007
         
         # the start layer to work from 
         startLayer = 0
@@ -116,7 +116,7 @@ def usual_configuration(dataset):
         maxilayer = 0
 
         ## number of features of each layer 
-        numOfFeatures = 2000
+        numOfFeatures = 3000
 
         # use linear restrictions or conv filter restriction
         inverseFunction = "point"

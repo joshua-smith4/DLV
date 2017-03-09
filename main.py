@@ -58,10 +58,14 @@ def main():
         
     # handle a set of inputs starting from an index
     if dataProcessing == "batch": 
+        succNum = 0
         for whichIndex in range(startIndexOfImage,startIndexOfImage + dataProcessingBatchNum):
             print "\n\nprocessing input of index %s in the dataset: " %(str(whichIndex))
             if task == "safety_check": 
-                handleOne(model,dc,whichIndex)
+                succ = handleOne(model,dc,whichIndex)
+                if succ == True: succNum += 1
+        dc.addSuccPercent(succNum/float(dataProcessingBatchNum))
+        
     # handle a sinextNumSpane input
     else: 
         print "\n\nprocessing input of index %s in the dataset: " %(str(startIndexOfImage))
@@ -217,6 +221,9 @@ def handleOne(model,dc,startIndexOfImage):
         k += 1    
      
     print("Please refer to the file %s for statistics."%(dc.fileName))
+    if re == True: 
+        return True
+    else: return False
     
 
 def reportInfo(image,rs,wk,numDimsToMani,howfar,image0):

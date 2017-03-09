@@ -46,14 +46,14 @@ whichMode = "read"
 # work with a single image or a batch of images 
 #dataProcessing = "single"
 dataProcessing = "batch"
-dataProcessingBatchNum = 1
+dataProcessingBatchNum = 100
 
 # paramters for FGSM
 # exclusive with other functionalities
 #test_fgsm = True
 test_fgsm = False
 # if True, what is the variational parameter
-eps_fgsm = [0.05, 0.2, 0.5] 
+eps_fgsm = [0.05, 0.1, 0.2, 0.3, 0.4, 0.5] 
 
 
 #######################################################

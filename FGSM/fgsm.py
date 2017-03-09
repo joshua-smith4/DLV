@@ -74,7 +74,7 @@ def fgsm_main(model,eps):
     print "in %s diff examples, the average eclidean distance is %s"%(nd,eud)  
     print "in %s diff examples, the average L1 distance is %s"%(nd,l1d)  
     
-    
+    dc.updateNDiffs(nd)    
     dc.updateEps(eps)
     dc.updateEuclideanDistance(eud)
     dc.updatel1Distance(l1d)
