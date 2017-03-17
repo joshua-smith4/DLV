@@ -37,9 +37,18 @@ def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activ
 
     if nfeatures == 1: images = np.expand_dims(input, axis=0)
     else: images = input
+    
+    if len(activations.shape) == 3: 
+        avg = np.sum(activations)/float(len(activations)*len(activations[0])*len(activations[0][0]))
+    elif len(activations0.shape) == 2: 
+        avg = np.sum(activations)/float(len(activations)*len(activations[0]))
+    else: avg = 0
 
-    s = Tactic('qflra').solver()
-    s.reset()
+    if optimizing == True: 
+        s = Optimize()
+    else: 
+        s = Tactic('qflra').solver()
+        s.reset()
     
     #print("%s\n%s\n%s\n%s"%(pcl,pgl,span,numSpan))
     
@@ -55,7 +64,6 @@ def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activ
              toBeChanged = toBeChanged + [(l,x1,y1) for l in range(nfeatures) for x1 in range(x,x+filterSize) for y1 in range(y,y+filterSize) if x1 >= 0 and y1 >= 0 and x1 < images.shape[1] and y1 < images.shape[2]]
         toBeChanged = list(set(toBeChanged))
 
-    
     for (l,x,y) in toBeChanged:
         variable[1,0,l+1,x,y] = Real('1_x_%s_%s_%s' % (l+1,x,y))
         d += 1    
@@ -67,6 +75,7 @@ def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activ
             s.add(pstr)
             c += 1                
             
+    maxterms = ""
     for (k,x,y) in span.keys():
         variable[1,1,k+1,x,y] = Real('1_y_%s_%s_%s' % (k+1,x,y))
         d += 1
@@ -84,19 +93,42 @@ def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activ
         c += 1
                     
         if enumerationMethod == "line": 
-            pstr = eval("variable[1,1,%s,%s,%s] < %s" %(k+1,x,y,activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] + pk))
-            pstr = And(eval("variable[1,1,%s,%s,%s] > %s "%(k+1,x,y,activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] - pk)), pstr)
+            pstr = eval("variable[1,1,%s,%s,%s] < %s" %(k+1,x,y,activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] + epsilon))
+            pstr = And(eval("variable[1,1,%s,%s,%s] > %s "%(k+1,x,y,activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] - epsilon)), pstr)
         elif enumerationMethod == "convex" or enumerationMethod == "point":
-            if activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] >= 0: 
-                upper = activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] + pk
-                lower = -1 * (activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)]) - pk
+            #if activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] >= 0: 
+            #    upper = activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] + pk
+            #    lower = -1 * (activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)]) - pk
+            #else: 
+            #    upper = -1 * (activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)]) + pk
+            #    lower = activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] - pk
+                
+            if span[(k,x,y)] > 0 : 
+                upper = activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] + epsilon
+                lower = activations[k][x][y] - span[(k,x,y)] * numSpan[(k,x,y)] - epsilon
             else: 
-                upper = -1 * (activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)]) + pk
-                lower = activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] - pk
+                upper = activations[k][x][y] - span[(k,x,y)] * numSpan[(k,x,y)] + epsilon
+                lower = activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] - epsilon 
             pstr = eval("variable[1,1,%s,%s,%s] < %s"%(k+1,x,y,upper))
             pstr = And(eval("variable[1,1,%s,%s,%s] > %s"%(k+1,x,y,lower)), pstr)
+            pstr = And(eval("variable[1,1,%s,%s,%s] != %s"%(k+1,x,y,activations[k][x][y])), pstr)
+            #print ("%s    %s    %s    %s"%(activations[k][x][y],avg,upper,lower))
         s.add(pstr)
         c += 1        
+        
+        if activations[k][x][y] > 0 : 
+            maxterm = "- variable[1,1,%s,%s,%s]"%(k+1,x,y)
+        else: 
+            maxterm = "variable[1,1,%s,%s,%s]"%(k+1,x,y)
+        
+        if maxterms == "": 
+            maxterms = "(%s)"%maxterm
+        else: 
+            maxterms = " %s + (%s) "%(maxterms, maxterm)
+            
+        #print maxterms
+    if optimizing == True: 
+        s.maximize(eval(maxterms)) 
 
     nprint("Number of variables: " + str(d))
     nprint("Number of clauses: " + str(c))
@@ -122,8 +154,15 @@ def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activ
             for (l,x,y,v) in inputVars:
                 #if cex[l][x][y] != v: print("different dimension spotted ... ")
                 cex[l][x][y] = getDecimalValue(s.model()[v])
-                #print("%s\n%s"%(images[l][x][y],cex[l][x][y]))
+                #print("%s    %s"%(images[l][x][y],cex[l][x][y]))
             cex = np.squeeze(cex)
+            
+            #cex2 = copy.deepcopy(activations)
+            #nextVars = [ (k,x,y,eval("variable[1,1,"+ str(k+1) +"," + str(x) +"," + str(y)+ "]")) for (k,x,y) in span.keys() ]
+            #for (k,x,y,v) in nextVars:
+                #if cex[l][x][y] != v: print("different dimension spotted ... ")
+            #    cex2[k][x][y] = getDecimalValue(s.model()[v])
+            #    print("%s       %s"%(activations[k][x][y],cex2[k][x][y]))
                 
             nprint("satisfiable!")
             return (True, cex)

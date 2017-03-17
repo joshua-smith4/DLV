@@ -32,7 +32,7 @@ from configuration import *
 def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp):
 
     originalIndex = copy.deepcopy(index)
-    (originalImage,prevSpan,prevNumSpan,numDimsToMani) = st.getInfo(index)
+    (originalImage,prevSpan,prevNumSpan,numDimsToMani,stepsUpToNow) = st.getInfo(index)
     howfar = st.getHowFar(index[0],0)
     
     config = NN.getConfig(model)
@@ -85,7 +85,8 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
     # counter_numSpan tracks the working point 
     # InitialisedNumSpan remembers 
     (counter_numSpan,InitialisedNumSpan) = initialiseCounter(numSpan)
-    counter_numSpans = {}   
+    #print("%s\n%s\n%s\n%s"%(counter_numSpan,InitialisedNumSpan,span,numSpan))
+    counter_numSpans = {}
     counter_numSpans[originalLayer2Consider] = counter_numSpan 
     round = 0
 
@@ -126,7 +127,7 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
                 activations0 = copy.deepcopy(originalImage)
             else: activations0 = NN.getActivationValue(model,layer2Consider-1,originalImage)
             string = directory_pic_string+"/"+str(imageIndex)+"_original_as_"+str(originalSpanass)
-            (bl,newInput) = conv_solve_prep(model,dataBasics,string,originalLayer2Consider,layer2Consider,prevSpan,prevNumSpan,span,numSpan,cp,activations0,wv2Consider,bv2Consider,activations1)
+            (bl,newInput) = conv_solve_prep(model,dataBasics,string,originalLayer2Consider,layer2Consider,prevSpan,prevNumSpan,counter_numSpan,numSpan,cp,activations0,wv2Consider,bv2Consider,activations1)
 
             
         elif layerType == "Dense":  
@@ -135,7 +136,7 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
                 activations0 = copy.deepcopy(originalImage)
             else: activations0 = NN.getActivationValue(model,layer2Consider-1,originalImage)
             string = directory_pic_string+"/"+str(imageIndex)+"_original_as_"+str(originalSpanass)
-            (bl,newInput) = dense_solve_prep(model,dataBasics,string,prevSpan,prevNumSpan,span,numSpan,cp,activations0,wv2Consider,bv2Consider,activations1)
+            (bl,newInput) = dense_solve_prep(model,dataBasics,string,prevSpan,prevNumSpan,counter_numSpan,numSpan,cp,activations0,wv2Consider,bv2Consider,activations1)
             
         elif layerType == "InputLayer":
             nprint("inputLayer layer, back-propagating ... ")
@@ -169,15 +170,22 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
         # decide the next step according to the results from the solving
         if bl == False:   
             # if back-propagation fails    
-            nprint("back-propagation or solving fails ...")
+            nprint("back-propagation or solving fails ... ")
+            
+            if rkupdated == False: 
+                rk.append((newInput,originalConfident))
+                    #print originalConfident, confident, rk[0][1]
+                if counter_numSpan == numSpan: 
+                    rkupdated = True
+    
             layer2Consider = copy.deepcopy(originalLayer2Consider)
             index = copy.deepcopy(originalIndex)
-            (image,prevSpan,prevNumSpan,numDimsToMani) = st.getInfo(originalIndex)
+            (image,prevSpan,prevNumSpan,numDimsToMani,stepsUpToNow) = st.getInfo(originalIndex)
             counter_numSpan = counter_numSpans[originalLayer2Consider]
             span = copy.deepcopy(originalSpan)
             numSpan = copy.deepcopy(originalNumSpan)
             (_,InitialisedNumSpan) = initialiseCounter(numSpan)
-            counter_numSpan = counterPlusOne(counter_numSpan,numSpan,InitialisedNumSpan)    
+            counter_numSpan = counterPlusOne(counter_numSpan,numSpan,InitialisedNumSpan)
             counter_numSpans[originalLayer2Consider] = copy.deepcopy(counter_numSpan)      
             round += 1
                 
@@ -192,7 +200,7 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
             counter_numSpan = getCounter(activations,newInput,prevSpan,prevNumSpan)
             span = copy.deepcopy(prevSpan)
             numSpan = copy.deepcopy(prevNumSpan)
-            (image,prevSpan,prevNumSpan,numDimsToMani) = st.getInfo(index)
+            (image,prevSpan,prevNumSpan,numDimsToMani,stepsUpToNow) = st.getInfo(index)
             counter_numSpans[layer2Consider] = copy.deepcopy(counter_numSpan)
                  
         elif withinRegion(newInput, st) == True:         
@@ -218,11 +226,11 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
                 origClassStr = dataBasics.LABELS(int(originalSpanass))
                 classstr = "Class changed! from " + str(origClassStr) +" into " + str(newClassStr)
                 print classstr
+                rk.append((newInput,confident))
 
                 path1 = "%s/%s_%s_modified_into_%s_with_confidence_%s.png"%(directory_pic_string,imageIndex,origClassStr,newClassStr,confident)
                 dataBasics.save(index[0],newInput, path1)
 
-                
                 # add a point whose class is wrong
                 wk.append(newInput)
                 if exitWhen == "foundFirst": break
@@ -236,45 +244,61 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
                 #    rk = rk + [(newInput,confident)]
                 #    diffImage(originalImage,newInput)
                 if rkupdated == False: 
-                    rk = [(newInput,confident)]
+                    rk.append((newInput,confident))
+                        #print originalConfident, confident, rk[0][1]
                     if counter_numSpan == numSpan: 
                         rkupdated = True
                         
             layer2Consider = copy.deepcopy(originalLayer2Consider)
             index = copy.deepcopy(originalIndex)
-            (image,prevSpan,prevNumSpan,numDimsToMani) = st.getInfo(originalIndex)
+            (image,prevSpan,prevNumSpan,numDimsToMani,stepsUpToNow) = st.getInfo(originalIndex)
             counter_numSpan = counter_numSpans[originalLayer2Consider]
             span = copy.deepcopy(originalSpan)
             numSpan = copy.deepcopy(originalNumSpan)
             (_,InitialisedNumSpan) = initialiseCounter(numSpan)
             counter_numSpan = counterPlusOne(counter_numSpan,numSpan,InitialisedNumSpan)    
             counter_numSpans[originalLayer2Consider] = copy.deepcopy(counter_numSpan)      
-            
             round += 1
             rn += 1
+        
+            #print("1%s---%s"%(rkupdated,rk))
+
             
             #path2 = directory_pic_string+"/temp%s_(round=%s).png"%(rn,round)
             #path2 = directory_pic_string+"/temp.png"
             #dataBasics.save(index[0],newInput, path2)
         else: 
             rs += 1   
+            
+            if rkupdated == False: 
+                rk.append((newInput,originalConfident))
+                    #print originalConfident, confident, rk[0][1]
+                if counter_numSpan == numSpan: 
+                    rkupdated = True
+            
             layer2Consider = copy.deepcopy(originalLayer2Consider)
             index = copy.deepcopy(originalIndex)
-            (image,prevSpan,prevNumSpan,numDimsToMani) = st.getInfo(originalIndex)
+            (image,prevSpan,prevNumSpan,numDimsToMani,stepsUpToNow) = st.getInfo(originalIndex)
             counter_numSpan = counter_numSpans[originalLayer2Consider]
             span = copy.deepcopy(originalSpan)
             numSpan = copy.deepcopy(originalNumSpan)
             (_,InitialisedNumSpan) = initialiseCounter(numSpan)
             counter_numSpan = counterPlusOne(counter_numSpan,numSpan,InitialisedNumSpan)    
-            counter_numSpans[originalLayer2Consider] = copy.deepcopy(counter_numSpan)      
-            
+            counter_numSpans[originalLayer2Consider] = copy.deepcopy(counter_numSpan)  
             round += 1
+            
+            #print("2%s---%s"%(rkupdated,rk))
+
 
     print("ran througn the neural network for %s times."%(rn))
     #path2 = directory_pic_string+"/temp%s_%s.png"%(howfar,originalLayer2Consider)
     #dataBasics.save(newInput, path2)
     
-    return (span,numSpan,rs,wk,(zip(*rk))[0])
+    rk = rk[1:]
+    if rk != []: 
+        rk.sort(key=lambda x: -1 * x[1])
+            
+    return (span,numSpan,rs,wk,rk)
     
     
 ############################################################################
@@ -285,7 +309,7 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
 
 def withinRegion(newInput,st):
     index = [ (x,y) for (x,y) in st.spans.keys() if y == -1 ]
-    (image0,span,numSpan,_) = st.getInfo(index[0])
+    (image0,span,numSpan,_,_) = st.getInfo(index[0])
     
     cls = span.keys()
     wr = True

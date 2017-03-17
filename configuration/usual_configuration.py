@@ -22,6 +22,9 @@ def usual_configuration(dataset):
         ## number of features of each layer 
         # in the paper, dims_L = numOfFeatures * featureDims
         numOfFeatures = 0
+        
+        #maximum number of elements in the search queue
+        maxQueueSize = 5
 
         # use linear restrictions or conv filter restriction
         inverseFunction = "point"
@@ -36,8 +39,8 @@ def usual_configuration(dataset):
         #heuristics = "Derivative"
 
         # do we need to repeatedly select an updated input neuron
-        repeatedManipulation = "allowed"
-        #repeatedManipulation = "disallowed"
+        #repeatedManipulation = "allowed"
+        repeatedManipulation = "disallowed"
 
         #checkingMode = "specificLayer"
         checkingMode = "stepwise"
@@ -53,13 +56,13 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 3
 
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
         
     elif dataset == "mnist": 
 
         # which image to start with or work with 
         # from the database
-        startIndexOfImage = 2957
+        startIndexOfImage = 4357
         
         # the start layer to work from 
         startLayer = 0
@@ -68,7 +71,10 @@ def usual_configuration(dataset):
         maxilayer = 0
 
         ## number of features of each layer 
-        numOfFeatures = 150
+        numOfFeatures = 30
+        
+        #maximum number of elements in the search queue
+        maxQueueSize = 500
 
         # use linear restrictions or conv filter restriction
         inverseFunction = "point"
@@ -83,8 +89,8 @@ def usual_configuration(dataset):
         #heuristics = "Derivative"
 
         # do we need to repeatedly select an updated input neuron
-        #repeatedManipulation = "allowed"
-        repeatedManipulation = "disallowed"
+        repeatedManipulation = "allowed"
+        #repeatedManipulation = "disallowed"
 
         #checkingMode = "specificLayer"
         checkingMode = "stepwise"
@@ -100,7 +106,7 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 3
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
         
         
     elif dataset == "gtsrb": 
@@ -118,6 +124,9 @@ def usual_configuration(dataset):
         ## number of features of each layer 
         numOfFeatures = 3000
 
+        #maximum number of elements in the search queue
+        maxQueueSize = 5
+
         # use linear restrictions or conv filter restriction
         inverseFunction = "point"
         #inverseFunction = "area"
@@ -148,7 +157,7 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 3
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
         
     elif dataset == "cifar10": 
     
@@ -164,6 +173,9 @@ def usual_configuration(dataset):
 
         ## number of features of each layer 
         numOfFeatures = 500
+        
+        #maximum number of elements in the search queue
+        maxQueueSize = 5
 
         # use linear restrictions or conv filter restriction
         inverseFunction = "point"
@@ -195,7 +207,7 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 5
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
 
     elif dataset == "imageNet": 
     
@@ -211,6 +223,9 @@ def usual_configuration(dataset):
 
         ## number of features of each layer 
         numOfFeatures = 20000
+        
+        #maximum number of elements in the search queue
+        maxQueueSize = 5
 
         # use linear restrictions or conv filter restriction
         inverseFunction = "point"
@@ -244,4 +259,4 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 5
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)

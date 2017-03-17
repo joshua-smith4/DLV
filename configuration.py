@@ -27,6 +27,7 @@ task = "safety_check"
 
 # which dataset to work with
 #dataset = "twoDcurve"
+#dataset = "mnist_autoencoder"
 dataset = "mnist"
 #dataset = "gtsrb"
 #dataset = "cifar10"
@@ -46,7 +47,15 @@ whichMode = "read"
 # work with a single image or a batch of images 
 #dataProcessing = "single"
 dataProcessing = "batch"
-dataProcessingBatchNum = 100
+dataProcessingBatchNum = 10
+
+# search approach
+#searchApproach = "heuristic"
+searchApproach = "exhaustive"
+
+# use optimize() or solver()
+#optimizing = True
+optimizing = False
 
 # paramters for FGSM
 # exclusive with other functionalities
@@ -99,6 +108,9 @@ maxLayer = 3
 # in the paper, dims_L = numOfFeatures * featureDims
 numOfFeatures = 40
 
+#maximum number of elements in the search queue
+maxQueueSize = 5
+
 # use linear restrictions or conv filter restriction
 inverseFunction = "point"
 #inverseFunction = "area"
@@ -111,6 +123,11 @@ enumerationMethod = "convex"
 # heuristics for deciding a region
 heuristics = "Activation"
 #heuristics = "Derivative"
+
+#cost function used to compute the distance from the starting point
+#costForDijkstra = "none"
+costForDijkstra = "euclidean"
+#costForDijkstra = "l1"
 
 # do we need to repeatedly select an updated input neuron
 #repeatedManipulation = "allowed"
@@ -136,7 +153,7 @@ tempFile = "disabled"
 #######################################################
 
 if experimental_config == True: 
-    (startIndexOfImage,startLayer, maxLayer,numOfFeatures,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile) = usual_configuration(dataset)
+    (startIndexOfImage,startLayer, maxLayer,numOfFeatures,maxQueueSize,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile) = usual_configuration(dataset)
     
 
 ############################################################
@@ -152,7 +169,7 @@ reset = "onEqualManipulationSet"
 #reset = "Never"
 
 ## how many branches to expand 
-numOfPointsAfterEachFeature = 1
+numOfPointsAfterEachFeature = 32
 
 # impose bounds on the input or not
 boundRestriction = True

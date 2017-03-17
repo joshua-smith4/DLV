@@ -36,6 +36,12 @@ def checkCex(model,x):
 def current_milli_time():
     return int(round(time.time() * 1000) % 4294967296)
 
+
+def diffImage(image1,image2):
+    return zip (*np.nonzero(np.subtract(image1,image2)))
+    
+'''
+
 def diffImage(image1,image2):
     diffnum = 0
     elts = {}
@@ -59,6 +65,15 @@ def diffImage(image1,image2):
                elts[diffnum] = x
     return elts
     
+'''
+    
+def euclideanDistance(image1,image2):
+    return math.sqrt(np.sum(np.square(np.subtract(image1,image2)))/float(image1.size))
+    
+def l1Distance(image1,image2):
+    return np.sum(np.absolute(np.subtract(image1,image2)))/float(image1.size)
+
+'''
     
 def euclideanDistance(image1,image2):
     distance = 0
@@ -81,6 +96,8 @@ def euclideanDistance(image1,image2):
 
     return math.sqrt(distance / image1.size)
     
+
+    
 def l1Distance(image1,image2):
     distance = 0
     if len(image1.shape) == 2:
@@ -101,6 +118,8 @@ def l1Distance(image1,image2):
                 distance += math.fabs(image1[x] - image2[x])
     #print "distance = %s"%(distance)
     return (float(distance) / np.prod(image1.shape))
+    
+'''
 
 def normalisation(y):
     for k in range(len(y)): 
@@ -152,3 +171,5 @@ def numberOfFilters(wv):
 #  the features of the last layer
 def numberOfFeatures(wv):
     return np.amax((zip (*((zip (*wv))[0])))[1])
+    
+    

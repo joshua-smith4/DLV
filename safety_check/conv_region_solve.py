@@ -22,8 +22,8 @@ from scipy import ndimage
 from configuration import *
 
 
-def conv_region_solve(nfeatures,nfilters,filters,bias,activations0,activations1,cl2,gl2,inds,nn):  
-
+def conv_region_solve(nfeatures,nfilters,filters,bias,activations0,activations1,cl2,gl2,inds,nn):
+ 
     random.seed(time.time())
 
     # number of clauses
@@ -43,6 +43,8 @@ def conv_region_solve(nfeatures,nfilters,filters,bias,activations0,activations1,
     if nfilters == 1: activations1 = np.expand_dims(activations1, axis=0)
     imageSizeX1 = len(activations1[0])
     imageSizeY1 = len(activations1[0][0])
+    
+
     
     s = Tactic('lra').solver()
     span = {}
@@ -80,10 +82,14 @@ def conv_region_solve(nfeatures,nfilters,filters,bias,activations0,activations1,
             precond = ""
             existsVarList = "variable[1,%s,%s,%s]"%(k+1,x,y)
             postcond = "variable[1,%s,%s,%s] ==  "%(k+1,x,y)
+            #print span.keys(), nfeatures, filterSize, filterSize, k, x, y
             for l in range(nfeatures):
                 for x1 in range(filterSize):
                     for y1 in range(filterSize): 
+                        #print("0--(%s,%s,%s)"%(l,x+x1,y+y1))
+                        #print span.keys()
                         if (l,x+x1,y+y1) in span.keys(): 
+                            #print (l,x+x1,y+y1)
                             variable[0,l+1,x+x1,y+y1] = Real('x_%s_%s_%s' % (l+1,x+x1,y+y1))
                             str21 = "variable[0,%s,%s,%s] <= %s "%(l+1,x+x1,y+y1, activations0[l][x+x1][y+y1] + span[l,x+x1,y+y1] * numSpan[l,x+x1,y+y1])
 
@@ -138,7 +144,7 @@ def conv_region_solve(nfeatures,nfilters,filters,bias,activations0,activations1,
             else:
                 print "timeout!"
                 break
-        
+                
     nextNumSpan2 = {}
     nextSpan2 = {}
     for i in range(nn): 

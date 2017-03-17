@@ -32,6 +32,7 @@ from basics import *
 from networkBasics import *
 
 from searchTree import searchTree
+from searchExhaustive import searchExhaustive
 from dataCollection import dataCollection
 
 from mnist_network import dynamic_build_model 
@@ -118,50 +119,54 @@ def handleOne(model,dc,startIndexOfImage):
             dc.initialiseLayer(k)
     
             # initialise a search tree
-            st = searchTree(image,k)
-            st.addImages(model,[image])
+            if searchApproach == "heuristic": 
+                st = searchTree(image,k)
+            # initialise a search queue
+            elif searchApproach == "exhaustive":
+                st = searchExhaustive(image,k)
+
+            st.addImages(model,[(image,NN.predictWithImage(model,image)[1])],0)
             print "\nstart checking the safety of layer "+str(k)
             print "the current context is %s"%(st.numSpans)
         
             (originalClass,originalConfident) = NN.predictWithImage(model,image)
-            origClassStr = dataBasics.LABELS(int(originalClass))   
+            origClassStr = dataBasics.LABELS(int(originalClass))
      
             path0="%s/%s_original_as_%s_with_confidence_%s.png"%(directory_pic_string,startIndexOfImage,origClassStr,originalConfident)
             dataBasics.save(-1,image, path0)
 
             # for every layer
             f = 0 
-            if numOfPointsAfterEachFeature == 1: 
-                testNum = numOfFeatures
-            else: testNum = (numOfPointsAfterEachFeature ** (n+1)) / (numOfPointsAfterEachFeature - 1)
-            while f <= testNum: 
+            while f <= numOfFeatures: 
 
                 f += 1
                 index = st.getOneUnexplored()
                 imageIndex = copy.deepcopy(index)
             
-                howfar = st.getHowFar(index[0],0)
-                print "\nhow far is the current image from the original one: %s"%(howfar)
+                #howfar = st.getHowFar(index[0],0)
             
                 # for every image
                 # start from the first hidden layer
                 t = 0
                 while True: 
 
-                    print "\ncurrent index: %s."%(str(index))
-                    print "current layer: %s."%(t)
 
-                    print "\nhow many dimensions have been changed: %s."%(len(st.manipulated[-1]))
+
+                    #print "\nhow many dimensions have been changed: %s."%(len(st.manipulated[-1]))
 
                     # pick the first element of the queue
-                    print "1) get a manipulated input ..."
-                    (image0,span,numSpan,numDimsToMani) = st.getInfo(index)
+                    print "\n(1) get a manipulated input ..."
+                    (image0,span,numSpan,numDimsToMani,stepsUpToNow) = st.getInfo(index)
+                    
+                    print "current index: %s."%(str(index))
+                    print "the number of steps: %s."%(str(stepsUpToNow))
+                    print "current layer: %s."%(t)
                     
                     path2 = directory_pic_string+"/temp.png"
-                    print " saved into %s"%(path2)
+                    print "current operated image is saved into %s"%(path2)
                     dataBasics.save(index[0],image0,path2)
 
-                    print "2) synthesise region ..."
+                    print "(2) synthesise region ..."
                      # ne: next region, i.e., e_{k+1}
                     (nextSpan,nextNumSpan,numDimsToMani) = regionSynth(model,dataset,image0,st.manipulated[t],t,span,numSpan,numDimsToMani)
                     st.addManipulated(t,nextSpan.keys())
@@ -178,24 +183,55 @@ def handleOne(model,dc,startIndexOfImage):
                     print "spans for the dimensions: %s"%(nextNumSpan)
                 
                     if t == k: 
-                        print "3) safety analysis ..."
+                        print "(3) safety analysis ..."
                         # wk for the set of counterexamples
                         # rk for the set of images that need to be considered in the next precision
                         # rs remembers how many input images have been processed in the last round
                         # nextSpan and nextNumSpan are revised by considering the precision npre
                         (nextSpan,nextNumSpan,rs,wk,rk) = safety_analysis(model,dataset,t,startIndexOfImage,st,index,nextSpan,nextNumSpan,npre)
 
-                        print "4) add new images ..."
-                        random.seed(time.time())
-                        if len(rk) > numOfPointsAfterEachFeature: 
-                            rk = random.sample(rk, numOfPointsAfterEachFeature)
-                        diffs = diffImage(image0,rk[0])
-                        print("the dimensions of the images that are changed in the previous round: %s"%diffs)
-                        if len(diffs) == 0: st.clearManipulated(k)
-                        st.addImages(model,rk)
-                        newimage = rk[0]
+                        print "(4) add new images ..."
+                        rk = sorted(rk, key=lambda x: x[1])
+                        if len(rk) >= numOfPointsAfterEachFeature:
+                            rk = rk[0:numOfPointsAfterEachFeature-1]
+                        
+                        if rk != []: 
+                            rk2 = []
+                            fst = rk[0]
+                            remain = rk[1:]
+                            while remain != []: 
+                                flag = True
+                                for i in range(len(remain)):
+                                    if np.array_equal(fst[0],remain[i][0]) == True : 
+                                        flag = False
+                                        break
+                                if flag == True: rk2.append(fst)
+                                fst = remain[0]
+                                remain = remain[1:]
+                            rk2.append(fst)
+                            print "%s candidate images, but only %s of them are identical."%(len(rk),len(rk2))
+                            rk = rk2
+                            
+                        if costForDijkstra == "euclidean": 
+                            scale = (1 - max(zip (*rk)[1]))
+                            rk = [(i, c + euclideanDistance(image,i) * scale) for (i,c) in rk]
+                        elif costForDijkstra == "l1": 
+                            scale = (1 - min(zip (*rk)[1]))
+                            #for (i,c) in rk : print("%s --- %s --- %s ---- %s "%(l1Distance(image,i), c, scale, l1Distance(image,i) / scale))
+                            rk = [(i, c + l1Distance(image,i) * scale) for (i,c) in rk]
+                                                    
+                        #diffs = diffImage(image0,rk[0])
+                        #print("the dimensions of the images that are changed in the previous round: %s"%diffs)
+                        #if len(diffs) == 0: st.clearManipulated(k)
+                        
+                        if searchApproach == "exhaustive": 
+                            st.addImages(model,rk,stepsUpToNow+1)
+                        elif  searchApproach == "heuristic": 
+                            st.addImages(model,(zip(*rk))[0],stepsUpToNow+1)
+                            
+                        #newimage = rk[0]
                         st.removeProcessed(imageIndex)
-                        (re,percent,eudist,l1dist) = reportInfo(image,rs,wk,numDimsToMani,howfar,newimage)
+                        (re,percent,eudist,l1dist) = reportInfo(image,wk)
                         break
                     else: 
                         print "3) add new intermediate node ..."
@@ -204,11 +240,11 @@ def handleOne(model,dc,startIndexOfImage):
                         t += 1
                 if re == True: 
                     dc.addManipulationPercentage(percent)
-                    print "eclidean distance %s"%(eudist)
-                    print "L1 distance %s"%(l1dist)
+                    print "euclidean distance %s"%(eudist)
+                    print "L1 distance %s\n"%(l1dist)
                     dc.addEuclideanDistance(eudist)
                     dc.addl1Distance(l1dist)
-                    (ocl,ocf) = NN.predictWithImage(model,rk[0])
+                    (ocl,ocf) = NN.predictWithImage(model,wk[0])
                     dc.addConfidence(ocf)
                     break
                 
@@ -226,18 +262,19 @@ def handleOne(model,dc,startIndexOfImage):
     else: return False
     
 
-def reportInfo(image,rs,wk,numDimsToMani,howfar,image0):
+def reportInfo(image,wk):
 
     # exit only when we find an adversarial example
     if wk == []:    
-        print "no adversarial example is found in this layer."  
+        print "(5) no adversarial example is found in this layer."  
         return (False,0,0,0)
     else: 
-        print "an adversarial example has been found."
+        print "(5) an adversarial example has been found."
+        image0 = wk[0]
         diffs = diffImage(image,image0)
         eudist = euclideanDistance(image,image0)
         l1dist = l1Distance(image,image0)
-        elts = len(diffs.keys())
+        elts = len(diffs)
         if len(image0.shape) == 2: 
             percent = elts / float(len(image0)*len(image0[0]))
         elif len(image0.shape) == 1:
