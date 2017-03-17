@@ -23,6 +23,10 @@ def usual_configuration(dataset):
         # in the paper, dims_L = numOfFeatures * featureDims
         numOfFeatures = 0
         
+        ## control by distance
+        controlledSearch = ("euclidean",0.1)
+        #controlledSearch = ("L1",0.05)
+        
         #maximum number of elements in the search queue
         maxQueueSize = 5
 
@@ -56,7 +60,7 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 3
 
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
         
     elif dataset == "mnist": 
 
@@ -72,6 +76,10 @@ def usual_configuration(dataset):
 
         ## number of features of each layer 
         numOfFeatures = 30
+        
+        ## control by distance
+        controlledSearch = ("euclidean",0.3)
+        #controlledSearch = ("L1",0.05)
         
         #maximum number of elements in the search queue
         maxQueueSize = 500
@@ -106,7 +114,7 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 3
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
         
         
     elif dataset == "gtsrb": 
@@ -123,6 +131,10 @@ def usual_configuration(dataset):
 
         ## number of features of each layer 
         numOfFeatures = 3000
+        
+        ## control by distance
+        controlledSearch = ("euclidean",0.1)
+        #controlledSearch = ("L1",0.05)
 
         #maximum number of elements in the search queue
         maxQueueSize = 5
@@ -157,7 +169,7 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 3
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
         
     elif dataset == "cifar10": 
     
@@ -172,7 +184,11 @@ def usual_configuration(dataset):
         maxilayer = 0
 
         ## number of features of each layer 
-        numOfFeatures = 500
+        numOfFeatures = 5000
+        
+        ## control by distance
+        controlledSearch = ("euclidean",0.3)
+        #controlledSearch = ("L1",0.05)
         
         #maximum number of elements in the search queue
         maxQueueSize = 5
@@ -207,7 +223,7 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 5
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
 
     elif dataset == "imageNet": 
     
@@ -223,6 +239,10 @@ def usual_configuration(dataset):
 
         ## number of features of each layer 
         numOfFeatures = 20000
+        
+        ## control by distance
+        controlledSearch = ("euclidean",0.1)
+        #controlledSearch = ("L1",0.05)
         
         #maximum number of elements in the search queue
         maxQueueSize = 5
@@ -259,4 +279,4 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 5
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)

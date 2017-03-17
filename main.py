@@ -137,9 +137,12 @@ def handleOne(model,dc,startIndexOfImage):
 
             # for every layer
             f = 0 
-            while f <= numOfFeatures: 
+            #while f <= numOfFeatures : 
+            while st.emptyQueue() == False:  
 
                 f += 1
+                print("\n================================================================")
+                print("Round %s of layer %s for image %s"%(f,k,startIndexOfImage))
                 index = st.getOneUnexplored()
                 imageIndex = copy.deepcopy(index)
             
@@ -150,12 +153,10 @@ def handleOne(model,dc,startIndexOfImage):
                 t = 0
                 while True: 
 
-
-
                     #print "\nhow many dimensions have been changed: %s."%(len(st.manipulated[-1]))
 
                     # pick the first element of the queue
-                    print "\n(1) get a manipulated input ..."
+                    print "(1) get a manipulated input ..."
                     (image0,span,numSpan,numDimsToMani,stepsUpToNow) = st.getInfo(index)
                     
                     print "current index: %s."%(str(index))
@@ -195,8 +196,9 @@ def handleOne(model,dc,startIndexOfImage):
                         if len(rk) >= numOfPointsAfterEachFeature:
                             rk = rk[0:numOfPointsAfterEachFeature-1]
                         
+                        # remove identical images
+                        rk2 = []
                         if rk != []: 
-                            rk2 = []
                             fst = rk[0]
                             remain = rk[1:]
                             while remain != []: 
@@ -210,15 +212,29 @@ def handleOne(model,dc,startIndexOfImage):
                                 remain = remain[1:]
                             rk2.append(fst)
                             print "%s candidate images, but only %s of them are identical."%(len(rk),len(rk2))
-                            rk = rk2
                             
-                        if costForDijkstra == "euclidean": 
-                            scale = (1 - max(zip (*rk)[1]))
-                            rk = [(i, c + euclideanDistance(image,i) * scale) for (i,c) in rk]
-                        elif costForDijkstra == "l1": 
-                            scale = (1 - min(zip (*rk)[1]))
-                            #for (i,c) in rk : print("%s --- %s --- %s ---- %s "%(l1Distance(image,i), c, scale, l1Distance(image,i) / scale))
-                            rk = [(i, c + l1Distance(image,i) * scale) for (i,c) in rk]
+                        # remove images that are too far away from the original image
+                        rk3 = []
+                        for fst in rk2:
+                            (distMethod,distVal) = controlledSearch
+                            if distMethod == "euclidean": 
+                                termByDist = euclideanDistance(fst[0],image) > distVal
+                            elif distMethod == "L1": 
+                                termByDist = l1Distance(fst[0],image) > distVal
+                            if termByDist == False: rk3.append(fst)
+                        print "%s identical images, but only %s of them satisfy the distance restriction."%(len(rk2),len(rk3))
+                        
+                        
+                        rk = rk3    
+                        # add cost to the distance for A* algorithm
+                        if rk != []: 
+                            if costForDijkstra == "euclidean": 
+                                scale = (1 - max(zip (*rk)[1]))
+                                rk = [(i, c + euclideanDistance(image,i) * scale) for (i,c) in rk]
+                            elif costForDijkstra == "l1": 
+                                scale = (1 - min(zip (*rk)[1]))
+                                #for (i,c) in rk : print("%s --- %s --- %s ---- %s "%(l1Distance(image,i), c, scale, l1Distance(image,i) / scale))
+                                rk = [(i, c + l1Distance(image,i) * scale) for (i,c) in rk]
                                                     
                         #diffs = diffImage(image0,rk[0])
                         #print("the dimensions of the images that are changed in the previous round: %s"%diffs)
@@ -228,7 +244,8 @@ def handleOne(model,dc,startIndexOfImage):
                             st.addImages(model,rk,stepsUpToNow+1)
                         elif  searchApproach == "heuristic": 
                             st.addImages(model,(zip(*rk))[0],stepsUpToNow+1)
-                            
+                        print "now the queue has %s images (maximum is %s)"%(st.size(),maxQueueSize)
+
                         #newimage = rk[0]
                         st.removeProcessed(imageIndex)
                         (re,percent,eudist,l1dist) = reportInfo(image,wk)
@@ -248,6 +265,8 @@ def handleOne(model,dc,startIndexOfImage):
                     dc.addConfidence(ocf)
                     break
                 
+            if st.emptyQueue() == True: 
+                print "(6) no adversarial example is found in this layer within the distance restriction." 
             st.destructor()
             
         runningTime = time.time() - start_time   
@@ -266,7 +285,7 @@ def reportInfo(image,wk):
 
     # exit only when we find an adversarial example
     if wk == []:    
-        print "(5) no adversarial example is found in this layer."  
+        print "(5) no adversarial example is found in this round."  
         return (False,0,0,0)
     else: 
         print "(5) an adversarial example has been found."

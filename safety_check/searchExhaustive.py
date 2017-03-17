@@ -54,13 +54,18 @@ class searchExhaustive:
         self.manipulated = {}
         self.images[(-1,-1)] = []
         self.rk = []        
+        
+    def emptyQueue(self):
+        return len(self.rk) == 0 
+                
+    def size(self):
+        return len(self.rk) 
                 
     def getOneUnexplored(self):
         #print self.cost
         #print min(self.cost, key=self.cost.get)
         
         if len(self.rk) > 0: 
-
             return min(self.cost, key=self.cost.get)
         else: return (-1,-1)
     
@@ -111,7 +116,7 @@ class searchExhaustive:
             maxind = max(self.cost, key=self.cost.get)
             #print "%s--%s--%s"%(removeNum,maxind,len(self.rk))
             self.removeNode(maxind)
-            self.rk.remove(maxind)
+            #self.rk.remove(maxind)
             removeNum -= 1
             
             
@@ -139,3 +144,4 @@ class searchExhaustive:
         del self.numDimsToManis[index]
         del self.cost[index]
         del self.steps[index]
+        self.rk.remove(index)
