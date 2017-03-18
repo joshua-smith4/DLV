@@ -115,6 +115,10 @@ controlledSearch = ("euclidean",0.1)
 #maximum number of elements in the search queue
 maxQueueSize = 5
 
+# the rate that we do not use heuristic but the random sampling
+# to get the next feature 
+explorationRate = 0.5
+
 # use linear restrictions or conv filter restriction
 inverseFunction = "point"
 #inverseFunction = "area"
@@ -129,8 +133,8 @@ heuristics = "Activation"
 #heuristics = "Derivative"
 
 #cost function used to compute the distance from the starting point
-#costForDijkstra = "none"
-costForDijkstra = "euclidean"
+costForDijkstra = "none"
+#costForDijkstra = "euclidean"
 #costForDijkstra = "l1"
 
 # do we need to repeatedly select an updated input neuron
@@ -157,7 +161,7 @@ tempFile = "disabled"
 #######################################################
 
 if experimental_config == True: 
-    (startIndexOfImage,startLayer, maxLayer,numOfFeatures,maxQueueSize,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile) = usual_configuration(dataset)
+    (startIndexOfImage,startLayer, maxLayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile) = usual_configuration(dataset)
     
 
 ############################################################

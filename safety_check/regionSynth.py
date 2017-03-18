@@ -185,6 +185,18 @@ def dense_solve_prep(model,dataBasics,nfeatures,nfilters,wv,bv,activations0,acti
 #
 ################################################################
 
+def initialiseRegions(model,image,manipulated):
+    allRegions = []
+    num = numOfFeatures
+    newManipulated1 = []
+    newManipulated2 = manipulated
+    while num > 0 or newManipulated1 == newManipulated2 : 
+        oneRegion = initialiseRegion(model,image,newManipulated2)
+        allRegions.append(oneRegion)
+        newManipulated1 = copy.deepcopy(newManipulated2)
+        newManipulated2 = list(set(newManipulated2 + oneRegion[0].keys()))
+        num -= 1
+    return allRegions
 
 def initialiseRegion(model,image,manipulated): 
     if heuristics == "Activation": 

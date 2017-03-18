@@ -29,6 +29,10 @@ def usual_configuration(dataset):
         
         #maximum number of elements in the search queue
         maxQueueSize = 5
+        
+        # the rate that we do not use heuristic but the random sampling
+        # to get the next feature 
+        explorationRate = 0.5
 
         # use linear restrictions or conv filter restriction
         inverseFunction = "point"
@@ -60,7 +64,7 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 3
 
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
         
     elif dataset == "mnist": 
 
@@ -75,69 +79,18 @@ def usual_configuration(dataset):
         maxilayer = 0
 
         ## number of features of each layer 
-        numOfFeatures = 30
+        numOfFeatures = 50
         
         ## control by distance
-        controlledSearch = ("euclidean",0.3)
+        controlledSearch = ("euclidean",0.28)
         #controlledSearch = ("L1",0.05)
         
         #maximum number of elements in the search queue
         maxQueueSize = 500
-
-        # use linear restrictions or conv filter restriction
-        inverseFunction = "point"
-        #inverseFunction = "area"
-
-        # point-based or line-based, or only work with a specific point
-        enumerationMethod = "convex"
-        #enumerationMethod = "line"
-
-        # heuristics for deciding a region
-        heuristics = "Activation"
-        #heuristics = "Derivative"
-
-        # do we need to repeatedly select an updated input neuron
-        repeatedManipulation = "allowed"
-        #repeatedManipulation = "disallowed"
-
-        #checkingMode = "specificLayer"
-        checkingMode = "stepwise"
         
-        # exit whenever an adversarial example is found
-        #exitWhen = "foundAll"
-        exitWhen = "foundFirst"
-        
-        # do we need to generate temp_.png files
-        #tempFile = "enabled"
-        tempFile = "disabled"
-        
-        # compute the derivatives up to a specific layer
-        derivativelayerUpTo = 3
-    
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
-        
-        
-    elif dataset == "gtsrb": 
-
-        # which image to start with or work with 
-        # from the database
-        startIndexOfImage = 3007
-        
-        # the start layer to work from 
-        startLayer = 0
-
-        # the maximal layer to work until 
-        maxilayer = 0
-
-        ## number of features of each layer 
-        numOfFeatures = 3000
-        
-        ## control by distance
-        controlledSearch = ("euclidean",0.1)
-        #controlledSearch = ("L1",0.05)
-
-        #maximum number of elements in the search queue
-        maxQueueSize = 5
+        # the rate that we do not use heuristic but the random sampling
+        # to get the next feature 
+        explorationRate = 0.8
 
         # use linear restrictions or conv filter restriction
         inverseFunction = "point"
@@ -169,7 +122,66 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 3
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        
+        
+    elif dataset == "gtsrb": 
+
+        # which image to start with or work with 
+        # from the database
+        startIndexOfImage = 3007
+        
+        # the start layer to work from 
+        startLayer = 0
+
+        # the maximal layer to work until 
+        maxilayer = 0
+
+        ## number of features of each layer 
+        numOfFeatures = 3000
+        
+        ## control by distance
+        controlledSearch = ("euclidean",0.1)
+        #controlledSearch = ("L1",0.05)
+
+        #maximum number of elements in the search queue
+        maxQueueSize = 5
+        
+        # the rate that we do not use heuristic but the random sampling
+        # to get the next feature 
+        explorationRate = 0.5
+
+        # use linear restrictions or conv filter restriction
+        inverseFunction = "point"
+        #inverseFunction = "area"
+
+        # point-based or line-based, or only work with a specific point
+        enumerationMethod = "convex"
+        #enumerationMethod = "line"
+
+        # heuristics for deciding a region
+        heuristics = "Activation"
+        #heuristics = "Derivative"
+
+        # do we need to repeatedly select an updated input neuron
+        #repeatedManipulation = "allowed"
+        repeatedManipulation = "disallowed"
+
+        #checkingMode = "specificLayer"
+        checkingMode = "stepwise"
+        
+        # exit whenever an adversarial example is found
+        #exitWhen = "foundAll"
+        exitWhen = "foundFirst"
+        
+        # do we need to generate temp_.png files
+        #tempFile = "enabled"
+        tempFile = "disabled"
+        
+        # compute the derivatives up to a specific layer
+        derivativelayerUpTo = 3
+    
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
         
     elif dataset == "cifar10": 
     
@@ -192,6 +204,10 @@ def usual_configuration(dataset):
         
         #maximum number of elements in the search queue
         maxQueueSize = 5
+        
+        # the rate that we do not use heuristic but the random sampling
+        # to get the next feature 
+        explorationRate = 0.5
 
         # use linear restrictions or conv filter restriction
         inverseFunction = "point"
@@ -223,7 +239,7 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 5
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
 
     elif dataset == "imageNet": 
     
@@ -246,6 +262,10 @@ def usual_configuration(dataset):
         
         #maximum number of elements in the search queue
         maxQueueSize = 5
+        
+        # the rate that we do not use heuristic but the random sampling
+        # to get the next feature 
+        explorationRate = 0.5
 
         # use linear restrictions or conv filter restriction
         inverseFunction = "point"
@@ -279,4 +299,4 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 5
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)

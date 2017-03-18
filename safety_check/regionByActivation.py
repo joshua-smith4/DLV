@@ -8,6 +8,7 @@ author: Xiaowei Huang
 import numpy as np
 import copy
 from scipy import ndimage
+from random import randint, random
 
 from configuration import * 
 from imageNet_network import addZeroPadding2D
@@ -36,20 +37,28 @@ def initialiseRegionActivation(model,manipulated,image):
         nextNumSpan = {}
         if len(image.shape) == 2: 
             # decide how many elements in the input will be considered
-            if len(image)*len(image[0])  < featureDims : 
-                numDimsToMani = len(image)*len(image[0]) 
+            if image.size < featureDims : 
+                numDimsToMani = image.size 
             else: numDimsToMani = featureDims
             # get those elements with maximal/minimum values
-            ls = getTop2DActivation(image,manipulated,[],numDimsToMani,-1)
+            randnum = random()
+            if randnum > explorationRate : 
+                ls = getTop2DActivation(image,manipulated,[],numDimsToMani,-1)
+            else:  
+                ls = getRandom2DActivation(image,manipulated,[],numDimsToMani,-1)
 
         elif len(image.shape) == 3:
             # decide how many elements in the input will be considered
-            if len(image)*len(image[0])*len(image[0][0])  < featureDims : 
-                numDimsToMani = len(image)*len(image[0])*len(image[0][0])
+            if image.size < featureDims : 
+                numDimsToMani = image.size
             else: numDimsToMani = featureDims
             # get those elements with maximal/minimum values
-            ls = getTop3DActivation(image,manipulated,[],numDimsToMani,-1)     
-                
+            randnum = random()
+            if randnum > explorationRate : 
+                ls = getTop3DActivation(image,manipulated,[],numDimsToMani,-1)
+            else: 
+                ls = getRandom3DActivation(image,manipulated,[],numDimsToMani,-1)
+
         for i in ls: 
             nextSpan[i] = span
             nextNumSpan[i] = numSpan
@@ -74,19 +83,29 @@ def initialiseRegionActivation(model,manipulated,image):
         nextNumSpan = {}
         if len(image1.shape) == 2: 
             # decide how many elements in the input will be considered
-            if len(image1)*len(image1[0])  < featureDims : 
-                numDimsToMani = len(image1)*len(image1[0]) 
+            if image1.size < featureDims : 
+                numDimsToMani = image1.size
             else: numDimsToMani = featureDims
             # get those elements with maximal/minimum values
-            ls = getTop2DActivation(image1,manipulated,[],numDimsToMani,-1)
+            randnum = random()
+            if randnum > explorationRate : 
+                ls = getTop2DActivation(image1,manipulated,[],numDimsToMani,-1)
+            else: 
+                ls = getRandom2DActivation(image1,manipulated,[],numDimsToMani,-1)
+
 
         elif len(image1.shape) == 3:
             # decide how many elements in the input will be considered
-            if len(image1)*len(image1[0])*len(image1[0][0])  < featureDims : 
-                numDimsToMani = len(image1)*len(image1[0])*len(image1[0][0])
+            if image1.size < featureDims : 
+                numDimsToMani = image1.size
             else: numDimsToMani = featureDims
             # get those elements with maximal/minimum values
-            ls = getTop3DActivation(image1,manipulated,[],numDimsToMani,-1)         
+            randnum = random()
+            if randnum > explorationRate : 
+                ls = getTop3DActivation(image1,manipulated,[],numDimsToMani,-1)  
+            else: 
+                ls = getRandom3DActivation(image1,manipulated,[],numDimsToMani,-1)         
+       
         for i in ls: 
             nextSpan[i] = span
             nextNumSpan[i] = numSpan
@@ -134,15 +153,27 @@ def getTopActivation(image,manipulated,layerToConsider,numDimsToMani):
         del topImage[k]
     return topImage.keys()
     
+def getRandom2DActivation(image,manipulated,ps,numDimsToMani,layerToConsider): 
+
+    avoid = repeatedManipulation == "disallowed"
+            
+    oldmanipulated = copy.deepcopy(manipulated)
+    i = copy.deepcopy(numDimsToMani)
+    while i > 0 : 
+        
+        randnum = randint(1,image.size) - 1
+        fst = randnum / image.shape[1]
+        snd = randnum % image.shape[1]
+        
+        if (fst,snd) not in manipulated: 
+            oldmanipulated.append((fst,snd))
+            i -= 1
+        
+    return list(set(oldmanipulated) - set(manipulated))
+    
 def getTop2DActivation(image,manipulated,ps,numDimsToMani,layerToConsider): 
 
     avoid = repeatedManipulation == "disallowed"
-
-    #avg = np.sum(image)/float(len(image)*len(image[0]))
-    #nimage = copy.deepcopy(image)
-    #for i in range(len(image)): 
-    #    for j in range(len(image[0])):
-    #        nimage[i][j] = abs(avg - image[i][j])
             
     avg = np.average(image)
     nimage = np.absolute(image - avg) 
@@ -151,7 +182,7 @@ def getTop2DActivation(image,manipulated,ps,numDimsToMani,layerToConsider):
     toBeDeleted = []
     for i in range(len(image)):
         for j in range(len(image[0])):
-            if len(topImage) < numDimsToMani: 
+            if len(topImage) < numDimsToMani and ((not avoid) or ((i,j) not in manipulated)): 
                 topImage[(i,j)] = nimage[i][j]
             else: 
                 bl = False 
@@ -169,13 +200,45 @@ def getTop2DActivation(image,manipulated,ps,numDimsToMani,layerToConsider):
 
 # ps are indices of the previous layer
 
+def getRandom3DActivation(image,manipulated,ps,numDimsToMani,layerToConsider): 
+
+    #print numDimsToMani, ps
+    avoid = repeatedManipulation == "disallowed"
+
+    #avg = np.sum(image)/float(len(image)*len(image[0]*len(image[0][0])))
+    #nimage = copy.deepcopy(image)
+    #for i in range(len(image)): 
+    #    for j in range(len(image[0])):
+    #        for k in range(len(image[0][0])):
+    #            nimage[i][j][k] = abs(avg - image[i][j][k])
+    
+    # find a two-dimensional with maximal variance
+    ind = randint(1,image.shape[0])
+    
+    if len(ps) > 0: 
+        if len(ps[0]) == 3: 
+            (p1,p2,p3) = zip(*ps)
+            ps = zip(p2,p3)
+    
+    pointsToConsider = []
+    for i in range(numDimsToMani): 
+        if i <= len(ps) - 1: 
+            (x,y) = ps[i] 
+            nps = [ (x-x1,y-y1) for x1 in range(filterSize) for y1 in range(filterSize) if x-x1 >= 0 and y-y1 >=0 ]
+            pointsToConsider = pointsToConsider + nps
+    pointsToConsider = list(set(pointsToConsider))
+    
+    ks = getRandom2DActivation(image[maxVarInd],manipulated,ps,numDimsToMani,layerToConsider,pointsToConsider)
+    
+    #print ks, pointsToConsider
+    
+    return map(lambda (x,y): (ind,x,y),ks)
+
 
 
 def getTop3DActivation(image,manipulated,ps,numDimsToMani,layerToConsider): 
 
     #print numDimsToMani, ps
-
-
     avoid = repeatedManipulation == "disallowed"
 
     #avg = np.sum(image)/float(len(image)*len(image[0]*len(image[0][0])))

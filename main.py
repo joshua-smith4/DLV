@@ -125,9 +125,8 @@ def handleOne(model,dc,startIndexOfImage):
             elif searchApproach == "exhaustive":
                 st = searchExhaustive(image,k)
 
-            st.addImages(model,[(image,NN.predictWithImage(model,image)[1])],0)
+            st.addImages(model,(-1,-1),[(image,NN.predictWithImage(model,image)[1])],[],0)
             print "\nstart checking the safety of layer "+str(k)
-            print "the current context is %s"%(st.numSpans)
         
             (originalClass,originalConfident) = NN.predictWithImage(model,image)
             origClassStr = dataBasics.LABELS(int(originalClass))
@@ -144,7 +143,8 @@ def handleOne(model,dc,startIndexOfImage):
                 print("\n================================================================")
                 print("Round %s of layer %s for image %s"%(f,k,startIndexOfImage))
                 index = st.getOneUnexplored()
-                imageIndex = copy.deepcopy(index)
+                st.addVisitedImage(st.images[index])
+                #imageIndex = copy.deepcopy(index)
             
                 #howfar = st.getHowFar(index[0],0)
             
@@ -158,10 +158,12 @@ def handleOne(model,dc,startIndexOfImage):
                     # pick the first element of the queue
                     print "(1) get a manipulated input ..."
                     (image0,span,numSpan,numDimsToMani,stepsUpToNow) = st.getInfo(index)
-                    
+
+                    print "current layer: %s."%(t)
                     print "current index: %s."%(str(index))
                     print "the number of steps: %s."%(str(stepsUpToNow))
-                    print "current layer: %s."%(t)
+                    print "the number of manipulated that have been modified: %s."%(len(st.manipulated[index]))
+
                     
                     path2 = directory_pic_string+"/temp.png"
                     print "current operated image is saved into %s"%(path2)
@@ -169,8 +171,8 @@ def handleOne(model,dc,startIndexOfImage):
 
                     print "(2) synthesise region ..."
                      # ne: next region, i.e., e_{k+1}
-                    (nextSpan,nextNumSpan,numDimsToMani) = regionSynth(model,dataset,image0,st.manipulated[t],t,span,numSpan,numDimsToMani)
-                    st.addManipulated(t,nextSpan.keys())
+                    (nextSpan,nextNumSpan,numDimsToMani) = regionSynth(model,dataset,image0,st.manipulated[index][t],t,span,numSpan,numDimsToMani)
+                    st.addManipulated(index,t,nextSpan.keys())
 
                     #print "3) synthesise precision ..."
                     #if not found == True: nextNumSpan = dict(map(lambda (k,v): (k, abs(v-1)), nextNumSpan.iteritems()))
@@ -221,8 +223,9 @@ def handleOne(model,dc,startIndexOfImage):
                                 termByDist = euclideanDistance(fst[0],image) > distVal
                             elif distMethod == "L1": 
                                 termByDist = l1Distance(fst[0],image) > distVal
+                            termByDist = st.hasVisited(fst[0]) or termByDist
                             if termByDist == False: rk3.append(fst)
-                        print "%s identical images, but only %s of them satisfy the distance restriction."%(len(rk2),len(rk3))
+                        print "%s identical images, but only %s of them satisfy the distance restriction %s."%(len(rk2),len(rk3),controlledSearch)
                         
                         
                         rk = rk3    
@@ -241,13 +244,15 @@ def handleOne(model,dc,startIndexOfImage):
                         #if len(diffs) == 0: st.clearManipulated(k)
                         
                         if searchApproach == "exhaustive": 
-                            st.addImages(model,rk,stepsUpToNow+1)
+                            index = st.addImages(model,index,rk,st.manipulated[index][-1]+st.manipulated[index][0],stepsUpToNow+1)
                         elif  searchApproach == "heuristic": 
-                            st.addImages(model,(zip(*rk))[0],stepsUpToNow+1)
+                            st.addImages(model,index,(zip(*rk))[0],st.manipulated[index][-1]+st.manipulated[index][0],stepsUpToNow+1)
                         print "now the queue has %s images (maximum is %s)"%(st.size(),maxQueueSize)
+                        print "the number of visited images is %s."%(len(st.visitedImages))
+
 
                         #newimage = rk[0]
-                        st.removeProcessed(imageIndex)
+                        st.removeProcessed(index)
                         (re,percent,eudist,l1dist) = reportInfo(image,wk)
                         break
                     else: 

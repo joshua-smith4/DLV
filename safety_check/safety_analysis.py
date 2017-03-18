@@ -33,7 +33,6 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
 
     originalIndex = copy.deepcopy(index)
     (originalImage,prevSpan,prevNumSpan,numDimsToMani,stepsUpToNow) = st.getInfo(index)
-    howfar = st.getHowFar(index[0],0)
     
     config = NN.getConfig(model)
         
