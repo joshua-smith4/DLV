@@ -45,9 +45,9 @@ whichMode = "read"
 #whichMode = "train"
 
 # work with a single image or a batch of images 
-dataProcessing = "single"
-#dataProcessing = "batch"
-dataProcessingBatchNum = 10
+#dataProcessing = "single"
+dataProcessing = "batch"
+dataProcessingBatchNum = 100
 
 # search approach
 #searchApproach = "heuristic"
@@ -112,6 +112,9 @@ numOfFeatures = 40
 controlledSearch = ("euclidean",0.1)
 #controlledSearch = ("L1",0.05)
 
+## maximal number of searches 
+maxSearchNum = 1000
+
 #maximum number of elements in the search queue
 maxQueueSize = 5
 
@@ -161,7 +164,7 @@ tempFile = "disabled"
 #######################################################
 
 if experimental_config == True: 
-    (startIndexOfImage,startLayer, maxLayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile) = usual_configuration(dataset)
+    (startIndexOfImage,startLayer, maxLayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile) = usual_configuration(dataset)
     
 
 ############################################################

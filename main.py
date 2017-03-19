@@ -137,7 +137,8 @@ def handleOne(model,dc,startIndexOfImage):
             # for every layer
             f = 0 
             #while f <= numOfFeatures : 
-            while st.emptyQueue() == False:  
+            nsn = 0
+            while st.emptyQueue() == False and nsn < maxSearchNum :  
 
                 f += 1
                 print("\n================================================================")
@@ -154,6 +155,7 @@ def handleOne(model,dc,startIndexOfImage):
                 while True: 
 
                     #print "\nhow many dimensions have been changed: %s."%(len(st.manipulated[-1]))
+                    nsn += 1
 
                     # pick the first element of the queue
                     print "(1) get a manipulated input ..."

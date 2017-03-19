@@ -27,6 +27,14 @@ def usual_configuration(dataset):
         controlledSearch = ("euclidean",0.1)
         #controlledSearch = ("L1",0.05)
         
+        ## maximal number of searches 
+        maxSearchNum = 1000
+        
+        #cost function used to compute the distance from the starting point
+        costForDijkstra = "none"
+        #costForDijkstra = "euclidean"
+        #costForDijkstra = "l1"
+        
         #maximum number of elements in the search queue
         maxQueueSize = 5
         
@@ -64,7 +72,7 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 3
 
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
         
     elif dataset == "mnist": 
 
@@ -85,12 +93,20 @@ def usual_configuration(dataset):
         controlledSearch = ("euclidean",0.28)
         #controlledSearch = ("L1",0.05)
         
+        ## maximal number of searches 
+        maxSearchNum = 1000
+        
+        #cost function used to compute the distance from the starting point
+        #costForDijkstra = "none"
+        costForDijkstra = "euclidean"
+        #costForDijkstra = "l1"
+        
         #maximum number of elements in the search queue
         maxQueueSize = 500
         
         # the rate that we do not use heuristic but the random sampling
         # to get the next feature 
-        explorationRate = 0.8
+        explorationRate = 1.0
 
         # use linear restrictions or conv filter restriction
         inverseFunction = "point"
@@ -122,7 +138,7 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 3
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
         
         
     elif dataset == "gtsrb": 
@@ -143,6 +159,14 @@ def usual_configuration(dataset):
         ## control by distance
         controlledSearch = ("euclidean",0.1)
         #controlledSearch = ("L1",0.05)
+        
+        ## maximal number of searches 
+        maxSearchNum = 1000
+        
+        #cost function used to compute the distance from the starting point
+        costForDijkstra = "none"
+        #costForDijkstra = "euclidean"
+        #costForDijkstra = "l1"
 
         #maximum number of elements in the search queue
         maxQueueSize = 5
@@ -181,7 +205,7 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 3
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
         
     elif dataset == "cifar10": 
     
@@ -201,6 +225,14 @@ def usual_configuration(dataset):
         ## control by distance
         controlledSearch = ("euclidean",0.3)
         #controlledSearch = ("L1",0.05)
+        
+        ## maximal number of searches 
+        maxSearchNum = 1000
+        
+        #cost function used to compute the distance from the starting point
+        costForDijkstra = "none"
+        #costForDijkstra = "euclidean"
+        #costForDijkstra = "l1"
         
         #maximum number of elements in the search queue
         maxQueueSize = 5
@@ -239,7 +271,7 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 5
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
 
     elif dataset == "imageNet": 
     
@@ -259,6 +291,14 @@ def usual_configuration(dataset):
         ## control by distance
         controlledSearch = ("euclidean",0.1)
         #controlledSearch = ("L1",0.05)
+        
+        ## maximal number of searches 
+        maxSearchNum = 1000
+        
+        #cost function used to compute the distance from the starting point
+        #costForDijkstra = "none"
+        costForDijkstra = "euclidean"
+        #costForDijkstra = "l1"
         
         #maximum number of elements in the search queue
         maxQueueSize = 5
@@ -299,4 +339,4 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 5
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
