@@ -26,7 +26,7 @@ from utils import other_classes, cnn_model, pair_visual, grid_visual
 
 FLAGS = flags.FLAGS
 
-flags.DEFINE_string('train_dir', '', 'Directory storing the saved model.')
+flags.DEFINE_string('train_dir', '/Users/xiaowei/Repositories/DLV/FGSM/', 'Directory storing the saved model.')
 flags.DEFINE_string('filename', 'mnist.ckpt', 'Filename to save model under.')
 flags.DEFINE_boolean('viz_enabled', True, 'Enable sample visualization.')
 flags.DEFINE_integer('nb_epochs', 6, 'Number of epochs to train model')
@@ -37,9 +37,10 @@ flags.DEFINE_integer('img_cols', 28, 'Input column dimension')
 flags.DEFINE_integer('nb_channels', 1, 'Nb of color channels in the input.')
 flags.DEFINE_integer('nb_filters', 64, 'Number of convolutional filter to use')
 flags.DEFINE_integer('nb_pool', 2, 'Size of pooling area for max pooling')
-flags.DEFINE_integer('source_samples', 2, 'Nb of test set examples to attack')
+flags.DEFINE_integer('source_samples', 1, 'Nb of test set examples to attack')
 flags.DEFINE_float('learning_rate', 0.1, 'Learning rate for training')
-flags.DEFINE_integer('starting_index', 4354, 'starting index of the image')
+flags.DEFINE_integer('starting_index', 4357, 'starting index of the image')
+flags.DEFINE_integer('thetaValue', 0.5, 'theta Value')
 
 
 def main(argv=None):
@@ -52,6 +53,9 @@ def main(argv=None):
 
     # Set TF random seed to improve reproducibility
     tf.set_random_seed(1234)
+    
+    fileName = "statistics/JAMA_dataCollection.txt"
+    fileHandler = open(fileName, 'a')
 
     ###########################################################################
     # Define the dataset and model
@@ -80,6 +84,13 @@ def main(argv=None):
     model = cnn_model()
     predictions = model(x)
     print("Defined TensorFlow model graph.")
+    
+    
+    #filename = "pic/%s.jpg"%(FLAGS.starting_index)
+    #testImage = np.squeeze(X_test[(FLAGS.starting_index):(FLAGS.starting_index+1)][0])
+    #print("%s--%s"%(str(np.amax(testImage)), str(np.amin(testImage))))
+    #save(0,testImage,filename)
+    
 
     ###########################################################################
     # Training the model using TensorFlow
@@ -131,7 +142,7 @@ def main(argv=None):
                   FLAGS.img_rows,
                   FLAGS.img_cols,
                   FLAGS.nb_channels)
-    #grid_viz_data = np.zeros(grid_shape, dtype='f')
+    grid_viz_data = np.zeros(grid_shape, dtype='f')
     
     eud = {}
     l1d = {}
@@ -143,6 +154,10 @@ def main(argv=None):
         # (i.e. all classes that differ from the label given in the dataset)
         current_class = int(np.argmax(Y_test[FLAGS.starting_index + sample_ind]))
         target_classes = other_classes(FLAGS.nb_classes, current_class)
+        
+        filename = "pic/%s_jsma.jpg"%(FLAGS.starting_index + sample_ind)
+        testImage = np.squeeze(X_test[(FLAGS.starting_index + sample_ind):(FLAGS.starting_index + sample_ind+1)][0])
+        save(0,testImage,filename)
 
         # For the grid visualization, keep original images along the diagonal
         #grid_viz_data[current_class, current_class, :, :, :] = np.reshape(
@@ -163,7 +178,7 @@ def main(argv=None):
             adv_x, res, percent_perturb = jsma(sess, x, predictions, grads,
                                                X_test[(FLAGS.starting_index+sample_ind):
                                                       (FLAGS.starting_index+sample_ind+1)],
-                                               target, theta=0.5, gamma=0.1,
+                                               target, theta=FLAGS.thetaValue, gamma=0.1,
                                                increase=True, back='tf',
                                                clip_min=0, clip_max=1)
                                                
@@ -186,7 +201,16 @@ def main(argv=None):
 
             # Add our adversarial example to our grid data
             #grid_viz_data[target, current_class, :, :, :] = np.reshape(
-                    #adv_x, (FLAGS.img_rows, FLAGS.img_cols, FLAGS.nb_channels))
+            #        adv_x, (FLAGS.img_rows, FLAGS.img_cols, FLAGS.nb_channels))
+                    
+            filename = "pic/%s_jsma_%s_%s.jpg"%(FLAGS.starting_index+sample_ind,FLAGS.thetaValue,target)                        
+            testImage1 = np.squeeze(adv_x[0])
+            fileHandler.write("theta value: %s\n"%(FLAGS.thetaValue))
+            fileHandler.write("target: %s\n"%(target))
+            fileHandler.write("euclidean distance: %s\n"%(euclideanDistance(testImage1,testImage))) 
+            fileHandler.write("L1 distance: %s\n"%(l1Distance(testImage1,testImage)))
+            save(0,testImage1,filename)
+
 
             # Update the arrays for later analysis
             results[target, sample_ind] = res
@@ -229,11 +253,10 @@ def main(argv=None):
     print("Average L1 distance is %s"%(sum(l1d.values()) / float(len(l1d))))
     print("Success rate is %s"%(sum(succ.values()) / float(len(succ))))
     
-    fileName = "JAMA_dataCollection.txt"
-    fileHandler = open(fileName, 'a')
-    fileHandler.write("Average Euclidean distance is %s"%(sum(eud.values()) / float(len(eud))))
-    fileHandler.write("Average L1 distance is %s"%(sum(l1d.values()) / float(len(l1d))))
-    fileHandler.write("Success rate is %s"%(sum(succ.values()) / float(len(succ))))
+
+    fileHandler.write("Average Euclidean distance is %s\n"%(sum(eud.values()) / float(len(eud))))
+    fileHandler.write("Average L1 distance is %s\n"%(sum(l1d.values()) / float(len(l1d))))
+    fileHandler.write("Success rate is %s\n"%(sum(succ.values()) / float(len(succ))))
     fileHandler.close()
     
     # Close TF session
@@ -292,6 +315,58 @@ def l1Distance(image1,image2):
                 distance += math.fabs(image1[x] - image2[x])
     #print "distance = %s"%(distance)
     return (float(distance) / ne)
+
+
+def read(digits=np.arange(10), dataset = "training", path = "."):
+    """
+    Python function for importing the MNIST data set.
+    """
+    if dataset is "training":
+        fname_img = os.path.join(path, 'mnist/train-images-idx3-ubyte')
+        fname_lbl = os.path.join(path, 'mnist/train-labels-idx1-ubyte')
+    elif dataset is "testing":
+        fname_img = os.path.join(path, 'mnist/t10k-images-idx3-ubyte')
+        fname_lbl = os.path.join(path, 'mnist/t10k-labels-idx1-ubyte')
+    else:
+        raise ValueError, "dataset must be 'testing' or 'training'"
+
+    flbl = open(fname_lbl, 'rb')
+    magic_nr, size = struct.unpack(">II", flbl.read(8))
+    lbl = pyarray("b", flbl.read())
+    flbl.close()
+
+    fimg = open(fname_img, 'rb')
+    magic_nr, size, rows, cols = struct.unpack(">IIII", fimg.read(16))
+    img = pyarray("B", fimg.read())
+    fimg.close()
+
+    ind = [ k for k in xrange(size) if lbl[k] in digits ]
+    N = len(ind)
+
+    images = np.zeros((N, rows, cols), dtype=np.uint8)
+    labels = np.zeros((N, 1), dtype=np.int8)
+    for i in range(len(ind)):
+        images[i] = np.array(img[ ind[i]*rows*cols : (ind[i]+1)*rows*cols ]).reshape((rows, cols))
+        labels[i] = lbl[ind[i]]
+
+    return images, labels
+
+
+def save(layer,image,filename):
+    """
+    Render a given numpy.uint8 2D array of pixel data.
+    """
+    from matplotlib import pyplot
+    import matplotlib as mpl
+    fig = pyplot.figure()
+    ax = fig.add_subplot(1,1,1)
+    imgplot = ax.imshow(image * 255, cmap=mpl.cm.Greys)
+    imgplot.set_interpolation('nearest')
+    ax.xaxis.set_ticks_position('top')
+    ax.yaxis.set_ticks_position('left')
+    pyplot.savefig(filename)
+
+
 
 
 if __name__ == '__main__':

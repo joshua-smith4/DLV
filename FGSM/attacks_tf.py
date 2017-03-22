@@ -247,6 +247,11 @@ def jsma_tf(sess, x, predictions, grads, sample, target, theta, gamma,
            len(search_domain) > 0):
         # Reshape the adversarial example
         adv_x_original_shape = np.reshape(adv_x, original_shape)
+        
+        filename = "pic/jsma_%s_%s.jpg"%(target,iteration)
+        testImage1 = np.squeeze(adv_x_original_shape)
+        print(str(testImage1.shape))
+        save(0,testImage1,filename)
 
         # Compute the Jacobian components
         grads_target, grads_others = jacobian(sess, x, grads, target,
@@ -335,3 +340,18 @@ def jacobian_augmentation(sess, x, X_sub_prev, Y_sub, grads, lmbda,
 
     # Return augmented training data (needs to be labeled afterwards)
     return X_sub
+    
+    
+def save(layer,image,filename):
+    """
+    Render a given numpy.uint8 2D array of pixel data.
+    """
+    from matplotlib import pyplot
+    import matplotlib as mpl
+    fig = pyplot.figure()
+    ax = fig.add_subplot(1,1,1)
+    imgplot = ax.imshow(image * 255, cmap=mpl.cm.Greys)
+    imgplot.set_interpolation('nearest')
+    ax.xaxis.set_ticks_position('top')
+    ax.yaxis.set_ticks_position('left')
+    pyplot.savefig(filename)

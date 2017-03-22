@@ -2,6 +2,7 @@
 
 """
 fgsm main file
+adapted from 
 
 author: Xiaowei Huang
 """
@@ -44,7 +45,16 @@ def fgsm_main(model,eps):
     parser.add_argument('--learning_rate', '-lr', default=0.5, type=float, help='Learning rate for training')
     args = parser.parse_args()
     
-    x_train, y_train, y_predicted = fgsm_loadData(model)
+    x_train, y_train, y_predicted, x_test, y_test = fgsm_loadData(model)
+    
+    x_train = x_test
+    y_train = y_test
+    y_predicted = model.predict(x_train)
+    imageIndex = 4357
+    filename = "/Users/xiaowei/Repositories/DLV/FGSM/pic/%s_fgsm.jpg"%(imageIndex)
+    testImage = np.squeeze(x_train[imageIndex])
+    save(0,testImage,filename)
+    
     x_shape = x_train.shape
     model.build(x_shape)
     
@@ -68,6 +78,15 @@ def fgsm_main(model,eps):
             sumOfl1D += l1Distance(x_train[i],x_train_adv[i])
     print "%s diff in %s examples"%(nd,len(y_predicted))  
     
+    conf = max(y_predicted_adv[imageIndex])
+    cls = np.argmax(y_predicted_adv[imageIndex])
+    filename = "/Users/xiaowei/Repositories/DLV/FGSM/pic/%s_fgsm_%s_%s_%s.jpg"%(imageIndex,eps,cls,conf)                        
+    testImage1 = np.squeeze(x_train_adv[imageIndex])
+    print("euclidean distance: %s"%(euclideanDistance(testImage1,testImage))) 
+    print("L1 distance: %s"%(l1Distance(testImage1,testImage)))
+    save(0,testImage1,filename)
+
+    
     # calculate the average Euclidean distance of the diff examples
     eud = sumOfeuD / nd
     l1d = sumOfl1D / nd
@@ -82,3 +101,17 @@ def fgsm_main(model,eps):
     dc.close()
 
     return nd
+    
+def save(layer,image,filename):
+    """
+    Render a given numpy.uint8 2D array of pixel data.
+    """
+    from matplotlib import pyplot
+    import matplotlib as mpl
+    fig = pyplot.figure()
+    ax = fig.add_subplot(1,1,1)
+    imgplot = ax.imshow(image * 255, cmap=mpl.cm.Greys)
+    imgplot.set_interpolation('nearest')
+    ax.xaxis.set_ticks_position('top')
+    ax.yaxis.set_ticks_position('left')
+    pyplot.savefig(filename)

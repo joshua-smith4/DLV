@@ -193,7 +193,7 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
             # continue back-propagating 
             layer2Consider -= 1
             activations1 = copy.deepcopy(newInput)
-            index = st.parentIndex(index)
+            index = st.parentIndexForIntermediateNode(index,layer2Consider)
             nprint("backtrack to index %s in layer %s"%(index,layer2Consider))
             activations = NN.getActivationValue(model,layer2Consider,originalImage)
             counter_numSpan = getCounter(activations,newInput,prevSpan,prevNumSpan)

@@ -25,6 +25,9 @@ from configuration import *
 def conv_region_solve(nfeatures,nfilters,filters,bias,activations0,activations1,cl2,gl2,inds,nn):
  
     random.seed(time.time())
+    
+    print inds
+    print cl2.keys()
 
     # number of clauses
     c = 0
@@ -148,10 +151,11 @@ def conv_region_solve(nfeatures,nfilters,filters,bias,activations0,activations1,
     nextNumSpan2 = {}
     nextSpan2 = {}
     for i in range(nn): 
-        ind = max(nextNumSpan, key=nextNumSpan.get)
-        nextNumSpan2[ind] = nextNumSpan[ind]
-        del nextNumSpan[ind]
-        nextSpan2[ind] = nextSpan[ind]
+        if len(nextNumSpan) > 0: 
+            ind = max(nextNumSpan, key=nextNumSpan.get)
+            nextNumSpan2[ind] = nextNumSpan[ind]
+            del nextNumSpan[ind]
+            nextSpan2[ind] = nextSpan[ind]
     
     #print "found a region: " + str(nextNumSpan2)
     #print(str(nextNumSpan))

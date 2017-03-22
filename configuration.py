@@ -45,8 +45,8 @@ whichMode = "read"
 #whichMode = "train"
 
 # work with a single image or a batch of images 
-#dataProcessing = "single"
-dataProcessing = "batch"
+dataProcessing = "single"
+#dataProcessing = "batch"
 dataProcessingBatchNum = 100
 
 # search approach

@@ -81,20 +81,20 @@ def usual_configuration(dataset):
         startIndexOfImage = 4357
         
         # the start layer to work from 
-        startLayer = 0
+        startLayer = 2
 
         # the maximal layer to work until 
-        maxilayer = 0
+        maxilayer = 2
 
         ## number of features of each layer 
-        numOfFeatures = 50
+        numOfFeatures = 1
         
         ## control by distance
-        controlledSearch = ("euclidean",0.28)
+        controlledSearch = ("euclidean",0.3)
         #controlledSearch = ("L1",0.05)
         
         ## maximal number of searches 
-        maxSearchNum = 1000
+        maxSearchNum = 20000
         
         #cost function used to compute the distance from the starting point
         #costForDijkstra = "none"
@@ -102,12 +102,12 @@ def usual_configuration(dataset):
         #costForDijkstra = "l1"
         
         #maximum number of elements in the search queue
-        maxQueueSize = 500
+        maxQueueSize = 1000
         
         # the rate that we do not use heuristic but the random sampling
         # to get the next feature 
         explorationRate = 1.0
-
+        
         # use linear restrictions or conv filter restriction
         inverseFunction = "point"
         #inverseFunction = "area"

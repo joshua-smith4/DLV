@@ -257,14 +257,18 @@ def getTop3DActivation(image,manipulated,ps,numDimsToMani,layerToConsider):
             ps = zip(p2,p3)
     
     pointsToConsider = []
+    ks = []
     for i in range(numDimsToMani): 
         if i <= len(ps) - 1: 
             (x,y) = ps[i] 
             nps = [ (x-x1,y-y1) for x1 in range(filterSize) for y1 in range(filterSize) if x-x1 >= 0 and y-y1 >=0 ]
-            pointsToConsider = pointsToConsider + nps
-    pointsToConsider = list(set(pointsToConsider))
+            pointsToConsider = list(set(nps) - set(ks))
+            ks += getTop2DActivationWithConstraint(image[maxVarInd],manipulated,ps,1,layerToConsider,pointsToConsider)
+            #print ps[i], ks, pointsToConsider
+
+    #pointsToConsider = list(set(pointsToConsider))
     
-    ks = getTop2DActivationWithConstraint(image[maxVarInd],manipulated,ps,numDimsToMani,layerToConsider,pointsToConsider)
+    #ks = getTop2DActivationWithConstraint(image[maxVarInd],manipulated,ps,numDimsToMani,layerToConsider,pointsToConsider)
     
     #print ks, pointsToConsider
     

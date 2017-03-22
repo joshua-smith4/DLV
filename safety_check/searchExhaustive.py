@@ -87,18 +87,32 @@ class searchExhaustive:
         return (copy.deepcopy(self.images[index]),self.spans[index],self.numSpans[index],self.numDimsToManis[index],self.steps[index])
 
     def addIntermediateNode(self,image,span,numSpan,cp,numDimsToMani,index):
-        index = (index[0]+1,index[0])
-        self.images[index] = image
-        self.spans[index] = span
-        self.numSpans[index] = numSpan
-        self.numDimsToManis[index] = numDimsToMani
-        return index
+        index2 = (index[0]+1,index[0])
+        self.images[index2] = image
+        self.spans[index2] = span
+        self.numSpans[index2] = numSpan
+        self.steps[index2] = self.steps[index]
+        self.manipulated[index2] = self.manipulated[index]
+        self.numDimsToManis[index2] = numDimsToMani
+        return index2
+    
+    def rootIndexForIntermediateNode(self,index,layerToConsider):
+        if layerToConsider > 1: 
+            return self.rootIndexForIntermediateNode((index[1],index[1]-1),layerToConsider-1)
+        else: 
+            return (index[1],-1)
+    
+    def parentIndexForIntermediateNode(self,index,layerToConsider):
+        if layerToConsider > 0: 
+            return (index[1],index[1]-1)
+        else: 
+            return (index[1],-1)
         
     def addImages(self,model,parentIndex,ims,manipulatedDims,stepsUpToNow):
         inds = [ i for (i,j) in self.images.keys() if j == -1 ]
         index = max(inds) + 1
         for (image,conf) in ims: 
-            for (span,numSpan,nn) in initialiseRegions(model,image,self.manipulated[parentIndex][-1]):
+            for (span,numSpan,nn) in initialiseRegions(model,image,manipulatedDims):
                 self.images[(index,-1)] = image
                 self.spans[(index,-1)] = span
                 self.numSpans[(index,-1)] = numSpan
@@ -126,13 +140,15 @@ class searchExhaustive:
         #print("0--%s--%s"%(sorted(self.rk),sorted(self.spans.keys())))
         newParentIndex = parentIndex
         i = 0 
-        indices = copy.deepcopy(sorted(self.spans.keys()))
+        indices = sorted(self.rk)
         for index2 in indices: 
+            #print "2", i, parentIndex, newParentIndex
             if index2[0] > i: 
                 self.copyEntry((i,-1),index2)
                 self.removeNode(index2)
                 if index2 == parentIndex : newParentIndex = (i,-1)
             i += 1
+
         #print("1--%s--%s"%(sorted(self.rk),sorted(self.spans.keys())))        
         return newParentIndex
 
@@ -151,12 +167,11 @@ class searchExhaustive:
     def addManipulated(self,index,k,s):
         self.manipulated[index][k] = list(set(self.manipulated[index][k] + s))
             
-    def removeProcessed(self,index):
-        children = [ (k,p) for (k,p) in self.spans.keys() if p == index[0] ]
-        for childIndex in children:  
-            self.removeProcessed(childIndex)
-        if index in self.rk: self.removeNode(index)
-                
+    def removeProcessed(self,index,layerToConsider):
+        self.removeNode(index)
+        for index2 in self.spans.keys(): 
+            if index2[1] != -1: self.removeNode(index2)      
+
     def removeNode(self,index):
         self.images.pop(index,None)
         del self.spans[index]
@@ -164,5 +179,16 @@ class searchExhaustive:
         del self.numDimsToManis[index]
         self.cost.pop(index,None)
         self.steps.pop(index,None)
-        self.rk.remove(index)
+        if index in self.rk: self.rk.remove(index)
         self.manipulated.pop(index,None)
+        
+    def computeCost(self,model,image0):
+        originalImage = self.images[(-1,-1)]
+        c = NN.predictWithImage(model,image0)[1]
+        scale = 1 - c
+        if costForDijkstra == "euclidean": 
+            return c + euclideanDistance(image0,originalImage) * scale
+        elif costForDijkstra == "l1": 
+            return c + l1Distance(image0,originalImage) * scale
+        else: return c
+

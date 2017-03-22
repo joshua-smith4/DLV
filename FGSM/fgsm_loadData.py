@@ -47,6 +47,9 @@ def fgsm_loadData(model):
         X_train, Y_train = dataBasics.read_dataset()
         #X_train = X_train[:1000]
         #Y_train = Y_train[:1000]
+        
+        X_test = X_train
+        Y_test = Y_train
 
         
     elif dataset == "cifar10": 
@@ -56,7 +59,9 @@ def fgsm_loadData(model):
     elif dataset == "imageNet": 
         print "we do not have the set of training data for imageNet"
         X_train, Y_train = np.zeros((1,3,224,224)), np.zero((1,))
-
+        
+        X_test = X_train
+        Y_test = Y_train
         
     elif dataset == "twoDcurve": 
         # define and construct model
@@ -68,5 +73,5 @@ def fgsm_loadData(model):
         
     Y_predicted = model.predict(X_train)
     
-    return X_train, Y_train, Y_predicted
+    return X_train, Y_train, Y_predicted, X_test, Y_test
 
