@@ -139,7 +139,7 @@ def dynamic_build_model(startLayer,inputShape):
     """
     firstLayerDone = False
     model = Sequential()
-
+    
     if startLayer == 0 :
         model.add(Convolution2D(nb_filters, nb_conv, nb_conv,
                                 border_mode='valid',
@@ -328,7 +328,10 @@ def readImage(path):
 
 def getActivationValue(model,layer,image):
 
-    image = np.expand_dims(np.expand_dims(image, axis=0), axis=0)
+    if len(image.shape) == 2: 
+        image = np.expand_dims(np.expand_dims(image, axis=0), axis=0)
+    elif len(image.shape) == 3: 
+        image = np.expand_dims(image, axis=0)
     activations = get_activations(model, layer, image)
     return np.squeeze(activations)
 

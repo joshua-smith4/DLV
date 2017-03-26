@@ -10,6 +10,7 @@ import numpy as np
 import time
 import os
 import copy
+import sys
 
 from configuration import *
 from regionSynth import initialiseRegion, initialiseRegions
@@ -112,6 +113,7 @@ class searchExhaustive:
         inds = [ i for (i,j) in self.images.keys() if j == -1 ]
         index = max(inds) + 1
         for (image,conf) in ims: 
+            sys.stdout.write('.')
             for (span,numSpan,nn) in initialiseRegions(model,image,manipulatedDims):
                 self.images[(index,-1)] = image
                 self.spans[(index,-1)] = span
@@ -127,7 +129,8 @@ class searchExhaustive:
                 self.manipulated[(index,-1)][0] = span.keys()
                 for i in range(1,self.maxilayer+1):
                     self.manipulated[(index,-1)][i] = []
-                index += 1            
+                index += 1 
+        sys.stdout.write('\n')           
             
         removeNum = len(self.rk) - maxQueueSize
         while removeNum > 0:  
@@ -149,7 +152,7 @@ class searchExhaustive:
                 if index2 == parentIndex : newParentIndex = (i,-1)
             i += 1
 
-        #print("1--%s--%s"%(sorted(self.rk),sorted(self.spans.keys())))        
+        #print("1--%s--%s"%(sorted(self.rk),sorted(self.spans.keys())))  
         return newParentIndex
 
 

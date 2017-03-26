@@ -33,6 +33,7 @@ def initialiseRegionActivation(model,manipulated,image):
     #else: print "cannot find the layerType"
 
     if layerType == "Convolution2D":
+
         nextSpan = {}
         nextNumSpan = {}
         if len(image.shape) == 2: 
@@ -46,7 +47,7 @@ def initialiseRegionActivation(model,manipulated,image):
                 ls = getTop2DActivation(image,manipulated,[],numDimsToMani,-1)
             else:  
                 ls = getRandom2DActivation(image,manipulated,[],numDimsToMani,-1)
-
+                
         elif len(image.shape) == 3:
             # decide how many elements in the input will be considered
             if image.size < featureDims : 
@@ -159,7 +160,7 @@ def getRandom2DActivation(image,manipulated,ps,numDimsToMani,layerToConsider):
             
     oldmanipulated = copy.deepcopy(manipulated)
     i = copy.deepcopy(numDimsToMani)
-    while i > 0 : 
+    while i > 0 and (len(oldmanipulated) + i) <= image.size: 
         
         randnum = randint(1,image.size) - 1
         fst = randnum / image.shape[1]
@@ -263,8 +264,7 @@ def getTop3DActivation(image,manipulated,ps,numDimsToMani,layerToConsider):
             (x,y) = ps[i] 
             nps = [ (x-x1,y-y1) for x1 in range(filterSize) for y1 in range(filterSize) if x-x1 >= 0 and y-y1 >=0 ]
             pointsToConsider = list(set(nps) - set(ks))
-            ks += getTop2DActivationWithConstraint(image[maxVarInd],manipulated,ps,1,layerToConsider,pointsToConsider)
-            #print ps[i], ks, pointsToConsider
+        ks += getTop2DActivationWithConstraint(image[maxVarInd],manipulated,ps,1,layerToConsider,pointsToConsider)
 
     #pointsToConsider = list(set(pointsToConsider))
     

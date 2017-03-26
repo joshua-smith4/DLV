@@ -23,7 +23,7 @@ from scipy import ndimage
 from configuration import *
 from basics import *
 
-def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activations,pcl,pgl,span,numSpan,pk):  
+def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activations,prevSpan,prevNumSpan,span,numSpan,pk):  
 
     random.seed(time.time())
     
@@ -50,14 +50,14 @@ def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activ
         s = Tactic('qflra').solver()
         s.reset()
     
-    #print("%s\n%s\n%s\n%s"%(pcl,pgl,span,numSpan))
+    #print("%s\n%s\n%s\n%s"%(prevSpan,prevNumSpan,span,numSpan))
     
     toBeChanged = []
     if inverseFunction == "point": 
         if nfeatures == 1: 
-            #print("%s\n%s"%(nfeatures,pcl.keys()))
-            ks = [ (0,x,y) for (x,y) in pcl.keys() ]
-        else: ks = copy.deepcopy(pcl.keys())
+            #print("%s\n%s"%(nfeatures,prevSpan.keys()))
+            ks = [ (0,x,y) for (x,y) in prevSpan.keys() ]
+        else: ks = copy.deepcopy(prevSpan.keys())
         toBeChanged = toBeChanged + ks
     elif inverseFunction == "area": 
         for (k,x,y) in span.keys():

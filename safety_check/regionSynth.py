@@ -190,12 +190,14 @@ def initialiseRegions(model,image,manipulated):
     num = numOfFeatures
     newManipulated1 = []
     newManipulated2 = manipulated
-    while num > 0 or newManipulated1 == newManipulated2 : 
+    while num > 0 : 
         oneRegion = initialiseRegion(model,image,newManipulated2)
         allRegions.append(oneRegion)
         newManipulated1 = copy.deepcopy(newManipulated2)
         newManipulated2 = list(set(newManipulated2 + oneRegion[0].keys()))
+        if newManipulated1 == newManipulated2: break
         num -= 1
+    #print len(allRegions)
     return allRegions
 
 def initialiseRegion(model,image,manipulated): 

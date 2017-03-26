@@ -30,6 +30,9 @@ def usual_configuration(dataset):
         ## maximal number of searches 
         maxSearchNum = 1000
         
+        # MCTS_level_maximal_time
+        MCTS_level_maximal_time = 300
+        
         #cost function used to compute the distance from the starting point
         costForDijkstra = "none"
         #costForDijkstra = "euclidean"
@@ -72,7 +75,7 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 3
 
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
         
     elif dataset == "mnist": 
 
@@ -81,20 +84,26 @@ def usual_configuration(dataset):
         startIndexOfImage = 4357
         
         # the start layer to work from 
-        startLayer = 2
+        startLayer = -1
 
         # the maximal layer to work until 
-        maxilayer = 2
+        maxilayer = -1
 
         ## number of features of each layer 
-        numOfFeatures = 1
+        numOfFeatures = 156
         
         ## control by distance
-        controlledSearch = ("euclidean",0.3)
+        #controlledSearch = ("euclidean",0.3)
         #controlledSearch = ("L1",0.05)
+        controlledSearch = ("Percentage",0.03)
+        #controlledSearch = ("NumDiffs",20)
         
         ## maximal number of searches 
         maxSearchNum = 20000
+        
+        # MCTS_level_maximal_time
+        MCTS_level_maximal_time = 300
+        MCTS_multi_samples = 10
         
         #cost function used to compute the distance from the starting point
         #costForDijkstra = "none"
@@ -102,7 +111,7 @@ def usual_configuration(dataset):
         #costForDijkstra = "l1"
         
         #maximum number of elements in the search queue
-        maxQueueSize = 1000
+        maxQueueSize = 10000
         
         # the rate that we do not use heuristic but the random sampling
         # to get the next feature 
@@ -138,7 +147,7 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 3
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
         
         
     elif dataset == "gtsrb": 
@@ -162,6 +171,9 @@ def usual_configuration(dataset):
         
         ## maximal number of searches 
         maxSearchNum = 1000
+        
+        # MCTS_level_maximal_time
+        MCTS_level_maximal_time = 300
         
         #cost function used to compute the distance from the starting point
         costForDijkstra = "none"
@@ -205,7 +217,7 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 3
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
         
     elif dataset == "cifar10": 
     
@@ -228,6 +240,9 @@ def usual_configuration(dataset):
         
         ## maximal number of searches 
         maxSearchNum = 1000
+        
+        # MCTS_level_maximal_time
+        MCTS_level_maximal_time = 300
         
         #cost function used to compute the distance from the starting point
         costForDijkstra = "none"
@@ -271,7 +286,7 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 5
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
 
     elif dataset == "imageNet": 
     
@@ -294,6 +309,9 @@ def usual_configuration(dataset):
         
         ## maximal number of searches 
         maxSearchNum = 1000
+        
+        # MCTS_level_maximal_time
+        MCTS_level_maximal_time = 300
         
         #cost function used to compute the distance from the starting point
         #costForDijkstra = "none"
@@ -339,4 +357,4 @@ def usual_configuration(dataset):
         # compute the derivatives up to a specific layer
         derivativelayerUpTo = 5
     
-        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxilayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)

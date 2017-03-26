@@ -40,6 +40,13 @@ def current_milli_time():
 def diffImage(image1,image2):
     return zip (*np.nonzero(np.subtract(image1,image2)))
     
+    
+def diffPercent(image1,image2): 
+        return len(diffImage(image1,image2)) / float(image1.size)
+        
+def numDiffs(image1,image2): 
+        return len(diffImage(image1,image2))
+    
 '''
 
 def diffImage(image1,image2):
@@ -152,6 +159,11 @@ def equalActivations(activation1,activation2, pk):
                 bl = bl and equalActivations(activation1[i],activation2[i], pk)
             return bl
     else: print("not the same shape of two activations.")
+    
+def mergeTwoDicts(x,y):
+    z = x.copy()
+    z.update(y)
+    return z
     
     
 ############################################################

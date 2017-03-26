@@ -45,13 +45,14 @@ whichMode = "read"
 #whichMode = "train"
 
 # work with a single image or a batch of images 
-dataProcessing = "single"
-#dataProcessing = "batch"
+#dataProcessing = "single"
+dataProcessing = "batch"
 dataProcessingBatchNum = 100
 
 # search approach
 #searchApproach = "heuristic"
-searchApproach = "exhaustive"
+#searchApproach = "exhaustive"
+searchApproach = "mcts"
 
 # use optimize() or solver()
 #optimizing = True
@@ -109,11 +110,17 @@ maxLayer = 3
 numOfFeatures = 40
 
 ## control by distance
-controlledSearch = ("euclidean",0.1)
+#controlledSearch = ("euclidean",0.1)
 #controlledSearch = ("L1",0.05)
+#controlledSearch = ("Percentage",0.02)
+controlledSearch = ("NumDiffs",20)
+
 
 ## maximal number of searches 
 maxSearchNum = 1000
+
+# MCTS_level_maximal_time
+MCTS_level_maximal_time = 300
 
 #maximum number of elements in the search queue
 maxQueueSize = 5
@@ -164,7 +171,7 @@ tempFile = "disabled"
 #######################################################
 
 if experimental_config == True: 
-    (startIndexOfImage,startLayer, maxLayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile) = usual_configuration(dataset)
+    (startIndexOfImage,startLayer, maxLayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile) = usual_configuration(dataset)
     
 
 ############################################################
