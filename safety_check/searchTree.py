@@ -60,7 +60,7 @@ class searchTree:
         else: return (-1,-1)
     
     def getInfo(self,index):
-        return (copy.deepcopy(self.images[index]),self.spans[index],self.numSpans[index],self.numDimsToManis[index])
+        return (copy.deepcopy(self.images[index]),self.spans[index],self.numSpans[index],self.numDimsToManis[index],0)
 
     def getHowFar(self,pi,n):
         #if pi >= (numOfPointsAfterEachFeature ** n): 

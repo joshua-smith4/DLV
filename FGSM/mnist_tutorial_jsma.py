@@ -40,7 +40,7 @@ flags.DEFINE_integer('nb_pool', 2, 'Size of pooling area for max pooling')
 flags.DEFINE_integer('source_samples', 1, 'Nb of test set examples to attack')
 flags.DEFINE_float('learning_rate', 0.1, 'Learning rate for training')
 flags.DEFINE_integer('starting_index', 4357, 'starting index of the image')
-flags.DEFINE_integer('thetaValue', 0.5, 'theta Value')
+flags.DEFINE_integer('thetaValue', 1.0, 'theta Value')
 
 
 def main(argv=None):

@@ -47,7 +47,7 @@ whichMode = "read"
 # work with a single image or a batch of images 
 #dataProcessing = "single"
 dataProcessing = "batch"
-dataProcessingBatchNum = 100
+dataProcessingBatchNum = 1
 
 # search approach
 #searchApproach = "heuristic"
@@ -121,6 +121,8 @@ maxSearchNum = 1000
 
 # MCTS_level_maximal_time
 MCTS_level_maximal_time = 300
+MCTS_all_maximal_time = 1800
+MCTS_multi_samples = 3
 
 #maximum number of elements in the search queue
 maxQueueSize = 5
@@ -171,7 +173,7 @@ tempFile = "disabled"
 #######################################################
 
 if experimental_config == True: 
-    (startIndexOfImage,startLayer, maxLayer,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile) = usual_configuration(dataset)
+    (startIndexOfImage,startLayer, maxLayer,searchApproach,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile) = usual_configuration(dataset)
     
 
 ############################################################
@@ -187,7 +189,7 @@ reset = "onEqualManipulationSet"
 #reset = "Never"
 
 ## how many branches to expand 
-numOfPointsAfterEachFeature = 32
+numOfPointsAfterEachFeature = 1
 
 # impose bounds on the input or not
 boundRestriction = True

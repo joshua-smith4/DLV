@@ -29,8 +29,8 @@ def main():
     #dataset = "imageNet"
     
 
-    filename1 = "2442_original_as_7_with_confidence_0.999989330769.png"
-    filename2 = "2442_7_modified_into_3_with_confidence_0.509171962738.png"
+    filename1 = "4366_original_as_3_with_confidence_1.0.png"
+    filename2 = "4366_3_modified_into_2_with_confidence_0.336968.png"
 
     imageNetPath1 = "%s/%s"%(directory_pic_string,filename1)
     imageNetPath2 = "%s/%s"%(directory_pic_string,filename2)

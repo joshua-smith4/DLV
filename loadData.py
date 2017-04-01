@@ -50,16 +50,22 @@ def loadData():
     if whichMode == "train" and dataset == "mnist": 
     
         (X_train, Y_train, X_test, Y_test, batch_size, nb_epoch) = NN.read_dataset()
+        X_train_transferability = X_train[1:150]
+        Y_train_transferability = Y_train[1:150]
+        nb_epoch_transferability = 5
         
         #print X_train.shape, Y_train.shape, Y_train[0]
 
         print "Building network model ......"
-        #model = NN.build_model()
-        model = NN.build_model_autoencoder()
+        model = NN.build_model()
+        #model = NN.build_model_transferability()
+        #model = NN.build_model_autoencoder()
 
         start_time = time.time()
         model.fit(X_train, Y_train, batch_size=batch_size, nb_epoch=nb_epoch,
-                  verbose=1, validation_data=(X_test, Y_test),callbacks=[TensorBoard(log_dir='/tmp/autoencoder')])
+                  verbose=1, validation_data=(X_test, Y_test))
+        #model.fit(X_train_transferability, Y_train_transferability, batch_size=batch_size, nb_epoch=nb_epoch_transferability,
+        #          verbose=1, validation_data=(X_test, Y_test))
         score = model.evaluate(X_test, Y_test, verbose=0)
         print('Test score:', score[0])
         print('Test accuracy:', score[1])
@@ -67,7 +73,7 @@ def loadData():
         print("Training finished!")
     
         # save model
-        ae = "_autoencoder"  # "_normal"
+        ae =  "_normal" # "transferability" #  "_autoencoder"  #
         json_string = model.to_json()
         open('%s/mnist%s.json'%(directory_model_string,ae), 'w').write(json_string)
         model.save_weights('%s/mnist%s.h5'%(directory_model_string,ae), overwrite=True)
@@ -76,8 +82,8 @@ def loadData():
         
     elif whichMode == "read" and dataset == "mnist": 
         print("Start loading model ... ")
-        ae = "_autoencoder"  # "_normal"
-        model = NN.read_model_from_file('%s/mnist%s.mat'%(directory_model_string,ae),'%s/mnist.json'%directory_model_string)
+        ae = "" # "transferability" #  "_autoencoder"  # "_normal"
+        model = NN.read_model_from_file('%s/mnist%s.mat'%(directory_model_string,ae),'%s/mnist%s.json'%(directory_model_string,ae))
         print("Model loaded!")
         #test(model)
         
@@ -105,7 +111,6 @@ def loadData():
                   )
 
         #score = model.evaluate(X_test, Y_test, verbose=0)
-    
         # save model
         ae =  "_normal" # "_autoencoder"  #
         json_string = model.to_json()

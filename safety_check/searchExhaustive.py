@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-A data structure for organising search
+A data structure for organising exhaustive search by A* algorithm
 
 author: Xiaowei Huang
 """

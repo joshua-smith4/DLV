@@ -51,6 +51,7 @@ def save(layer,image,filename):
     import matplotlib as mpl
     fig = pyplot.figure()
     ax = fig.add_subplot(1,1,1)
+
     imgplot = ax.imshow(image * 255, cmap=mpl.cm.Greys)
     imgplot.set_interpolation('nearest')
     ax.xaxis.set_ticks_position('top')

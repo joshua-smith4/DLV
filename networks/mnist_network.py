@@ -100,6 +100,38 @@ def build_model():
                   metrics=['accuracy'])
 
     return model
+    
+    
+def build_model_transferability():
+    """
+    define neural network model
+    """
+    nb_conv_2 = 4
+    nb_pool_2 = 3
+    nb_filters_2 = 24
+    
+    model = Sequential()
+
+    model.add(Convolution2D(nb_filters_2, nb_conv_2, nb_conv_2,
+                            border_mode='valid',
+                            input_shape=(1, img_rows, img_cols)))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(nb_pool_2, nb_pool_2)))
+    model.add(Dropout(0.25))
+
+    model.add(Flatten())
+    model.add(Dense(256))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(nb_classes))
+    model.add(Activation('softmax'))
+
+    model.compile(loss='categorical_crossentropy',
+                  optimizer='adadelta',
+                  metrics=['accuracy'])
+
+    return model
+
 
 
 def build_model_autoencoder():
@@ -314,17 +346,26 @@ def getImage(model,n_in_tests):
     
 def readImage(path):
 
-    import cv2
+    #import cv2
 
-    im = cv2.resize(cv2.imread(path), (img_rows, img_cols)).astype('float32')
-    im = im / 255
+    #im = cv2.resize(cv2.imread(path), (img_rows, img_cols)).astype('float32')
+    #im = im / 255
     #im = im.transpose(2, 0, 1)
 
-    print("ERROR: currently the reading of MNIST images are not correct, so the classifications are incorrect. ")
+    #print("ERROR: currently the reading of MNIST images are not correct, so the classifications are incorrect. ")
     
-
+    import matplotlib.pyplot as plt
+    import matplotlib.image as mpimg
+    import numpy as np
+    import PIL
+    from PIL import Image
+    img=rgb2gray(mpimg.imread(path))
+        
+    img = img.resize((img_cols, img_rows))
+    return np.squeeze(img)
     
-    return np.squeeze(im)
+def rgb2gray(rgb):
+    return np.dot(rgb[...,:3], [0.299, 0.587, 0.114])
 
 def getActivationValue(model,layer,image):
 
