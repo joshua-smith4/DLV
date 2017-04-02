@@ -142,8 +142,9 @@ def usual_configuration(dataset):
         #heuristics = "Derivative"
 
         # do we need to repeatedly select an updated input neuron
-        repeatedManipulation = "allowed"
-        #repeatedManipulation = "disallowed"
+        # disallowed is needed for mcts and exhaustive search
+        #repeatedManipulation = "allowed"
+        repeatedManipulation = "disallowed"
 
         #checkingMode = "specificLayer"
         checkingMode = "stepwise"
