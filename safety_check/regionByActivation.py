@@ -31,6 +31,8 @@ def initialiseRegionActivation(model,manipulated,image):
     #[ lt for (l,lt) in config if l == 0 ]
     #if len(layerType) > 0: layerType = layerType[0]
     #else: print "cannot find the layerType"
+    
+    #print len(manipulated)
 
     if layerType == "Convolution2D":
 
@@ -235,12 +237,13 @@ def getRandom3DActivation(image,manipulated,ps,numDimsToMani,layerToConsider):
     
     return map(lambda (x,y): (ind,x,y),ks)
 
-
+'''
 
 def getTop3DActivation(image,manipulated,ps,numDimsToMani,layerToConsider): 
 
     #print numDimsToMani, ps
     avoid = repeatedManipulation == "disallowed"
+    
 
     #avg = np.sum(image)/float(len(image)*len(image[0]*len(image[0][0])))
     #nimage = copy.deepcopy(image)
@@ -256,6 +259,8 @@ def getTop3DActivation(image,manipulated,ps,numDimsToMani,layerToConsider):
         if len(ps[0]) == 3: 
             (p1,p2,p3) = zip(*ps)
             ps = zip(p2,p3)
+            
+    manipulatedInMaxVarInd = [ (y,z) for (x,y,z) in  manipulated if x == maxVarInd ]
     
     pointsToConsider = []
     ks = []
@@ -263,14 +268,15 @@ def getTop3DActivation(image,manipulated,ps,numDimsToMani,layerToConsider):
         if i <= len(ps) - 1: 
             (x,y) = ps[i] 
             nps = [ (x-x1,y-y1) for x1 in range(filterSize) for y1 in range(filterSize) if x-x1 >= 0 and y-y1 >=0 ]
-            pointsToConsider = list(set(nps) - set(ks))
-        ks += getTop2DActivationWithConstraint(image[maxVarInd],manipulated,ps,1,layerToConsider,pointsToConsider)
-
-    #pointsToConsider = list(set(pointsToConsider))
+        else: 
+            nps = [ (x1,y1) for x1 in range(len(image[0])) for y1 in range(len(image[0][0])) ]
+        pointsToConsider = list(set(nps) - set(ks))
+        ks += getTop2DActivationWithConstraint(image[maxVarInd],manipulatedInMaxVarInd,ps,1,layerToConsider,pointsToConsider)
     
     #ks = getTop2DActivationWithConstraint(image[maxVarInd],manipulated,ps,numDimsToMani,layerToConsider,pointsToConsider)
+
     
-    #print ks, pointsToConsider
+    #print manipulated, manipulatedInMaxVarInd, ks
     
     return map(lambda (x,y): (maxVarInd,x,y),ks)
 
@@ -364,4 +370,3 @@ def findFromArea3D(image,manipulated,avoid,nimage,ps,numDimsToMani,ks):
     for (k1,k2,k3) in toBeDeleted: 
         del topImage[(k1,k2,k3)]
     return topImage.keys()
-'''

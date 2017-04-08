@@ -13,11 +13,25 @@ IMG_SIZE = 48
 
 
 def LABELS(index):
-    labels = ['20miles', '30miles', '50miles', '60miles', '70miles', '80miles', '6',
-          '7', '8', '9','10', '11', '12', '13', '14', '15', '16',
-          '17', '18', '19','20', '21', '22', '23', '24', '25', '26',
-          '27', '28', '29','30', '31', '32', '33', '34', '35', '36',
-          '37', '38', '39','40', '41', '42']
+    labels = ['speed limit 20 (prohibitory)', 'speed limit 30 (prohibitory)',
+     'speed limit 50 (prohibitory)', 'speed limit 60 (prohibitory)',
+      'speed limit 70 (prohibitory)', 'speed limit 80 (prohibitory)',
+       'restriction ends 80 (other)',  'speed limit 100 (prohibitory)',
+        'speed limit 120 (prohibitory)', 'no overtaking (prohibitory)',
+        'no overtaking (trucks) (prohibitory)', 'priority at next intersection (danger)',
+         'priority road (other)', 'give way (other)', 'stop (other)', 
+         'no traffic both ways (prohibitory)', 'no trucks (prohibitory)',
+          'no entry (other)', 'danger (danger)', 'bend left (danger)',
+          'bend right (danger)', 'bend (danger)', 'uneven road (danger)',
+           'slippery road (danger)', 'road narrows (danger)', 'construction (danger)', 
+           'traffic signal (danger)',
+          'pedestrian crossing (danger)', 'school crossing (danger)', 
+          'cycles crossing (danger)','snow (danger)', 'animals (danger)', 
+          'restriction ends (other)', 'go right (mandatory)', 'go left (mandatory)', 
+          'go straight (mandatory)', 'go right or straight (mandatory)',
+          'go left or straight (mandatory)', 'keep right (mandatory)',
+           'keep left (mandatory)','roundabout (mandatory)',
+            'restriction ends (overtaking) (other)', 'restriction ends (overtaking (trucks)) (other)']
     return labels[index]
 
 def preprocess_img(img):
@@ -60,6 +74,7 @@ def read_dataset():
     try:
         with  h5py.File('networks/X.h5') as hf: 
             X, Y = hf['imgs'][:], hf['labels'][:]
+        X = np.array(map(lambda x: transform.resize(x, (3, IMG_SIZE,IMG_SIZE)), X))
         Y = np.array(map(toVector, Y))
         print("Loaded images from X.h5")
 

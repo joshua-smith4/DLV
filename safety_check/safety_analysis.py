@@ -172,7 +172,7 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
             nprint("back-propagation or solving fails ... ")
             
             if rkupdated == False: 
-                rk.append((newInput,originalConfident))
+                #rk.append((newInput,originalConfident))
                     #print originalConfident, confident, rk[0][1]
                 if counter_numSpan == numSpan: 
                     rkupdated = True
@@ -270,7 +270,7 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
             rs += 1   
             
             if rkupdated == False: 
-                rk.append((newInput,originalConfident))
+                #rk.append((newInput,originalConfident))
                     #print originalConfident, confident, rk[0][1]
                 if counter_numSpan == numSpan: 
                     rkupdated = True

@@ -28,8 +28,8 @@ task = "safety_check"
 # which dataset to work with
 #dataset = "twoDcurve"
 #dataset = "mnist_autoencoder"
-dataset = "mnist"
-#dataset = "gtsrb"
+#dataset = "mnist"
+dataset = "gtsrb"
 #dataset = "cifar10"
 #dataset = "imageNet"
 
@@ -41,8 +41,8 @@ experimental_config = True
 
 # the network is trained from scratch
 #  or read from the saved files
-whichMode = "read"
-#whichMode = "train"
+#whichMode = "read"
+whichMode = "train"
 
 # work with a single image or a batch of images 
 #dataProcessing = "single"
@@ -145,9 +145,8 @@ heuristics = "Activation"
 #heuristics = "Derivative"
 
 #cost function used to compute the distance from the starting point
-costForDijkstra = "none"
-#costForDijkstra = "euclidean"
-#costForDijkstra = "l1"
+#costForDijkstra = ("euclidean",0.0)
+costForDijkstra = ("l1",0.0)
 
 # do we need to repeatedly select an updated input neuron
 #repeatedManipulation = "allowed"

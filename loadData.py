@@ -112,7 +112,7 @@ def loadData():
 
         #score = model.evaluate(X_test, Y_test, verbose=0)
         # save model
-        ae =  "_normal" # "_autoencoder"  #
+        ae =  "_48" # "_28" # "_normal" # "_autoencoder"  #
         json_string = model.to_json()
         open('%s/gtsrb%s.json'%(directory_model_string,ae), 'w').write(json_string)
         model.save_weights('%s/gtsrb%s.h5'%(directory_model_string,ae), overwrite=True)
@@ -121,7 +121,7 @@ def loadData():
         
     elif whichMode == "read" and dataset == "gtsrb": 
         print("Start loading model ... ")
-        ae =  "_normal" # "_autoencoder"  #
+        ae =  "_48" # "_28" # "_normal" # "_autoencoder"  #
         model = NN.read_model_from_file('%s/gtsrb%s.mat'%(directory_model_string,ae),'%s/gtsrb%s.json'%(directory_model_string,ae))
         print("Model loaded!")
         #test(model)

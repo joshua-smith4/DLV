@@ -41,9 +41,8 @@ def usual_configuration(dataset):
         MCTS_multi_samples = 3
 
         #cost function used to compute the distance from the starting point
-        costForDijkstra = "none"
-        #costForDijkstra = "euclidean"
-        #costForDijkstra = "l1"
+        #costForDijkstra = ("euclidean",0.0)
+        costForDijkstra = ("l1",0.0)
         
         #maximum number of elements in the search queue
         maxQueueSize = 5
@@ -98,14 +97,15 @@ def usual_configuration(dataset):
         # search approach
         #searchApproach = "heuristic"
         #searchApproach = "exhaustive"
-        searchApproach = "mcts"
+        #searchApproach = "mcts"
+        searchApproach = "Astar"
 
         ## number of features of each layer 
-        numOfFeatures = 196
+        numOfFeatures = 392 # 20 #
         
         ## control by distance
         #controlledSearch = ("euclidean",0.3)
-        controlledSearch = ("L1",0.10)
+        controlledSearch = ("L1",0.02)
         #controlledSearch = ("Percentage",0.12)
         #controlledSearch = ("NumDiffs",30)
         
@@ -113,17 +113,17 @@ def usual_configuration(dataset):
         maxSearchNum = 20000
         
         # MCTS_level_maximal_time
-        MCTS_level_maximal_time = 300
-        MCTS_all_maximal_time = 1800
-        MCTS_multi_samples = 1
+        MCTS_level_maximal_time = 60
+        MCTS_all_maximal_time = 300
+        MCTS_multi_samples = 5
         
         #cost function used to compute the distance from the starting point
-        #costForDijkstra = "none"
-        costForDijkstra = "euclidean"
-        #costForDijkstra = "l1"
+        # (distance, scale). A* is distance + scale * confidence
+        #costForDijkstra = ("euclidean",0.0)
+        costForDijkstra = ("l1",1.0)
         
         #maximum number of elements in the search queue
-        maxQueueSize = 10000
+        maxQueueSize = 5000
         
         # the rate that we do not use heuristic but the random sampling
         # to get the next feature 
@@ -167,12 +167,12 @@ def usual_configuration(dataset):
 
         # which image to start with or work with 
         # from the database
-        startIndexOfImage = 3007
+        startIndexOfImage = 3594
         
         # the start layer to work from 
-        startLayer = 0
+        startLayer = -1
         # the maximal layer to work until 
-        maxLayer = 0
+        maxLayer = -1
         
         # search approach
         #searchApproach = "heuristic"
@@ -180,31 +180,32 @@ def usual_configuration(dataset):
         searchApproach = "mcts"
 
         ## number of features of each layer 
-        numOfFeatures = 3000
+        numOfFeatures = 1382 # 3000
         
         ## control by distance
-        controlledSearch = ("euclidean",0.1)
-        #controlledSearch = ("L1",0.05)
+        #controlledSearch = ("euclidean",0.3)
+        controlledSearch = ("L1",0.15)
+        #controlledSearch = ("Percentage",0.12)
+        #controlledSearch = ("NumDiffs",30)
         
         ## maximal number of searches 
         maxSearchNum = 1000
         
         # MCTS_level_maximal_time
-        MCTS_level_maximal_time = 300
-        MCTS_all_maximal_time = 1800
+        MCTS_level_maximal_time = 2000
+        MCTS_all_maximal_time = 72000
         MCTS_multi_samples = 3
         
         #cost function used to compute the distance from the starting point
-        costForDijkstra = "none"
-        #costForDijkstra = "euclidean"
-        #costForDijkstra = "l1"
+        #costForDijkstra = ("euclidean",0.0)
+        costForDijkstra = ("l1",0.0)
 
         #maximum number of elements in the search queue
         maxQueueSize = 5
         
         # the rate that we do not use heuristic but the random sampling
         # to get the next feature 
-        explorationRate = 0.5
+        explorationRate = 0.0
 
         # use linear restrictions or conv filter restriction
         inverseFunction = "point"
@@ -250,9 +251,9 @@ def usual_configuration(dataset):
         maxLayer = 0
         
         # search approach
-        #searchApproach = "heuristic"
+        searchApproach = "heuristic"
         #searchApproach = "exhaustive"
-        searchApproach = "mcts"
+        #searchApproach = "mcts"
 
         ## number of features of each layer 
         numOfFeatures = 5000
@@ -270,16 +271,15 @@ def usual_configuration(dataset):
         MCTS_multi_samples = 3
         
         #cost function used to compute the distance from the starting point
-        costForDijkstra = "none"
-        #costForDijkstra = "euclidean"
-        #costForDijkstra = "l1"
+        #costForDijkstra = ("euclidean",0.0)
+        costForDijkstra = ("l1",0.0)
         
         #maximum number of elements in the search queue
         maxQueueSize = 5
         
         # the rate that we do not use heuristic but the random sampling
         # to get the next feature 
-        explorationRate = 0.5
+        explorationRate = 0.0
 
         # use linear restrictions or conv filter restriction
         inverseFunction = "point"
@@ -345,9 +345,8 @@ def usual_configuration(dataset):
         MCTS_multi_samples = 3
         
         #cost function used to compute the distance from the starting point
-        #costForDijkstra = "none"
-        costForDijkstra = "euclidean"
-        #costForDijkstra = "l1"
+        #costForDijkstra = ("euclidean",0.0)
+        costForDijkstra = ("l1",0.0)
         
         #maximum number of elements in the search queue
         maxQueueSize = 5

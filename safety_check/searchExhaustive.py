@@ -17,7 +17,6 @@ from regionSynth import initialiseRegion, initialiseRegions
 
 class searchExhaustive:
 
-
     # used to store historical images, spans and numSpans
     # a pair (i,p) is used to represent the index i of the current 
     #  node and its parent node p
@@ -47,8 +46,7 @@ class searchExhaustive:
 
         # a queue to be processed first in first out
         self.rk = []
-        # the image that is currently processing
-        self.crk = (-1,-1)
+        self.consideringRegion = []
         
     def destructor(self): 
         self.images = {}
@@ -61,6 +59,10 @@ class searchExhaustive:
         self.images[(-1,-1)] = []
         self.rk = []    
         self.visitedImages = []
+        
+
+    def defineConsideringRegion(self,rg):
+        self.consideringRegion = rg
     
         
     def emptyQueue(self):

@@ -13,6 +13,7 @@ import copy
 
 from configuration import *
 from regionSynth import initialiseRegion
+from basics import otherPixels
 
 class searchTree:
 
@@ -39,8 +40,8 @@ class searchTree:
     
         # a queue to be processed first in first out
         self.rk = []
-        # the image that is currently processing
-        self.crk = (-1,-1)
+        # the region to be considered
+        self.consideringRegion = []
         
     def destructor(self): 
         self.images = {}
@@ -50,23 +51,25 @@ class searchTree:
         self.manipulated = {}
         self.images[(-1,-1)] = []
         self.rk = []        
+        
+    def defineConsideringRegion(self,rg):
+        self.consideringRegion = rg
                 
     def getOneUnexplored(self):
         if len(self.rk) > 0: 
             rk0 = self.rk[0]
             self.rk = self.rk[1:]
-            self.crk = rk0
             return rk0
         else: return (-1,-1)
     
     def getInfo(self,index):
         return (copy.deepcopy(self.images[index]),self.spans[index],self.numSpans[index],self.numDimsToManis[index],0)
 
-    def getHowFar(self,pi,n):
-        #if pi >= (numOfPointsAfterEachFeature ** n): 
-        #    return self.getHowFar(pi-(numOfPointsAfterEachFeature ** n), n+1) 
-        #else: return n
-        return pi
+    def parentIndexForIntermediateNode(self,index,layerToConsider):
+        if layerToConsider > 0: 
+            return (index[1],index[1]-1)
+        else: 
+            return (index[1],-1)
                 
     def parentIndex(self,(ci,pi)): 
         for (k,d) in self.images.keys(): 
@@ -81,12 +84,18 @@ class searchTree:
         self.numDimsToManis[index] = numDimsToMani
         return index
         
+    def reStartWhenNoneLeft(self,excludingPixels): 
+        if len(excludingPixels+self.manipulated[-1]) == self.images[(-1,-1)].size: 
+            self.manipulated[-1] = []
+        
     def addImages(self,model,ims):
         inds = [ i for (i,j) in self.images.keys() if j == -1 ]
         index = max(inds) + 1
+        excludingPixels = otherPixels(ims[0],self.consideringRegion)
+        self.reStartWhenNoneLeft(excludingPixels)
         for image in ims: 
             self.images[(index,-1)] = image
-            (span,numSpan,nn) = initialiseRegion(model,image,self.manipulated[-1])
+            (span,numSpan,nn) = initialiseRegion(model,image,excludingPixels+self.manipulated[-1])
             self.spans[(index,-1)] = span
             self.numSpans[(index,-1)] = numSpan
             self.numDimsToManis[(index,-1)] = nn
@@ -99,6 +108,7 @@ class searchTree:
                 self.clearManipulated(len(self.manipulated))
             else: self.manipulated[-1] = list(manipulated2)
             
+            #print span.keys()
             
     def addManipulated(self,k,s):
         self.manipulated[k] = list(set(self.manipulated[k] + s))

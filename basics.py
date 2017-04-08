@@ -185,3 +185,14 @@ def numberOfFeatures(wv):
     return np.amax((zip (*((zip (*wv))[0])))[1])
     
     
+    
+def otherPixels(image, ps):
+    ops = []
+    if len(image.shape) == 2: 
+          for i in range(len(image)): 
+              for j in range(len(image[0])): 
+                  if (i,j) not in ps: ops.append((i,j))
+    return ops
+ 
+    
+    

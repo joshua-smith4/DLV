@@ -26,8 +26,8 @@ def conv_region_solve(nfeatures,nfilters,filters,bias,activations0,activations1,
  
     random.seed(time.time())
     
-    print inds
-    print cl2.keys(), gl2.keys()
+    #print inds
+    #print cl2.keys(), gl2.keys()
 
     # number of clauses
     c = 0
@@ -67,7 +67,7 @@ def conv_region_solve(nfeatures,nfilters,filters,bias,activations0,activations1,
     if inverseFunction == "area" :
         inds = [(k,x-x1,y-y1) for k in range(nfilters) for (l,x,y) in span.keys() for x1 in range(filterSize) for y1 in range(filterSize) if x-x1 >= 0 and y-y1 >= 0 and x-x1 < activations1.shape[1] and y-y1 < activations1.shape[2] ]
 
-    print span.keys(), inds
+    #print span.keys(), inds
 
     nextSpan = {}
     nextNumSpan = {}

@@ -68,7 +68,7 @@ def network_parameters(dataset):
         directory_pic_string = makedirectory("data/gtsrb_pic")
         
 # ce: the region definition for layer 0, i.e., e_0
-        featureDims = 5
+        featureDims = 10
         span = 255/float(255)
         numSpan = 1
         errorBounds = {}

@@ -21,6 +21,7 @@ from regionSynth import initialiseRegion, initialiseRegions
 from inputManipulation import applyManipulation
 from basics import mergeTwoDicts, diffPercent, euclideanDistance, l1Distance, numDiffs, diffImage
 
+# tunable parameter for MCTS
 cp = 0.5
 
 
@@ -49,6 +50,11 @@ class searchMCTS:
         self.numSpans[-1] = {} 
         self.initialiseLeafNode(0,-1,[],[])
         
+        # local actions
+        self.actions = {}
+        self.usedActionsID = {}
+        self.indexToActionID = {}
+
         # best case
         self.bestCase = (0,{},{})
         
@@ -57,6 +63,12 @@ class searchMCTS:
         
         (self.originalClass,self.originalConfident) = NN.predictWithImage(self.model,image)
 
+
+        
+    def initialiseActions(self): 
+        allChildren = initialiseRegions(self.model,self.image,[])
+        for i in range(len(allChildren)): 
+            self.actions[i] = allChildren[i] 
         
     def initialiseLeafNode(self,index,parentIndex,newSpans,newNumSpans):
         nprint("initialising a leaf node %s from the node %s"%(index,parentIndex))
@@ -79,6 +91,10 @@ class searchMCTS:
         self.children = {}
         self.fullyExpanded = {}
         self.numberOfVisited = {}
+        
+        self.actions = {}
+        self.usedActionsID = {}
+        self.indexToActionID = {}
         
     # move one step forward
     # it means that we need to remove children other than the new root
@@ -130,18 +146,24 @@ class searchMCTS:
             for childIndex in self.children[index]: 
                 allValues[childIndex] = (self.cost[childIndex] / float(self.numberOfVisited[childIndex])) + cp * math.sqrt(math.log(self.numberOfVisited[index]) / float(self.numberOfVisited[childIndex]))
             nextIndex = max(allValues.iteritems(), key=operator.itemgetter(1))[0]
+            self.usedActionsID.append(self.indexToActionID[nextIndex])
             return self.treeTraversal(nextIndex)
         else: 
             nprint("tree traversal terminated on node %s"%(index))
-            return index
+            availableActions = copy.deepcopy(self.actions)
+            for i in self.usedActionsID: 
+                availableActions.pop(i, None)
+            return (index,availableActions)
         
-    def initialiseExplorationNode(self,index):
+    def initialiseExplorationNode(self,index,availableActions):
         nprint("expanding %s"%(index))
-        for (span,numSpan,_) in initialiseRegions(self.model,self.image,list(set(self.spans[index].keys() + self.uselessPixels))): 
+        for (actionId, (span,numSpan,_)) in availableActions.iteritems() : #initialiseRegions(self.model,self.image,list(set(self.spans[index].keys() + self.uselessPixels))): 
             self.indexToNow += 1
+            self.indexToActionID[self.indexToNow] = actionId
             self.initialiseLeafNode(self.indexToNow,index,span,numSpan)
             self.children[index].append(self.indexToNow)
         self.fullyExpanded[index] = True
+        self.usedActionsID = []
         return self.children[index]
 
     def backPropagation(self,index,value): 
@@ -154,20 +176,23 @@ class searchMCTS:
             print("backPropagating ends on node %s"%(index))
             
     # start random sampling and return the eclidean value as the value
-    def sampling(self,index):
+    def sampling(self,index,availableActions):
         print("start sampling node %s"%(index))
+        availableActions2 = copy.deepcopy(availableActions)
+        availableActions2.pop(self.indexToActionID[index], None)
         sampleValues = []
         i = 0
         for i in range(MCTS_multi_samples): 
-            (chileTerminated, val) = self.sampleNext(self.spans[index],self.numSpans[index],0)
+            #allChildren = copy.deepcopy(self.actions)
+            (childTerminated, val) = self.sampleNext(self.spans[index],self.numSpans[index],0,availableActions2.keys(),[])
             sampleValues.append(val)
-            if chileTerminated == True: break
+            if childTerminated == True: break
             i += 1
-        return (chileTerminated, max(sampleValues))
+        return (childTerminated, max(sampleValues))
         #return self.sampleNext(self.spans[index],self.numSpans[index])
         #allChildren = initialiseRegions(model,self.image,self.spans[index].keys()) 
     
-    def sampleNext(self,spansPath,numSpansPath,depth): 
+    def sampleNext(self,spansPath,numSpansPath,depth,availableActionIDs,usedActionIDs): 
         #print spansPath.keys()
         image1 = applyManipulation(self.image,spansPath,numSpansPath)
         (newClass,newConfident) = NN.predictWithImage(self.model,image1)
@@ -199,12 +224,16 @@ class searchMCTS:
             return (depth == 0, termValue)
         else: 
             #print("continue sampling node ... ")
-            allChildren = initialiseRegions(self.model,self.image,spansPath.keys())
-            randomIndex = random.randint(0, len(allChildren)-1)
-            (span,numSpan,_) = allChildren[randomIndex]
+            #allChildren = initialiseRegions(self.model,self.image,spansPath.keys())
+
+            randomActionIndex = random.choice(list(set(availableActionIDs)-set(usedActionIDs))) #random.randint(0, len(allChildren)-1)
+            (span,numSpan,_) = self.actions[randomActionIndex]
+            availableActionIDs.remove(randomActionIndex)
+            usedActionIDs.append(randomActionIndex)
+            #print span.keys()
             newSpanPath = self.mergeSpan(spansPath,span)
             newNumSpanPath = self.mergeNumSpan(numSpansPath,numSpan)
-            return self.sampleNext(newSpanPath,newNumSpanPath,depth+1)
+            return self.sampleNext(newSpanPath,newNumSpanPath,depth+1,availableActionIDs,usedActionIDs)
             
     def terminalNode(self,index): 
         image1 = applyManipulation(self.image,self.spans[index],self.numSpans[index])
