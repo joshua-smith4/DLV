@@ -41,13 +41,13 @@ experimental_config = True
 
 # the network is trained from scratch
 #  or read from the saved files
-#whichMode = "read"
-whichMode = "train"
+whichMode = "read"
+#whichMode = "train"
 
 # work with a single image or a batch of images 
 #dataProcessing = "single"
 dataProcessing = "batch"
-dataProcessingBatchNum = 1
+dataProcessingBatchNum = 1000
 
 # search approach
 #searchApproach = "heuristic"

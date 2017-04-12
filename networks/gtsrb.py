@@ -8,7 +8,7 @@ import glob
 import h5py
 
 NUM_CLASSES = 43
-IMG_SIZE = 48
+IMG_SIZE = 32
 
 
 

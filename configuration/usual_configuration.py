@@ -87,7 +87,7 @@ def usual_configuration(dataset):
 
         # which image to start with or work with 
         # from the database
-        startIndexOfImage = 4357
+        startIndexOfImage = 4358
         
         # the start layer to work from 
         startLayer = -1
@@ -97,8 +97,8 @@ def usual_configuration(dataset):
         # search approach
         #searchApproach = "heuristic"
         #searchApproach = "exhaustive"
-        #searchApproach = "mcts"
-        searchApproach = "Astar"
+        searchApproach = "mcts"
+        #searchApproach = "Astar"
 
         ## number of features of each layer 
         numOfFeatures = 392 # 20 #
@@ -167,7 +167,7 @@ def usual_configuration(dataset):
 
         # which image to start with or work with 
         # from the database
-        startIndexOfImage = 3594
+        startIndexOfImage = 4594
         
         # the start layer to work from 
         startLayer = -1
@@ -178,9 +178,10 @@ def usual_configuration(dataset):
         #searchApproach = "heuristic"
         #searchApproach = "exhaustive"
         searchApproach = "mcts"
+        #searchApproach = "Astar"
 
         ## number of features of each layer 
-        numOfFeatures = 1382 # 3000
+        numOfFeatures = 307 # 3000
         
         ## control by distance
         #controlledSearch = ("euclidean",0.3)
@@ -192,8 +193,8 @@ def usual_configuration(dataset):
         maxSearchNum = 1000
         
         # MCTS_level_maximal_time
-        MCTS_level_maximal_time = 2000
-        MCTS_all_maximal_time = 72000
+        MCTS_level_maximal_time = 300
+        MCTS_all_maximal_time = 1800
         MCTS_multi_samples = 3
         
         #cost function used to compute the distance from the starting point

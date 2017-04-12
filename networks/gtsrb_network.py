@@ -30,7 +30,7 @@ from gtsrb import *
 
 batch_size = 32
 nb_epoch = 30
-IMG_SIZE = 48
+IMG_SIZE = 32
 NUM_CLASSES = 43
 lr = 0.01
 
