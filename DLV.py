@@ -10,9 +10,7 @@ import sys
 sys.path.append('networks')
 sys.path.append('safety_check')
 sys.path.append('configuration')
-sys.path.append('visualization')
 sys.path.append('operation')
-sys.path.append('FGSM')
 
 
 import time
@@ -27,7 +25,6 @@ from loadData import loadData
 from regionSynth import regionSynth, initialiseRegion
 from precisionSynth import precisionSynth
 from safety_analysis import safety_analysis
-from visualization import visualization
 
 from configuration import *
 from basics import *
@@ -37,17 +34,7 @@ from searchTree import searchTree
 from searchExhaustive import searchExhaustive
 from searchMCTS import searchMCTS
 from searchAstar import searchAstar
-
 from dataCollection import dataCollection
-
-from operation import cuttingModel
-
-from mnist_network import dynamic_build_model 
-
-from fgsm_loadData import fgsm_loadData
-from attacks_th import fgsm
-from utils_th import batch_eval
-from fgsm import fgsm_main
 
 from inputManipulation import applyManipulation,assignManipulationSimple
 
@@ -58,37 +45,22 @@ def main():
 
     model = loadData()
     dc = dataCollection()
-
-    # FGSM
-    if test_fgsm == True: 
-        for eps in eps_fgsm: 
-            fgsm_main(model,eps)
-        return
-        
+                    
     # handle a set of inputs starting from an index
-    if dataProcessing == "batch": 
-        succNum = 0
-        for whichIndex in range(startIndexOfImage,startIndexOfImage + dataProcessingBatchNum):
-            print "\n\nprocessing input of index %s in the dataset: " %(str(whichIndex))
-            if task == "safety_check": 
-                succ = handleOne(model,dc,whichIndex)
-                if succ == True: succNum += 1
-        dc.addSuccPercent(succNum/float(dataProcessingBatchNum))
-        
-    # handle a sinextNumSpane input
-    else: 
-        print "\n\nprocessing input of index %s in the dataset: " %(str(startIndexOfImage))
-        if task == "safety_check": 
-            handleOne(model,dc,startIndexOfImage)
-    if dataProcessing == "batch": 
-        dc.provideDetails()
-        dc.summarise()
+    succNum = 0
+    for whichIndex in range(startIndexOfImage,startIndexOfImage + dataProcessingBatchNum):
+        print "\n\nprocessing input of index %s in the dataset: " %(str(whichIndex))
+        succ = handleOne(model,dc,whichIndex)
+        if succ == True: succNum += 1
+    dc.addSuccPercent(succNum/float(dataProcessingBatchNum))
+    dc.provideDetails()
+    dc.summarise()
     dc.close()
       
 ###########################################################################
 #
 # safety checking
-# starting from the first hidden layer
+# starting from the a specified hidden layer
 #
 ############################################################################
 
@@ -99,26 +71,16 @@ def handleOne(model,dc,startIndexOfImage):
     global np
     image = NN.getImage(model,startIndexOfImage)
     print("the shape of the input is "+ str(image.shape))
-        
-    #image = np.array([3.58747339,1.11101673])
-    
+            
     dc.initialiseIndex(startIndexOfImage)
+    originalImage = copy.deepcopy(image)
 
     if checkingMode == "stepwise":
         k = startLayer
     elif checkingMode == "specificLayer":
         k = maxLayer
         
-    originalModel = copy.deepcopy(model)
-    originalImage = copy.deepcopy(image)
-    if startLayer > 0: 
-        model, image = cuttingModel(model,startLayer,image)
-        k = k - startLayer
-        kmaxLayer = maxLayer - startLayer
-    else: 
-        kmaxLayer = maxLayer
-        
-    while k <= kmaxLayer: 
+    while k <= maxLayer: 
     
         layerType = getLayerType(model, k)
         start_time = time.time()
@@ -129,7 +91,6 @@ def handleOne(model,dc,startIndexOfImage):
             dc.initialiseLayer(k)
     
             st = searchTree(image,k)
-            st.defineConsideringRegion([(5, 14), (5, 15), (5, 16), (5, 17), (13, 13), (13, 14), (13, 15), (13, 16), (24, 10), (24, 11), (24, 12), (24, 13), (25, 6), (25, 7), (25, 8), (25, 9)])      
             st.addImages(model,[image])
 
             print "\nstart checking the safety of layer "+str(k)
@@ -149,9 +110,6 @@ def handleOne(model,dc,startIndexOfImage):
                 print("Round %s of layer %s for image %s"%(f,k,startIndexOfImage))
                 index = st.getOneUnexplored()
                 imageIndex = copy.deepcopy(index)
-                
-                #path0="%s/%s_%s.png"%(directory_pic_string,startIndexOfImage,nsn)
-                #dataBasics.save(-1,st.images[index], path0)
                         
                 # for every image
                 # start from the first hidden layer
@@ -174,15 +132,9 @@ def handleOne(model,dc,startIndexOfImage):
                     (nextSpan,nextNumSpan,numDimsToMani) = regionSynth(model,dataset,image0,st.manipulated[t],t,span,numSpan,numDimsToMani)
                     st.addManipulated(t,nextSpan.keys())
 
-                    #print "3) synthesise precision ..."
-                    #if not found == True: nextNumSpan = dict(map(lambda (k,v): (k, abs(v-1)), nextNumSpan.iteritems()))
-                    # npre : next precision, i.e., p_{k+1}
-                    #npre = precisionSynth(model,dataset,image0,t,span,numSpan,nextSpan,nextNumSpan,cp)
                     (nextSpan,nextNumSpan,npre) = precisionSynth(t,nextSpan,nextNumSpan)
-                    #print "the precision is %s."%(npre)
                     
                     print "dimensions to be considered: %s"%(nextSpan)
-                    #print "dimensions that have been considered before: %s"%(st.manipulated[t])
                     print "spans for the dimensions: %s"%(nextNumSpan)
                 
                     if t == k: 
@@ -254,7 +206,6 @@ def handleOne(model,dc,startIndexOfImage):
 
             # for every layer
             f = 0 
-            #while f <= numOfFeatures : 
             nsn = 0
             while st.emptyQueue() == False and nsn < maxSearchNum :  
 
@@ -263,10 +214,7 @@ def handleOne(model,dc,startIndexOfImage):
                 print("Round %s of layer %s for image %s"%(f,k,startIndexOfImage))
                 index = st.getOneUnexplored()
                 st.addVisitedImage(st.images[index])
-                
-                #path0="%s/%s_%s.png"%(directory_pic_string,startIndexOfImage,nsn)
-                #dataBasics.save(-1,st.images[index], path0)
-                        
+                                        
                 # for every image
                 # start from the first hidden layer
                 t = 0
@@ -281,28 +229,14 @@ def handleOne(model,dc,startIndexOfImage):
                     print "the number of steps: %s."%(str(stepsUpToNow))
                     print "the number of manipulated that have been modified: %s."%(len(st.manipulated[index]))
 
-                    
-                    #path2 = directory_pic_string+"/temp.png"
-                    #print "current operated image is saved into %s"%(path2)
-                    #dataBasics.save(index[0],image0,path2)
-
                     print "(2) synthesise region ..."
                      # ne: next region, i.e., e_{k+1}
                     (nextSpan,nextNumSpan,numDimsToMani) = regionSynth(model,dataset,image0,st.manipulated[index][t],t,span,numSpan,numDimsToMani)
                     st.addManipulated(index,t,nextSpan.keys())
                     
-                    #print span.keys()
-                    #print nextSpan.keys()
-
-                    #print "3) synthesise precision ..."
-                    #if not found == True: nextNumSpan = dict(map(lambda (k,v): (k, abs(v-1)), nextNumSpan.iteritems()))
-                    # npre : next precision, i.e., p_{k+1}
-                    #npre = precisionSynth(model,dataset,image0,t,span,numSpan,nextSpan,nextNumSpan,cp)
                     (nextSpan,nextNumSpan,npre) = precisionSynth(t,nextSpan,nextNumSpan)
-                    #print "the precision is %s."%(npre)
                     
                     print "dimensions to be considered: %s"%(nextSpan)
-                    #print "dimensions that have been considered before: %s"%(st.manipulated[t])
                     print "spans for the dimensions: %s"%(nextNumSpan)
                 
                     if t == k: 
@@ -360,12 +294,7 @@ def handleOne(model,dc,startIndexOfImage):
                                 rk = [(i, c + euclideanDistance(image,i) * scale) for (i,c) in rk]
                             elif costForDijkstra[0] == "l1": 
                                 scale = (1 - min(zip (*rk)[1]))
-                                #for (i,c) in rk : print("%s --- %s --- %s ---- %s "%(l1Distance(image,i), c, scale, l1Distance(image,i) / scale))
                                 rk = [(i, c + l1Distance(image,i) * scale) for (i,c) in rk]
-                                                    
-                        #diffs = diffImage(image0,rk[0])
-                        #print("the dimensions of the images that are changed in the previous round: %s"%diffs)
-                        #if len(diffs) == 0: st.clearManipulated(k)
                         
                         if t == 0 :
                             parentIndex = index 
@@ -474,7 +403,7 @@ def handleOne(model,dc,startIndexOfImage):
             path0="%s/%s_%s_modified_into_%s_with_confidence_%s.png"%(directory_pic_string,startIndexOfImage,origClassStr,newClassStr,newConfident)
             dataBasics.save(-1,image1,path0)
             #print np.max(image1), np.min(image1)
-            print diffImage(image,image1)
+            print("difference between images: %s"%(diffImage(image,image1)))
             #plt.imshow(image1 * 255, cmap=mpl.cm.Greys)
             #plt.show()
                 

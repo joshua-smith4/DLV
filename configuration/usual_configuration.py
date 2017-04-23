@@ -59,10 +59,6 @@ def usual_configuration(dataset):
         #enumerationMethod = "convex"
         enumerationMethod = "line"
 
-        # heuristics for deciding a region
-        heuristics = "Activation"
-        #heuristics = "Derivative"
-
         # do we need to repeatedly select an updated input neuron
         #repeatedManipulation = "allowed"
         repeatedManipulation = "disallowed"
@@ -74,20 +70,13 @@ def usual_configuration(dataset):
         exitWhen = "foundAll"
         #exitWhen = "foundFirst"
         
-        # do we need to generate temp_.png files
-        #tempFile = "enabled"
-        tempFile = "disabled"
-        
-        # compute the derivatives up to a specific layer
-        derivativelayerUpTo = 3
-
-        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,repeatedManipulation,checkingMode,exitWhen)
         
     elif dataset == "mnist": 
 
         # which image to start with or work with 
         # from the database
-        startIndexOfImage = 4358
+        startIndexOfImage = 5422
         
         # the start layer to work from 
         startLayer = -1
@@ -101,7 +90,7 @@ def usual_configuration(dataset):
         #searchApproach = "Astar"
 
         ## number of features of each layer 
-        numOfFeatures = 392 # 20 #
+        numOfFeatures = 156 # 921 # 
         
         ## control by distance
         #controlledSearch = ("euclidean",0.3)
@@ -122,6 +111,7 @@ def usual_configuration(dataset):
         #costForDijkstra = ("euclidean",0.0)
         costForDijkstra = ("l1",1.0)
         
+        
         #maximum number of elements in the search queue
         maxQueueSize = 5000
         
@@ -137,10 +127,6 @@ def usual_configuration(dataset):
         enumerationMethod = "convex"
         #enumerationMethod = "line"
 
-        # heuristics for deciding a region
-        heuristics = "Activation"
-        #heuristics = "Derivative"
-
         # do we need to repeatedly select an updated input neuron
         # disallowed is needed for mcts and exhaustive search
         #repeatedManipulation = "allowed"
@@ -153,21 +139,15 @@ def usual_configuration(dataset):
         #exitWhen = "foundAll"
         exitWhen = "foundFirst"
         
-        # do we need to generate temp_.png files
-        #tempFile = "enabled"
-        tempFile = "disabled"
-        
-        # compute the derivatives up to a specific layer
-        derivativelayerUpTo = 3
     
-        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,repeatedManipulation,checkingMode,exitWhen)
         
         
     elif dataset == "gtsrb": 
 
         # which image to start with or work with 
         # from the database
-        startIndexOfImage = 4594
+        startIndexOfImage = 4894
         
         # the start layer to work from 
         startLayer = -1
@@ -216,10 +196,6 @@ def usual_configuration(dataset):
         enumerationMethod = "convex"
         #enumerationMethod = "line"
 
-        # heuristics for deciding a region
-        heuristics = "Activation"
-        #heuristics = "Derivative"
-
         # do we need to repeatedly select an updated input neuron
         #repeatedManipulation = "allowed"
         repeatedManipulation = "disallowed"
@@ -231,25 +207,19 @@ def usual_configuration(dataset):
         #exitWhen = "foundAll"
         exitWhen = "foundFirst"
         
-        # do we need to generate temp_.png files
-        #tempFile = "enabled"
-        tempFile = "disabled"
-        
-        # compute the derivatives up to a specific layer
-        derivativelayerUpTo = 3
     
-        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,repeatedManipulation,checkingMode,exitWhen)
         
     elif dataset == "cifar10": 
     
         # which image to start with or work with 
         # from the database
-        startIndexOfImage = 353
+        startIndexOfImage = 385
         
         # the start layer to work from 
-        startLayer = 0
+        startLayer = -1
         # the maximal layer to work until 
-        maxLayer = 0
+        maxLayer = -1
         
         # search approach
         searchApproach = "heuristic"
@@ -257,11 +227,11 @@ def usual_configuration(dataset):
         #searchApproach = "mcts"
 
         ## number of features of each layer 
-        numOfFeatures = 5000
+        numOfFeatures = 204 # 540
         
         ## control by distance
-        controlledSearch = ("euclidean",0.3)
-        #controlledSearch = ("L1",0.05)
+        #controlledSearch = ("euclidean",0.3)
+        controlledSearch = ("L1",0.25)
         
         ## maximal number of searches 
         maxSearchNum = 1000
@@ -290,10 +260,6 @@ def usual_configuration(dataset):
         enumerationMethod = "convex"
         #enumerationMethod = "line"
 
-        # heuristics for deciding a region
-        heuristics = "Activation"
-        #heuristics = "Derivative"
-
         # do we need to repeatedly select an updated input neuron
         #repeatedManipulation = "allowed"
         repeatedManipulation = "disallowed"
@@ -305,14 +271,7 @@ def usual_configuration(dataset):
         #exitWhen = "foundAll"
         exitWhen = "foundFirst"
         
-        # do we need to generate temp_.png files
-        #tempFile = "enabled"
-        tempFile = "disabled"
-        
-        # compute the derivatives up to a specific layer
-        derivativelayerUpTo = 5
-    
-        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,repeatedManipulation,checkingMode,exitWhen)
 
     elif dataset == "imageNet": 
     
@@ -365,11 +324,6 @@ def usual_configuration(dataset):
         #enumerationMethod = "line"
         #enumerationMethod = "point"
 
-
-        # heuristics for deciding a region
-        heuristics = "Activation"
-        #heuristics = "Derivative"
-
         # do we need to repeatedly select an updated input neuron
         #repeatedManipulation = "allowed"
         repeatedManipulation = "disallowed"
@@ -381,11 +335,5 @@ def usual_configuration(dataset):
         #exitWhen = "foundAll"
         exitWhen = "foundFirst"
         
-        # do we need to generate temp_.png files
-        tempFile = "enabled"
-        #tempFile = "disabled"
-        
-        # compute the derivatives up to a specific layer
-        derivativelayerUpTo = 5
     
-        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,heuristics,repeatedManipulation,checkingMode,exitWhen,derivativelayerUpTo,tempFile)
+        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,repeatedManipulation,checkingMode,exitWhen)

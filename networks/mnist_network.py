@@ -10,10 +10,11 @@ from PIL import Image
 
 from keras.models import model_from_json, Model
 from keras.models import Sequential
-from keras.layers import Input, Dense, Dropout, Activation, Flatten, UpSampling2D, Deconvolution2D
+from keras.layers import Input, Dense, Dropout, Activation, Flatten, UpSampling2D, Deconvolution2D, ZeroPadding2D
 from keras.layers import Convolution2D, MaxPooling2D
 from keras import backend as K
 from keras.utils import np_utils
+#from keras.layers.convolutional_transpose import Convolution2D_Transpose
 
 # for mnist
 from keras.datasets import mnist
@@ -102,66 +103,91 @@ def build_model():
     return model
     
     
-def build_model_transferability():
+
+def build_model_and_autoencoder(layerToCut):
     """
-    define neural network model
-    """
-    nb_conv_2 = 4
-    nb_pool_2 = 3
-    nb_filters_2 = 24
+    define autoencoder model
+    this one connect the first two conv levels from the model
     
+    """
+
     model = Sequential()
 
-    model.add(Convolution2D(nb_filters_2, nb_conv_2, nb_conv_2,
+    model.add(Convolution2D(32, nb_conv, nb_conv,
                             border_mode='valid',
-                            input_shape=(1, img_rows, img_cols)))
-    model.add(Activation('relu'))
-    model.add(MaxPooling2D(pool_size=(nb_pool_2, nb_pool_2)))
-    model.add(Dropout(0.25))
+                            input_shape=(1, img_rows, img_cols),
+                            trainable = False))
+    if layerToCut >= 1: 
+        model.add(Activation('relu'))
+    if layerToCut >= 2: 
+        model.add(Convolution2D(32, nb_conv, nb_conv,trainable = False))
+    if layerToCut >= 3: 
+        model.add(Activation('relu'))
 
-    model.add(Flatten())
-    model.add(Dense(256))
-    model.add(Activation('relu'))
-    model.add(Dropout(0.5))
-    model.add(Dense(nb_classes))
-    model.add(Activation('softmax'))
+    model.add(ZeroPadding2D((1, 1)))
+    if layerToCut >= 2: 
+        model.add(ZeroPadding2D((1, 1)))
+    
+    model.add(Convolution2D(16, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    
+    model.add(MaxPooling2D((nb_pool, nb_pool), border_mode='same'))
+    
+    model.add(Convolution2D(8, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    model.add(MaxPooling2D((nb_pool, nb_pool), border_mode='same'))
+    model.add(Convolution2D(8, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    model.add(MaxPooling2D((nb_pool, nb_pool), border_mode='same'))
 
-    model.compile(loss='categorical_crossentropy',
-                  optimizer='adadelta',
-                  metrics=['accuracy'])
+    # at this point the representation is (8, 4, 4) i.e. 128-dimensional
+    model.add(Convolution2D(8, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    model.add(UpSampling2D((nb_pool, nb_pool)))
+    model.add(Convolution2D(8, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    model.add(UpSampling2D((nb_pool, nb_pool)))
+    model.add(Convolution2D(16, nb_conv, nb_conv,activation='relu'))
+    model.add(UpSampling2D((nb_pool, nb_pool)))
+    model.add(Convolution2D(1, nb_conv, nb_conv,activation='sigmoid', border_mode='same'))
+
+    model.compile(optimizer='adadelta', loss='binary_crossentropy')
+    #model.summary()
 
     return model
-
-
-
-def build_model_autoencoder():
+    
+    
+def build_autoencoder(layerToCut):
     """
     define neural network model
+    this one removes the conv levels of the model 
     """
+
+    model = Sequential()
     
-    input_img = Input(shape=(1, 28, 28))
+    if layerToCut >= 2: 
+        model.add(ZeroPadding2D((1, 1),input_shape=(32, img_rows-4, img_cols-4)))
+        model.add(ZeroPadding2D((1, 1)))
+    else: 
+        model.add(ZeroPadding2D((1, 1),input_shape=(32, img_rows-2, img_cols-2)))
+    
+    model.add(Convolution2D(16, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    
+    model.add(MaxPooling2D((nb_pool, nb_pool), border_mode='same'))
+    
+    model.add(Convolution2D(8, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    model.add(MaxPooling2D((nb_pool, nb_pool), border_mode='same'))
+    model.add(Convolution2D(8, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    model.add(MaxPooling2D((nb_pool, nb_pool), border_mode='same'))
 
-    x = Convolution2D(16, 3, 3, activation='relu', border_mode='same')(input_img)
-    x = MaxPooling2D((2, 2), border_mode='same')(x)
-    x = Convolution2D(8, 3, 3, activation='relu', border_mode='same')(x)
-    x = MaxPooling2D((2, 2), border_mode='same')(x)
-    x = Convolution2D(8, 3, 3, activation='relu', border_mode='same')(x)
-    encoded = MaxPooling2D((2, 2), border_mode='same')(x)
+    # at this point the representation is (8, 4, 4) i.e. 128-dimensional
+    model.add(Convolution2D(8, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    model.add(UpSampling2D((nb_pool, nb_pool)))
+    model.add(Convolution2D(8, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    model.add(UpSampling2D((nb_pool, nb_pool)))
+    model.add(Convolution2D(16, nb_conv, nb_conv,activation='relu'))
+    model.add(UpSampling2D((nb_pool, nb_pool)))
+    model.add(Convolution2D(1, nb_conv, nb_conv,activation='sigmoid', border_mode='same'))
 
-# at this point the representation is (8, 4, 4) i.e. 128-dimensional
+    model.compile(optimizer='adadelta', loss='binary_crossentropy')
+    #model.summary()
 
-    x = Convolution2D(8, 3, 3, activation='relu', border_mode='same')(encoded)
-    x = UpSampling2D((2, 2))(x)
-    x = Convolution2D(8, 3, 3, activation='relu', border_mode='same')(x)
-    x = UpSampling2D((2, 2))(x)
-    x = Convolution2D(16, 3, 3, activation='relu')(x)
-    x = UpSampling2D((2, 2))(x)
-    decoded = Convolution2D(1, 3, 3, activation='sigmoid', border_mode='same')(x)
-
-    autoencoder = Model(input_img, decoded)
-    autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
-
-    return autoencoder
+    return model
 
 
 
@@ -285,8 +311,6 @@ def dynamic_build_model(startLayer,inputShape):
     return model
     
 
-
-
 def read_model_from_file(weightFile,modelFile):
     """
     define neural network model
@@ -305,6 +329,52 @@ def read_model_from_file(weightFile,modelFile):
         model.layers[lvl].set_weights([weights['weights'][0, weight_1], weights['weights'][0, weight_2].flatten()])
 
     return model
+    
+def read_autoencoder_from_file(weightFile,modelFile,layerToCut):
+    """
+    define neural network model
+    :return: network model
+    """
+    
+    model = build_autoencoder(layerToCut)
+    model.summary()
+    
+    if layerToCut < 0: 
+        return model 
+        
+    weights = sio.loadmat(weightFile)
+    #model = model_from_json(open(modelFile).read())
+    if layerToCut >= 2: 
+        l = 3
+        k = 0
+    else: 
+        l = 2
+        k = 1
+    for (idx,lvl) in [(l,7-k),(l+1,9-k),(l+2,11-k),(l+3,13-k),(l+4,15-k),(l+5,17-k),(l+6,19-k)]:
+        
+        weight_1 = 2 * idx - 2
+        weight_2 = 2 * idx - 1
+        model.layers[lvl-5].set_weights([weights['weights'][0, weight_1], weights['weights'][0, weight_2].flatten()])
+
+    return model
+    
+def read_model_and_autoencoder_from_file(model,weightFile,modelFile,cutLayer):
+    """
+    define neural network model
+    :return: network model
+    """
+    
+    weights = sio.loadmat(weightFile)
+    layerList = [(1,0),(2,2),(3,7),(4,10)]
+    layerList = [ (x,y) for (x,y) in layerList if y <= cutLayer ]
+    for (idx,lvl) in layerList:
+        
+        weight_1 = 2 * idx - 2
+        weight_2 = 2 * idx - 1
+        model.layers[lvl].set_weights([weights['weights'][0, weight_1], weights['weights'][0, weight_2].flatten()])
+
+    return model
+
     
 def dynamic_read_model_from_file(cutmodel,weightFile,modelFile,startLayer):
     """
@@ -343,6 +413,17 @@ def getImage(model,n_in_tests):
     Y_test = np_utils.to_categorical(y_test, nb_classes)
     image = X_test[n_in_tests:n_in_tests+1]
     return np.squeeze(image)
+    
+def getImages(model,n_in_tests1,n_in_tests2):
+
+    (X_train, y_train), (X_test, y_test) = mnist.load_data()
+    X_test = X_test.reshape(X_test.shape[0], 1, img_rows, img_cols)
+    X_test = X_test.astype('float32')
+    X_test /= 255
+    
+    Y_test = np_utils.to_categorical(y_test, nb_classes)
+    image2 = X_test[n_in_tests1:n_in_tests2]
+    return np.squeeze(image2)
     
 def readImage(path):
 
@@ -450,6 +531,7 @@ def getWeightVector(model, layer2Consider):
 def getConfig(model):
 
     config = model.get_config()
+    if 'layers' in config: config = config['layers']
     config = [ getLayerName(dict) for dict in config ]
     config = zip(range(len(config)),config)
     return config 

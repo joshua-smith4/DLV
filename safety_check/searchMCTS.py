@@ -62,8 +62,6 @@ class searchMCTS:
         self.uselessPixels = []
         
         (self.originalClass,self.originalConfident) = NN.predictWithImage(self.model,image)
-
-
         
     def initialiseActions(self): 
         allChildren = initialiseRegions(self.model,self.image,[])

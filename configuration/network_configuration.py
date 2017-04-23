@@ -54,7 +54,7 @@ def network_parameters(dataset):
         directory_pic_string = makedirectory("data/mnist_pic")
         
 # ce: the region definition for layer 0, i.e., e_0
-        featureDims = 4
+        featureDims = 5 # 20 #  20
         span = 255/float(255)
         numSpan = 1
         errorBounds = {}
@@ -96,7 +96,7 @@ def network_parameters(dataset):
         directory_pic_string = makedirectory("data/cifar10_pic")
  
 # ce: the region definition for layer 0, i.e., e_0
-        featureDims = 5
+        featureDims = 15
         span = 255/float(255)
         numSpan = 1
         errorBounds = {}

@@ -18,7 +18,7 @@ import matplotlib.pyplot as plt
 from pylab import *
 
 # keras
-from keras.models import Model, Sequential
+from keras.models import Model, Sequential, model_from_json
 from keras.layers import Input, Dense
 import keras.optimizers
 
@@ -58,8 +58,6 @@ def loadData():
 
         print "Building network model ......"
         model = NN.build_model()
-        #model = NN.build_model_transferability()
-        #model = NN.build_model_autoencoder()
 
         start_time = time.time()
         model.fit(X_train, Y_train, batch_size=batch_size, nb_epoch=nb_epoch,
@@ -86,6 +84,8 @@ def loadData():
         model = NN.read_model_from_file('%s/mnist%s.mat'%(directory_model_string,ae),'%s/mnist%s.json'%(directory_model_string,ae))
         print("Model loaded!")
         #test(model)
+        
+
         
     elif whichMode == "train" and dataset == "gtsrb": 
     
@@ -129,14 +129,15 @@ def loadData():
     elif whichMode == "train" and dataset == "cifar10": 
     
         (X_train,Y_train,X_test,Y_test, img_channels, img_rows, img_cols, batch_size, nb_classes, nb_epoch, data_augmentation) = NN.read_dataset()
-        
-        print "Building network model ......"
-        model = NN.build_model(img_channels, img_rows, img_cols, nb_classes)
-        
+           
         X_train = X_train.astype('float32')
         X_test = X_test.astype('float32')
         X_train /= 255
         X_test /= 255
+        
+        print "Building network model ......"
+        model = NN.build_model(img_channels, img_rows, img_cols, nb_classes)
+        ae = ""
 
         start_time = time.time()
         if not data_augmentation:
@@ -148,6 +149,7 @@ def loadData():
                       shuffle=True)
         else:
             print('Using real-time data augmentation.')
+            print X_train.shape[0]
 
             # this will do preprocessing and realtime data augmentation
             datagen = ImageDataGenerator(
@@ -170,26 +172,27 @@ def loadData():
             model.fit_generator(datagen.flow(X_train, Y_train,
                                 batch_size=batch_size),
                                 samples_per_epoch=X_train.shape[0],
-                                nb_epoch=nb_epoch,
+                                nb_epoch=1,
                                 validation_data=(X_test, Y_test))
                                 
         score = model.evaluate(X_test, Y_test, verbose=0)
-        print('Test score:', score[0])
-        print('Test accuracy:', score[1])
+        print('Test score:%s'%score)
         print("Fitting time: --- %s seconds ---" % (time.time() - start_time))   
         print("Training finished!")
     
         # save model
         json_string = model.to_json()
-        open('%s/cifar10.json'%directory_model_string, 'w').write(json_string)
-        model.save_weights('%s/cifar10.h5'%directory_model_string, overwrite=True)
-        sio.savemat('%s/cifar10.mat'%directory_model_string, {'weights': model.get_weights()})
+        open('%s/cifar10%s.json'%(directory_model_string,ae), 'w').write(json_string)
+        model.save_weights('%s/cifar10%s.h5'%(directory_model_string,ae), overwrite=True)
+        sio.savemat('%s/cifar10%s.mat'%(directory_model_string,ae), {'weights': model.get_weights()})
         print("Model saved!")
+        
         
     elif whichMode == "read" and dataset == "cifar10": 
         print("Start loading model ... ")
+        ae = ""
         (X_train,Y_train,X_test,Y_test, img_channels, img_rows, img_cols, batch_size, nb_classes, nb_epoch, data_augmentation) = NN.read_dataset()
-        model = NN.read_model_from_file(img_channels, img_rows, img_cols, nb_classes, '%s/cifar10.mat'%directory_model_string,'%s/cifar10.json'%directory_model_string)
+        model = NN.read_model_from_file(img_channels, img_rows, img_cols, nb_classes, '%s/cifar10%s.mat'%(directory_model_string,ae),'%s/cifar10%s.json'%(directory_model_string,ae))
         model.compile(optimizer='rmsprop', loss='categorical_crossentropy')
         print("Model loaded!")
         

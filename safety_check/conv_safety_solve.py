@@ -26,7 +26,7 @@ from basics import *
 def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activations,prevSpan,prevNumSpan,span,numSpan,pk):  
 
     random.seed(time.time())
-    
+        
     # number of clauses
     c = 0
     # number of variables 
@@ -44,11 +44,8 @@ def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activ
         avg = np.sum(activations)/float(len(activations)*len(activations[0]))
     else: avg = 0
 
-    if optimizing == True: 
-        s = Optimize()
-    else: 
-        s = Tactic('qflra').solver()
-        s.reset()
+    s = Tactic('qflra').solver()
+    s.reset()
     
     #print("%s\n%s\n%s\n%s"%(prevSpan,prevNumSpan,span,numSpan))
     
@@ -67,7 +64,7 @@ def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activ
     for (l,x,y) in toBeChanged:
         variable[1,0,l+1,x,y] = Real('1_x_%s_%s_%s' % (l+1,x,y))
         d += 1    
-        if not(boundOfPixelValue == [0,0]) and (layer2Consider == 0) and (boundRestriction == True): 
+        if not(boundOfPixelValue == [0,0]) and (layer2Consider == 0): 
             pstr = eval("variable[1,0,%s,%s,%s] <= %s"%(l+1,x,y,boundOfPixelValue[1]))
             pstr = And(eval("variable[1,0,%s,%s,%s] >= %s"%(l+1,x,y,boundOfPixelValue[0])), pstr)
             pstr = And(eval("variable[1,0,%s,%s,%s] != %s"%(l+1,x,y,images[l][x][y])), pstr)
@@ -131,10 +128,6 @@ def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activ
             maxterms = "(%s)"%maxterm
         else: 
             maxterms = " %s + (%s) "%(maxterms, maxterm)
-            
-        #print maxterms
-    if optimizing == True: 
-        s.maximize(eval(maxterms)) 
 
     nprint("Number of variables: " + str(d))
     nprint("Number of clauses: " + str(c))

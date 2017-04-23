@@ -3,6 +3,9 @@ from array import array as pyarray
 from cvxopt.base import matrix
 import numpy as np
 
+
+NUM_CLASSES = 10
+
 def LABELS(index):
     labels = ['0', '1', '2', '3', '4', '5', '6',
           '7', '8', '9']

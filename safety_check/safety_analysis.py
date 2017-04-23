@@ -21,7 +21,6 @@ from dense_safety_solve import dense_safety_solve
 from flatten_safety_solve import flatten_safety_solve
 from maxpooling_safety_solve import maxpooling_safety_solve
 
-#import conv_bp
 import relu
 
 from basics import *
@@ -50,12 +49,6 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
     classstr = "the confidence is " + (str(originalConfident))
     print classstr
 
-    if tempFile == "enabled":
-        #dataBasics.save(index[0],originalImage,directory_pic_string+"/temp%s_%s.png"%(layer2Consider,index))
-        dataBasics.save(index[0],originalImage,directory_pic_string+"/temp.png")
-        print "please refer to the file "+directory_pic_string+"/temp.png for the image under processing ..."
-
-    #print "please refer to the file "+directory_pic_string+"/temp%s_%s.png for the image under processing ..."%(layer2Consider,index)
     print "safety analysis for layer %s ... "%(layer2Consider)
 
     # wk is the set of inputs whose classes are different with the original one

@@ -15,7 +15,6 @@ import stopit
 
 from z3 import *
 
-#import display
 import mnist as mm
 
 from scipy import ndimage
@@ -28,7 +27,6 @@ def dense_region_solve(nfeatures,nfilters,filters,bias,activations0,activations1
         return stretch(nfeatures,nfilters,filters,bias,activations0,activations1,span,numSpan,inds)
     elif regionSynthMethod == "condense":
         return condense(nfeatures,nfilters,filters,bias,activations0,activations1,span,numSpan,inds)
-
 
 def condense(nfeatures,nfilters,filters,bias,activations0,activations1,span,numSpan,inds):  
 
@@ -50,7 +48,7 @@ def condense(nfeatures,nfilters,filters,bias,activations0,activations1,span,numS
         
     decidedDims = []
     for l in span.keys(): 
-        dims = random.sample([ x for x in inds if x not in decidedDims], refinementRate)
+        dims = random.sample([ x for x in inds if x not in decidedDims], 1)
         decidedDims = decidedDims + dims
         for k in dims: 
             # the idea of this is as follows:

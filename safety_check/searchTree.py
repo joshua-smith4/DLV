@@ -17,7 +17,6 @@ from basics import otherPixels
 
 class searchTree:
 
-
     # used to store historical images, spans and numSpans
     # a pair (i,p) is used to represent the index i of the current 
     #  node and its parent node p
@@ -104,7 +103,7 @@ class searchTree:
             
             manipulated1 = set(self.manipulated[-1])
             manipulated2 = set(self.manipulated[-1] + span.keys())
-            if reset == "onEqualManipulationSet" and manipulated1 == manipulated2: 
+            if manipulated1 == manipulated2: 
                 self.clearManipulated(len(self.manipulated))
             else: self.manipulated[-1] = list(manipulated2)
             

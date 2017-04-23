@@ -3,7 +3,6 @@
 """
 compupute e_k according to e_{k-1} and p_{k-1}
 author: Xiaowei Huang
-
 """
 
 import numpy as np
@@ -47,7 +46,6 @@ def regionSynth(model,dataset,image,manipulated,layer2Consider,span,numSpan,numD
 
     if layerType == "Convolution2D":  
         print "convolutional layer, synthesising region ..."
-        numDimsToMani = getManipulatedFeatureNumber(model,numDimsToMani,layer2Consider)
         if len(activations1.shape) == 3: 
             inds = getTop3D(model,image,activations1,manipulated,span.keys(),numDimsToMani,layer2Consider)
         elif len(activations1.shape) ==2: 
@@ -60,9 +58,7 @@ def regionSynth(model,dataset,image,manipulated,layer2Consider,span,numSpan,numD
     
     elif layerType == "Dense":
         print "dense layer, synthesising region ..."
-        numDimsToMani = getManipulatedFeatureNumber(model,numDimsToMani,layer2Consider)
         inds = getTop(model,image,activations1,manipulated,numDimsToMani,layer2Consider)
-        #print(inds)
         # filters can be seen as the output of a convolutional layer
         nfilters = numberOfFilters(wv2Consider)
         # features can be seen as the inputs for a convolutional layer
@@ -94,8 +90,6 @@ def regionSynth(model,dataset,image,manipulated,layer2Consider,span,numSpan,numD
         nextNumSpan = copy.deepcopy(numSpan)
         nextSpan = {}
         nextNumSpan = {}
-        #print activations0[k-1][i-1][j-1]
-        #print activations1[(k-1)*144+(i-1)*12+(j-1)]
         for key,value in span.iteritems():
             if len(key) == 3: 
                 (k,i,j) = key
@@ -138,7 +132,6 @@ def conv_region_prep(model,dataBasics,nfeatures,nfilters,wv,bv,activations0,acti
             flipedFilter = np.fliplr(np.flipud(filter))
             biasCollection[l,k] = bias
             filterCollection[l,k] = flipedFilter
-            #print filter.shape
     (nextSpan,nextNumSpan) = conv_region_solve(nfeatures,nfilters,filterCollection,biasCollection,activations0,activations1,span,numSpan,inds,numDimsToMani)
     print("found the region to work ")
     
@@ -157,25 +150,9 @@ def dense_solve_prep(model,dataBasics,nfeatures,nfilters,wv,bv,activations0,acti
         if c-1 in range(nfilters): 
             for l in range(nfeatures): 
                 biasCollection[l,c-1] = w
-
-    #for l in range(nfeatures):
-    #    for k in range(nfilters):
-    #        filter = [ w for ((p1,c1),(p,c),w) in wv if c1 == l+1 and c == k+1 ]
-    #        bias = [ w for (p,c,w) in bv if c == k+1 ]
-    #        if len(filter) == 0 or len(bias) == 0 : 
-    #            print "error: bias =" + str(bias) + "\n filter = " + str(filter)
-    #            break 
-     #       else:
-    #            filter = filter[0]
-    #            bias = bias[0]
-                    
-    #        biasCollection[l,k] = bias
-    #        filterCollection[l,k] = filter
-            #print("%s,%s,%s,%s"%(l,k,bias,filter))
             
     (nextSpan,nextNumSpan) = dense_region_solve(nfeatures,nfilters,filterCollection,biasCollection,activations0,activations1,span,numSpan,inds)
     print("found the region to work ")
-    #print nextSpan,nextNumSpan
     return (nextSpan,nextNumSpan)
     
     
@@ -197,29 +174,17 @@ def initialiseRegions(model,image,manipulated):
         newManipulated2 = list(set(newManipulated2 + oneRegion[0].keys()))
         if newManipulated1 == newManipulated2: break
         num -= 1
-    #print len(allRegions)
     return allRegions
 
 def initialiseRegion(model,image,manipulated): 
-    if heuristics == "Activation": 
-        return initialiseRegionActivation(model,manipulated,image)
-    elif heuristics == "Derivative": 
-        return initialiseRegionDerivative(model,image,manipulated)
+    return initialiseRegionActivation(model,manipulated,image)
         
 def getTop(model,image,activation,manipulated,numDimsToMani,layerToConsider): 
-    if heuristics == "Activation": 
-        return getTopActivation(activation,manipulated,layerToConsider,numDimsToMani)
-    elif heuristics == "Derivative": 
-        return getTopDerivative(model,image,activation,manipulated,numDimsToMani,layerToConsider)
+    return getTopActivation(activation,manipulated,layerToConsider,numDimsToMani)
 
 def getTop2D(model,image,activation,manipulated,ps,numDimsToMani,layerToConsider): 
-    if heuristics == "Activation": 
-        return getTop2DActivation(activation,manipulated,ps,numDimsToMani,layerToConsider)
-    elif heuristics == "Derivative": 
-        return getTop2DDerivative(model,image,activation,manipulated,ps,numDimsToMani,layerToConsider)
-        
+    return getTop2DActivation(activation,manipulated,ps,numDimsToMani,layerToConsider)
+
 def getTop3D(model,image,activation,manipulated,ps,numDimsToMani,layerToConsider): 
-    if heuristics == "Activation": 
-        return getTop3DActivation(activation,manipulated,ps,numDimsToMani,layerToConsider)
-    elif heuristics == "Derivative": 
-        return getTop3DDerivative(model,image,activation,manipulated,ps,numDimsToMani,layerToConsider)
+    return getTop3DActivation(activation,manipulated,ps,numDimsToMani,layerToConsider)
+

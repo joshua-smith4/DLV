@@ -6,9 +6,9 @@ import scipy.io as sio
 import numpy as np
 import copy
 
-from keras.models import model_from_json
+from keras.models import model_from_json, Model
 from keras.models import Sequential
-from keras.layers import Dense, Dropout, Activation, Flatten
+from keras.layers import Input, Dense, Dropout, Activation, Flatten, UpSampling2D, ZeroPadding2D
 from keras.layers import Convolution2D, MaxPooling2D
 from keras import backend as K
 from keras.utils import np_utils
@@ -29,6 +29,11 @@ data_augmentation = True
 img_rows, img_cols = 32, 32
 # the CIFAR10 images are RGB
 img_channels = 3
+
+# size of pooling area for max pooling
+nb_pool = 2
+# convolution kernel size
+nb_conv = 3
 
 def read_dataset():
 
@@ -78,6 +83,149 @@ def build_model(img_channels, img_rows, img_cols, nb_classes):
 
     return model
     
+def build_model_and_autoencoder(img_channels, img_rows, img_cols, nb_classes, layerToCut):
+    """
+    define autoencoder model
+    this one connect the conv levels from the model
+    """
+
+    model = Sequential()
+
+    model.add(Convolution2D(32, 3, 3, border_mode='same',
+                        input_shape=(img_channels, img_rows, img_cols),trainable = False))
+                        
+    if layerToCut >= 1: 
+        model.add(Activation('relu'))
+        
+    if layerToCut >= 2: 
+        model.add(Convolution2D(32, 3, 3,trainable = False))
+        
+    if layerToCut >= 3: 
+        model.add(Activation('relu'))
+        
+    if layerToCut >= 4: 
+        model.add(MaxPooling2D(pool_size=(2, 2)))
+        
+    if layerToCut >= 5: 
+        model.add(Dropout(0.25,trainable = False))
+    
+    if layerToCut >= 6: 
+        model.add(Convolution2D(64, 3, 3, border_mode='same',trainable = False))
+        
+    if layerToCut >= 7: 
+        model.add(Activation('relu'))
+        
+    if layerToCut >= 8: 
+        model.add(Convolution2D(64, 3, 3,trainable = False))
+    
+    if layerToCut >= 2: 
+        model.add(ZeroPadding2D((1, 1)))
+    
+    if layerToCut >= 4: 
+        model.add(UpSampling2D((nb_pool, nb_pool)))
+        
+    if layerToCut >= 8: 
+        model.add(ZeroPadding2D((1, 1)))
+    
+    model.add(Convolution2D(16, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    
+    model.add(MaxPooling2D((nb_pool, nb_pool), border_mode='same'))
+    
+    model.add(Convolution2D(8, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    model.add(MaxPooling2D((nb_pool, nb_pool), border_mode='same'))
+    model.add(Convolution2D(8, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    model.add(MaxPooling2D((nb_pool, nb_pool), border_mode='same'))
+
+    # at this point the representation is (8, 4, 4) i.e. 128-dimensional
+    model.add(Convolution2D(8, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    model.add(UpSampling2D((nb_pool, nb_pool)))
+    model.add(Convolution2D(8, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    model.add(UpSampling2D((nb_pool, nb_pool)))
+    model.add(Convolution2D(16, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    model.add(UpSampling2D((nb_pool, nb_pool)))
+    model.add(Convolution2D(3, nb_conv, nb_conv,activation='sigmoid', border_mode='same'))
+
+    model.compile(optimizer='adadelta', loss='binary_crossentropy')
+    #model.summary()
+
+    return model
+
+def build_autoencoder(img_channels, img_rows, img_cols, nb_classes, layerToCut):
+    """
+    define autoencoder model
+    this one connect the first two conv levels from the model
+    """
+
+    model = Sequential()
+    
+    if layerToCut >= 2: 
+        model.add(ZeroPadding2D((1, 1), input_shape=(64, 13, 13)))
+
+    if layerToCut >= 4: 
+        model.add(UpSampling2D((nb_pool, nb_pool)))
+        
+    if layerToCut >= 8: 
+        model.add(ZeroPadding2D((1, 1)))
+    
+    if layerToCut >= 2: 
+        model.add(Convolution2D(16, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    else: 
+        model.add(Convolution2D(16, nb_conv, nb_conv,activation='relu', border_mode='same', input_shape=(32, 32, 32)))
+
+    model.add(MaxPooling2D((nb_pool, nb_pool), border_mode='same'))
+    
+    model.add(Convolution2D(8, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    model.add(MaxPooling2D((nb_pool, nb_pool), border_mode='same'))
+    model.add(Convolution2D(8, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    model.add(MaxPooling2D((nb_pool, nb_pool), border_mode='same'))
+
+    # at this point the representation is (8, 4, 4) i.e. 128-dimensional
+    model.add(Convolution2D(8, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    model.add(UpSampling2D((nb_pool, nb_pool)))
+    model.add(Convolution2D(8, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    model.add(UpSampling2D((nb_pool, nb_pool)))
+    model.add(Convolution2D(16, nb_conv, nb_conv,activation='relu', border_mode='same'))
+    model.add(UpSampling2D((nb_pool, nb_pool)))
+    model.add(Convolution2D(3, nb_conv, nb_conv,activation='sigmoid', border_mode='same'))
+
+    model.compile(optimizer='adadelta', loss='binary_crossentropy')
+    #model.summary()
+
+    return model
+
+    
+def build_model_autoencoder(img_channels, img_rows, img_cols, nb_classes):
+    """
+    define neural network model
+    """
+    
+    # build model
+    input_img = Input(shape=(img_channels, img_rows, img_cols))
+
+    x = Convolution2D(16, 3, 3, activation='relu', border_mode='same')(input_img)
+    
+    x = MaxPooling2D((2, 2), border_mode='same')(x)
+    x = Convolution2D(8, 3, 3, activation='relu', border_mode='same')(x)
+    x = MaxPooling2D((2, 2), border_mode='same')(x)
+    x = Convolution2D(8, 3, 3, activation='relu', border_mode='same')(x)
+    encoded = MaxPooling2D((2, 2), border_mode='same')(x)
+
+    # at this point the representation is (8, 4, 4) i.e. 128-dimensional
+    x = Convolution2D(8, 3, 3, activation='relu', border_mode='same')(encoded)
+    x = UpSampling2D((2, 2))(x)
+    x = Convolution2D(8, 3, 3, activation='relu', border_mode='same')(x)
+    x = UpSampling2D((2, 2))(x)
+    x = Convolution2D(16, 3, 3, activation='relu', border_mode='same')(x)
+    x = UpSampling2D((2, 2))(x)
+    decoded = Convolution2D(3, 3, 3, activation='sigmoid', border_mode='same')(x)
+
+    autoencoder = Model(input_img, decoded)
+    autoencoder.compile(optimizer='adadelta', loss='binary_crossentropy')
+    #autoencoder.summary()
+
+    return autoencoder
+
+    
 def read_model_from_file(img_channels, img_rows, img_cols, nb_classes, weightFile,modelFile):
     """
     define neural network model
@@ -96,6 +244,59 @@ def read_model_from_file(img_channels, img_rows, img_cols, nb_classes, weightFil
         model.layers[lvl].set_weights([weights['weights'][0, weight_1], weights['weights'][0, weight_2].flatten()])
 
     return model
+    
+    
+def read_autoencoder_from_file(img_channels, img_rows, img_cols, nb_classes, weightFile,modelFile, layerToCut):
+    """
+    define neural network model
+    :return: network model
+    """
+    
+    model = build_autoencoder(img_channels, img_rows, img_cols, nb_classes, layerToCut)
+    model.summary()
+    
+    if layerToCut < 0: 
+        return model 
+    
+    weights = sio.loadmat(weightFile)
+    if layerToCut >= 8: 
+        l = 5
+        k = 0
+    elif layerToCut >= 4:
+        l = 4
+        k = 0
+    elif layerToCut >= 2:
+        l = 3
+        k = 1
+    else:
+        l = 2
+        k = 1
+    for (idx,lvl) in [(5,12-k),(6,14-k),(7,16-k),(8,18-k),(9,20-k),(10,22-k),(11,24-k)]:
+        
+        weight_1 = 2 * idx - 2
+        weight_2 = 2 * idx - 1
+        model.layers[lvl-9].set_weights([weights['weights'][0, weight_1], weights['weights'][0, weight_2].flatten()])
+
+    return model
+
+
+def read_model_and_autoencoder_from_file(model,weightFile,modelFile,cutLayer):
+    """
+    define neural network model
+    :return: network model
+    """
+    
+    weights = sio.loadmat(weightFile)
+    layerList = [(1,0),(2,2),(3,6),(4,8),(5,13),(6,16)]
+    layerList = [ (x,y) for (x,y) in layerList if y <= cutLayer ]
+    for (idx,lvl) in layerList:
+        
+        weight_1 = 2 * idx - 2
+        weight_2 = 2 * idx - 1
+        model.layers[lvl].set_weights([weights['weights'][0, weight_1], weights['weights'][0, weight_2].flatten()])
+
+    return model
+    
 
 """
    The following function gets the activations for a particular layer
@@ -214,6 +415,7 @@ def getWeightVector(model, layer2Consider):
 def getConfig(model):
 
     config = model.get_config()
+    if 'layers' in config: config = config['layers']
     config = [ getLayerName(dict) for dict in config ]
     config = zip(range(len(config)),config)
     return config 

@@ -5,6 +5,7 @@ import numpy as np
 
 import PIL.Image
 
+NUM_CLASSES = 10
     
 def LABELS(index):
     labels = ['airplane', 'automobile', 'bird', 'cat', 'deer', 'dog', 'frog',

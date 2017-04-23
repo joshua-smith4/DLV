@@ -15,7 +15,6 @@ class dataCollection:
 
     index = 0
     layer = 0
-    fileName = "%s/dataCollection.txt"%(directory_statistics_string)
     fileHandler = 0
 
     def __init__(self):
@@ -24,6 +23,7 @@ class dataCollection:
         self.euclideanDistance = {}
         self.l1Distance = {}
         self.confidence = {}
+        self.fileName = "%s/dataCollection.txt"%(directory_statistics_string)
         self.fileHandler = open(self.fileName, 'w')
         self.succPercent = 0
         
