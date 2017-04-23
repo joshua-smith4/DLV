@@ -106,9 +106,7 @@ class searchTree:
             if manipulated1 == manipulated2: 
                 self.clearManipulated(len(self.manipulated))
             else: self.manipulated[-1] = list(manipulated2)
-            
-            #print span.keys()
-            
+                        
     def addManipulated(self,k,s):
         self.manipulated[k] = list(set(self.manipulated[k] + s))
             
