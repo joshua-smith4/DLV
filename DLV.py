@@ -10,7 +10,7 @@ import sys
 sys.path.append('networks')
 sys.path.append('safety_check')
 sys.path.append('configuration')
-sys.path.append('operation')
+sys.path.append('basics')
 
 
 import time
@@ -61,6 +61,9 @@ def main():
 # starting from the a specified hidden layer
 #
 ############################################################################
+
+## how many branches to expand 
+numOfPointsAfterEachFeature = 1
 
 def handleOne(model,dc,startIndexOfImage):
 

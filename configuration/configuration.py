@@ -31,12 +31,7 @@ whichMode = "read"
 # work with a single image or a batch of images 
 #dataProcessing = "single"
 dataProcessing = "batch"
-dataProcessingBatchNum = 20
-
-# search approach
-#searchApproach = "heuristic"
-#searchApproach = "exhaustive"
-searchApproach = "mcts"
+dataProcessingBatchNum = 1
 
 
 #######################################################
@@ -67,8 +62,6 @@ searchApproach = "mcts"
 ################################################################
 
 
-## how many branches to expand 
-numOfPointsAfterEachFeature = 1
 
 # timeout for z3 to handle a run
 timeout = 600
