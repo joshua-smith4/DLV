@@ -25,6 +25,8 @@ from basics import *
 
 def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activations,prevSpan,prevNumSpan,span,numSpan,pk):  
 
+    inverseFunction = "point"
+
     random.seed(time.time())
         
     # number of clauses

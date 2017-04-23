@@ -21,6 +21,9 @@ from networkBasics import *
 #
 ################################################################   
 
+
+repeatedManipulation = "disallowed"
+
  
 def initialiseRegionActivation(model,manipulated,image): 
 
@@ -44,11 +47,7 @@ def initialiseRegionActivation(model,manipulated,image):
                 numDimsToMani = image.size 
             else: numDimsToMani = featureDims
             # get those elements with maximal/minimum values
-            randnum = random()
-            if randnum > explorationRate : 
-                ls = getTop2DActivation(image,manipulated,[],numDimsToMani,-1)
-            else:  
-                ls = getRandom2DActivation(image,manipulated,[],numDimsToMani,-1)
+            ls = getTop2DActivation(image,manipulated,[],numDimsToMani,-1)
                 
         elif len(image.shape) == 3:
             # decide how many elements in the input will be considered
@@ -56,11 +55,7 @@ def initialiseRegionActivation(model,manipulated,image):
                 numDimsToMani = image.size
             else: numDimsToMani = featureDims
             # get those elements with maximal/minimum values
-            randnum = random()
-            if randnum > explorationRate : 
-                ls = getTop3DActivation(image,manipulated,[],numDimsToMani,-1)
-            else: 
-                ls = getRandom3DActivation(image,manipulated,[],numDimsToMani,-1)
+            ls = getTop3DActivation(image,manipulated,[],numDimsToMani,-1)
 
         for i in ls: 
             nextSpan[i] = span
@@ -90,11 +85,7 @@ def initialiseRegionActivation(model,manipulated,image):
                 numDimsToMani = image1.size
             else: numDimsToMani = featureDims
             # get those elements with maximal/minimum values
-            randnum = random()
-            if randnum > explorationRate : 
-                ls = getTop2DActivation(image1,manipulated,[],numDimsToMani,-1)
-            else: 
-                ls = getRandom2DActivation(image1,manipulated,[],numDimsToMani,-1)
+            ls = getTop2DActivation(image1,manipulated,[],numDimsToMani,-1)
 
 
         elif len(image1.shape) == 3:
@@ -103,11 +94,7 @@ def initialiseRegionActivation(model,manipulated,image):
                 numDimsToMani = image1.size
             else: numDimsToMani = featureDims
             # get those elements with maximal/minimum values
-            randnum = random()
-            if randnum > explorationRate : 
-                ls = getTop3DActivation(image1,manipulated,[],numDimsToMani,-1)  
-            else: 
-                ls = getRandom3DActivation(image1,manipulated,[],numDimsToMani,-1)         
+            ls = getTop3DActivation(image1,manipulated,[],numDimsToMani,-1)        
        
         for i in ls: 
             nextSpan[i] = span

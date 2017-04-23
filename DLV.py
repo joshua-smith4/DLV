@@ -187,8 +187,6 @@ def handleOne(model,dc,startIndexOfImage):
                 print "(6) no adversarial example is found in this layer within the distance restriction." 
             st.destructor()
             
-
-
         elif layerType in ["Input"] and searchApproach in ["mcts"]: 
     
             print "directly handling the image ... "
@@ -221,7 +219,7 @@ def handleOne(model,dc,startIndexOfImage):
                 start_time_level = time.time()
                 runningTime_level = 0
                 childTerminated = False
-                while st.numberOfVisited[st.rootIndex] < maxSearchNum and runningTime_level <= MCTS_level_maximal_time: 
+                while runningTime_level <= MCTS_level_maximal_time: 
                     (leafNode,availableActions) = st.treeTraversal(st.rootIndex)
                     newNodes = st.initialiseExplorationNode(leafNode,availableActions)
                     for node in newNodes: 
@@ -293,7 +291,7 @@ def handleOne(model,dc,startIndexOfImage):
             st.addImages(model,(-1,-1),[(image,originalConfident)],[],0) 
             
             nsn = 0 
-            while st.emptyQueue() == False and nsn < maxSearchNum :  
+            while st.emptyQueue() == False :  
                 nsn += 1
                 index = st.getOneUnexplored()
                 print "\n==============================================================="

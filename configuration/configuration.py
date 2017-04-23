@@ -23,7 +23,6 @@ dataset = "mnist"
 #dataset = "cifar10"
 #dataset = "imageNet"
 
-
 # the network is trained from scratch
 #  or read from the saved files
 whichMode = "read"
@@ -57,7 +56,7 @@ searchApproach = "mcts"
 #######################################################
 
 
-(startIndexOfImage,startLayer, maxLayer,searchApproach,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,repeatedManipulation,checkingMode,exitWhen) = usual_configuration(dataset)
+(startIndexOfImage,startLayer, maxLayer,searchApproach,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen) = usual_configuration(dataset)
     
 
 ############################################################

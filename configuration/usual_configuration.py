@@ -31,36 +31,15 @@ def usual_configuration(dataset):
         controlledSearch = ("euclidean",0.1)
         #controlledSearch = ("L1",0.05)
         
-        ## maximal number of searches 
-        maxSearchNum = 1000
-        
         # MCTS_level_maximal_time
         MCTS_level_maximal_time = 300
         MCTS_all_maximal_time = 1800
         MCTS_multi_samples = 3
 
-        #cost function used to compute the distance from the starting point
-        #costForDijkstra = ("euclidean",0.0)
-        costForDijkstra = ("l1",0.0)
-        
-        #maximum number of elements in the search queue
-        maxQueueSize = 5
-        
-        # the rate that we do not use heuristic but the random sampling
-        # to get the next feature 
-        explorationRate = 0.5
-
-        # use linear restrictions or conv filter restriction
-        inverseFunction = "point"
-        #inverseFunction = "area"
-
         # point-based or line-based, or only work with a specific point
         #enumerationMethod = "convex"
         enumerationMethod = "line"
 
-        # do we need to repeatedly select an updated input neuron
-        #repeatedManipulation = "allowed"
-        repeatedManipulation = "disallowed"
 
         #checkingMode = "specificLayer"
         checkingMode = "stepwise"
@@ -69,7 +48,7 @@ def usual_configuration(dataset):
         exitWhen = "foundAll"
         #exitWhen = "foundFirst"
         
-        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,repeatedManipulation,checkingMode,exitWhen)
+        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)
         
     elif dataset == "mnist": 
 
@@ -95,26 +74,10 @@ def usual_configuration(dataset):
         #controlledSearch = ("Percentage",0.12)
         #controlledSearch = ("NumDiffs",30)
         
-        ## maximal number of searches 
-        maxSearchNum = 20000
-        
         # MCTS_level_maximal_time
         MCTS_level_maximal_time = 60
         MCTS_all_maximal_time = 300
         MCTS_multi_samples = 5
-        
-        #cost function used to compute the distance from the starting point
-        # (distance, scale). A* is distance + scale * confidence
-        #costForDijkstra = ("euclidean",0.0)
-        costForDijkstra = ("l1",1.0)
-        
-        
-        #maximum number of elements in the search queue
-        maxQueueSize = 5000
-        
-        # the rate that we do not use heuristic but the random sampling
-        # to get the next feature 
-        explorationRate = 0.0
         
         # use linear restrictions or conv filter restriction
         inverseFunction = "point"
@@ -124,11 +87,6 @@ def usual_configuration(dataset):
         enumerationMethod = "convex"
         #enumerationMethod = "line"
 
-        # do we need to repeatedly select an updated input neuron
-        # disallowed is needed for mcts and exhaustive search
-        #repeatedManipulation = "allowed"
-        repeatedManipulation = "disallowed"
-
         #checkingMode = "specificLayer"
         checkingMode = "stepwise"
         
@@ -137,7 +95,7 @@ def usual_configuration(dataset):
         exitWhen = "foundFirst"
         
     
-        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,repeatedManipulation,checkingMode,exitWhen)
+        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)
         
         
     elif dataset == "gtsrb": 
@@ -164,36 +122,15 @@ def usual_configuration(dataset):
         #controlledSearch = ("Percentage",0.12)
         #controlledSearch = ("NumDiffs",30)
         
-        ## maximal number of searches 
-        maxSearchNum = 1000
-        
         # MCTS_level_maximal_time
         MCTS_level_maximal_time = 300
         MCTS_all_maximal_time = 1800
         MCTS_multi_samples = 3
-        
-        #cost function used to compute the distance from the starting point
-        #costForDijkstra = ("euclidean",0.0)
-        costForDijkstra = ("l1",0.0)
-
-        #maximum number of elements in the search queue
-        maxQueueSize = 5
-        
-        # the rate that we do not use heuristic but the random sampling
-        # to get the next feature 
-        explorationRate = 0.0
-
-        # use linear restrictions or conv filter restriction
-        inverseFunction = "point"
-        #inverseFunction = "area"
 
         # point-based or line-based, or only work with a specific point
         enumerationMethod = "convex"
         #enumerationMethod = "line"
 
-        # do we need to repeatedly select an updated input neuron
-        #repeatedManipulation = "allowed"
-        repeatedManipulation = "disallowed"
 
         #checkingMode = "specificLayer"
         checkingMode = "stepwise"
@@ -203,7 +140,7 @@ def usual_configuration(dataset):
         exitWhen = "foundFirst"
         
     
-        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,repeatedManipulation,checkingMode,exitWhen)
+        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)
         
     elif dataset == "cifar10": 
     
@@ -227,36 +164,15 @@ def usual_configuration(dataset):
         #controlledSearch = ("euclidean",0.3)
         controlledSearch = ("L1",0.25)
         
-        ## maximal number of searches 
-        maxSearchNum = 1000
-        
         # MCTS_level_maximal_time
         MCTS_level_maximal_time = 300
         MCTS_all_maximal_time = 1800
         MCTS_multi_samples = 3
-        
-        #cost function used to compute the distance from the starting point
-        #costForDijkstra = ("euclidean",0.0)
-        costForDijkstra = ("l1",0.0)
-        
-        #maximum number of elements in the search queue
-        maxQueueSize = 5
-        
-        # the rate that we do not use heuristic but the random sampling
-        # to get the next feature 
-        explorationRate = 0.0
-
-        # use linear restrictions or conv filter restriction
-        inverseFunction = "point"
-        #inverseFunction = "area"
 
         # point-based or line-based, or only work with a specific point
         enumerationMethod = "convex"
         #enumerationMethod = "line"
 
-        # do we need to repeatedly select an updated input neuron
-        #repeatedManipulation = "allowed"
-        repeatedManipulation = "disallowed"
 
         #checkingMode = "specificLayer"
         checkingMode = "stepwise"
@@ -265,7 +181,7 @@ def usual_configuration(dataset):
         #exitWhen = "foundAll"
         exitWhen = "foundFirst"
         
-        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,repeatedManipulation,checkingMode,exitWhen)
+        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)
 
     elif dataset == "imageNet": 
     
@@ -289,37 +205,15 @@ def usual_configuration(dataset):
         controlledSearch = ("euclidean",0.1)
         #controlledSearch = ("L1",0.05)
         
-        ## maximal number of searches 
-        maxSearchNum = 1000
-        
         # MCTS_level_maximal_time
         MCTS_level_maximal_time = 300
         MCTS_all_maximal_time = 1800
         MCTS_multi_samples = 3
-        
-        #cost function used to compute the distance from the starting point
-        #costForDijkstra = ("euclidean",0.0)
-        costForDijkstra = ("l1",0.0)
-        
-        #maximum number of elements in the search queue
-        maxQueueSize = 5
-        
-        # the rate that we do not use heuristic but the random sampling
-        # to get the next feature 
-        explorationRate = 0.5
-
-        # use linear restrictions or conv filter restriction
-        inverseFunction = "point"
-        #inverseFunction = "area"
 
         # point-based or line-based, or only work with a specific point
         enumerationMethod = "convex"
         #enumerationMethod = "line"
         #enumerationMethod = "point"
-
-        # do we need to repeatedly select an updated input neuron
-        #repeatedManipulation = "allowed"
-        repeatedManipulation = "disallowed"
 
         checkingMode = "specificLayer"
         #checkingMode = "stepwise"
@@ -329,4 +223,4 @@ def usual_configuration(dataset):
         exitWhen = "foundFirst"
         
     
-        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,maxQueueSize,explorationRate,controlledSearch,maxSearchNum,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,inverseFunction,enumerationMethod,repeatedManipulation,checkingMode,exitWhen)
+        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)

@@ -23,7 +23,9 @@ from configuration import *
 
 
 def conv_region_solve(nfeatures,nfilters,filters,bias,activations0,activations1,cl2,gl2,inds,nn):
- 
+
+    inverseFunction = "point"
+
     random.seed(time.time())
     
     #print inds
