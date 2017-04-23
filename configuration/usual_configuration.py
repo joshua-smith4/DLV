@@ -21,7 +21,6 @@ def usual_configuration(dataset):
         
         # search approach
         #searchApproach = "heuristic"
-        #searchApproach = "exhaustive"
         searchApproach = "mcts"
 
         ## number of features of each layer 
@@ -85,9 +84,7 @@ def usual_configuration(dataset):
         
         # search approach
         #searchApproach = "heuristic"
-        #searchApproach = "exhaustive"
         searchApproach = "mcts"
-        #searchApproach = "Astar"
 
         ## number of features of each layer 
         numOfFeatures = 156 # 921 # 
@@ -156,9 +153,7 @@ def usual_configuration(dataset):
         
         # search approach
         #searchApproach = "heuristic"
-        #searchApproach = "exhaustive"
         searchApproach = "mcts"
-        #searchApproach = "Astar"
 
         ## number of features of each layer 
         numOfFeatures = 307 # 3000
@@ -223,7 +218,6 @@ def usual_configuration(dataset):
         
         # search approach
         searchApproach = "heuristic"
-        #searchApproach = "exhaustive"
         #searchApproach = "mcts"
 
         ## number of features of each layer 
@@ -286,7 +280,6 @@ def usual_configuration(dataset):
 
         # search approach
         #searchApproach = "heuristic"
-        #searchApproach = "exhaustive"
         searchApproach = "mcts"
 
         ## number of features of each layer 
