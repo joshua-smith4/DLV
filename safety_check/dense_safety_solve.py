@@ -15,9 +15,8 @@ import stopit
 
 from z3 import *
 
-#import display
-import mnist as mm
 
+from basics import *
 from scipy import ndimage
 from configuration import *
 

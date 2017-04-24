@@ -51,9 +51,9 @@ def usual_configuration(dataset):
         startIndexOfImage = 5423
         
         # the start layer to work from 
-        startLayer = 0
+        startLayer = -1
         # the maximal layer to work until 
-        maxLayer = 0
+        maxLayer = -1
         
         ## number of features of each layer, used for heuristic search 
         numOfFeatures = 150  

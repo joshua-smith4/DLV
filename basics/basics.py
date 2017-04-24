@@ -26,7 +26,6 @@ def checkCex(model,x):
         result = True
     else: 
         result = False
-
     if result == True: 
         print "the point " + str(x) + " is a counterexample!"
     else: 
@@ -47,32 +46,7 @@ def diffPercent(image1,image2):
 def numDiffs(image1,image2): 
         return len(diffImage(image1,image2))
     
-'''
 
-def diffImage(image1,image2):
-    diffnum = 0
-    elts = {}
-    if len(image1.shape) == 2:
-        for x in range(len(image1)):
-            for y in range(len(image1[0])):
-                if image1[x][y] != image2[x][y]: 
-                    diffnum += 1
-                    elts[diffnum] = (x,y)
-    elif len(image1.shape) == 3:
-        for x in range(len(image1)):
-            for y in range(len(image1[0])):
-               for z in range(len(image1[0][0])):
-                  if image1[x][y][z] != image2[x][y][z]: 
-                      diffnum += 1
-                      elts[diffnum] = (x,y,z)
-    elif len(image1.shape) == 1:
-        for x in range(len(image1)):
-            if image1[x] != image2[x]: 
-               diffnum += 1
-               elts[diffnum] = x
-    return elts
-    
-'''
     
 def euclideanDistance(image1,image2):
     return math.sqrt(np.sum(np.square(np.subtract(image1,image2)))/float(image1.size))
@@ -80,53 +54,7 @@ def euclideanDistance(image1,image2):
 def l1Distance(image1,image2):
     return np.sum(np.absolute(np.subtract(image1,image2)))/float(image1.size)
 
-'''
-    
-def euclideanDistance(image1,image2):
-    distance = 0
-    if len(image1.shape) == 2:
-        for x in range(len(image1)):
-            for y in range(len(image1[0])):
-                if image1[x][y] != image2[x][y]: 
-                    distance += (image1[x][y] - image2[x][y]) ** 2
-    elif len(image1.shape) == 3:
-        for x in range(len(image1)):
-            for y in range(len(image1[0])):
-               for z in range(len(image1[0][0])):
-                  if image1[x][y][z] != image2[x][y][z]: 
-                     distance += (image1[x][y][z] - image2[x][y][z]) ** 2
 
-    elif len(image1.shape) == 1:
-        for x in range(len(image1)):
-            if image1[x] != image2[x]: 
-                distance += (image1[x] - image2[x]) ** 2
-
-    return math.sqrt(distance / image1.size)
-    
-
-    
-def l1Distance(image1,image2):
-    distance = 0
-    if len(image1.shape) == 2:
-        for x in range(len(image1)):
-            for y in range(len(image1[0])):
-                if image1[x][y] != image2[x][y]: 
-                    distance += math.fabs(image1[x][y] - image2[x][y])
-    elif len(image1.shape) == 3:
-        for x in range(len(image1)):
-            for y in range(len(image1[0])):
-               for z in range(len(image1[0][0])):
-                  if image1[x][y][z] != image2[x][y][z]: 
-                     distance += math.fabs(image1[x][y][z] - image2[x][y][z])
-
-    elif len(image1.shape) == 1:
-        for x in range(len(image1)):
-            if image1[x] != image2[x]: 
-                distance += math.fabs(image1[x] - image2[x])
-    #print "distance = %s"%(distance)
-    return (float(distance) / np.prod(image1.shape))
-    
-'''
 
 def normalisation(y):
     for k in range(len(y)): 
@@ -195,4 +123,14 @@ def otherPixels(image, ps):
     return ops
  
     
+#######################################################
+#
+#  show detailedInformation or not
+#  FIXME: check to see if they are really needed/used
+#
+#######################################################
+
+def nprint(str):
+    return      
+        
     

@@ -69,14 +69,4 @@ timeout = 600
 epsilon = 0.1
 
 
-    
-#######################################################
-#
-#  show detailedInformation or not
-#  FIXME: check to see if they are really needed/used
-#
-#######################################################
 
-def nprint(str):
-    return      
-        

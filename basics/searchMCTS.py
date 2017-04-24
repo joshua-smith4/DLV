@@ -19,7 +19,7 @@ from configuration import *
 from regionSynth import initialiseRegion, initialiseRegions
 
 from inputManipulation import applyManipulation
-from basics import mergeTwoDicts, diffPercent, euclideanDistance, l1Distance, numDiffs, diffImage
+from basics import *
 
 # tunable parameter for MCTS
 cp = 0.5
