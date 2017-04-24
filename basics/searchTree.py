@@ -39,8 +39,7 @@ class searchTree:
     
         # a queue to be processed first in first out
         self.rk = []
-        # the region to be considered
-        self.consideringRegion = []
+
         
     def destructor(self): 
         self.images = {}
@@ -50,9 +49,7 @@ class searchTree:
         self.manipulated = {}
         self.images[(-1,-1)] = []
         self.rk = []        
-        
-    def defineConsideringRegion(self,rg):
-        self.consideringRegion = rg
+
                 
     def getOneUnexplored(self):
         if len(self.rk) > 0: 
@@ -83,18 +80,13 @@ class searchTree:
         self.numDimsToManis[index] = numDimsToMani
         return index
         
-    def reStartWhenNoneLeft(self,excludingPixels): 
-        if len(excludingPixels+self.manipulated[-1]) == self.images[(-1,-1)].size: 
-            self.manipulated[-1] = []
         
     def addImages(self,model,ims):
         inds = [ i for (i,j) in self.images.keys() if j == -1 ]
         index = max(inds) + 1
-        excludingPixels = otherPixels(ims[0],self.consideringRegion)
-        self.reStartWhenNoneLeft(excludingPixels)
         for image in ims: 
             self.images[(index,-1)] = image
-            (span,numSpan,nn) = initialiseRegion(model,image,excludingPixels+self.manipulated[-1])
+            (span,numSpan,nn) = initialiseRegion(model,image,self.manipulated[-1])
             self.spans[(index,-1)] = span
             self.numSpans[(index,-1)] = numSpan
             self.numDimsToManis[(index,-1)] = nn

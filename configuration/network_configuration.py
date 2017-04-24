@@ -83,7 +83,7 @@ def network_parameters(dataset):
 
 # ce: the region definition for layer 0, i.e., e_0
         featureDims = 2
-        span = 255/float(255)
+        span = 255/float(255) 
         numSpan = 1
         errorBounds = {}
         errorBounds[-1] = 1.0

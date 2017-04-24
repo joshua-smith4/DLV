@@ -74,6 +74,9 @@ class dataCollection:
         self.fileHandler.write("\n")
             
     def summarise(self):
+        if len(self.l1Distance) == 0: 
+            self.fileHandler.write("none of the images were successfully manipulated. ")
+            return 0
         art = sum(self.runningTime.values()) / len(self.runningTime.values()) 
         self.fileHandler.write("average running time: %s\n"%(art))
         amp = sum(self.manipulationPercentage.values()) / len(self.manipulationPercentage.values())

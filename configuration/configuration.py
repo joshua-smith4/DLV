@@ -51,7 +51,7 @@ dataProcessingBatchNum = 1
 #######################################################
 
 
-(startIndexOfImage,startLayer, maxLayer,searchApproach,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen) = usual_configuration(dataset)
+(startIndexOfImage,startLayer, maxLayer,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen) = usual_configuration(dataset)
     
 
 ############################################################

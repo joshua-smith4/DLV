@@ -21,10 +21,12 @@ import mnist as mm
 from scipy import ndimage
 from configuration import *
 
+inverseFunction = "point"
+
 
 def conv_region_solve(nfeatures,nfilters,filters,bias,activations0,activations1,cl2,gl2,inds,nn):
 
-    inverseFunction = "point"
+
 
     random.seed(time.time())
     

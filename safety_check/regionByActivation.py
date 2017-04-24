@@ -48,7 +48,7 @@ def initialiseRegionActivation(model,manipulated,image):
             else: numDimsToMani = featureDims
             # get those elements with maximal/minimum values
             ls = getTop2DActivation(image,manipulated,[],numDimsToMani,-1)
-                
+                            
         elif len(image.shape) == 3:
             # decide how many elements in the input will be considered
             if image.size < featureDims : 
@@ -167,7 +167,7 @@ def getTop2DActivation(image,manipulated,ps,numDimsToMani,layerToConsider):
             
     avg = np.average(image)
     nimage = np.absolute(image - avg) 
-            
+                
     topImage = {}
     toBeDeleted = []
     for i in range(len(image)):

@@ -23,9 +23,10 @@ from scipy import ndimage
 from configuration import *
 from basics import *
 
-def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activations,prevSpan,prevNumSpan,span,numSpan,pk):  
+inverseFunction = "point"
 
-    inverseFunction = "point"
+
+def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activations,prevSpan,prevNumSpan,span,numSpan,pk):  
 
     random.seed(time.time())
         

@@ -155,7 +155,7 @@ class searchMCTS:
         
     def initialiseExplorationNode(self,index,availableActions):
         nprint("expanding %s"%(index))
-        for (actionId, (span,numSpan,_)) in availableActions.iteritems() : #initialiseRegions(self.model,self.image,list(set(self.spans[index].keys() + self.uselessPixels))): 
+        for (actionId, (span,numSpan,_)) in availableActions.iteritems() : 
             self.indexToNow += 1
             self.indexToActionID[self.indexToNow] = actionId
             self.initialiseLeafNode(self.indexToNow,index,span,numSpan)
@@ -187,8 +187,7 @@ class searchMCTS:
             if childTerminated == True: break
             i += 1
         return (childTerminated, max(sampleValues))
-        #return self.sampleNext(self.spans[index],self.numSpans[index])
-        #allChildren = initialiseRegions(model,self.image,self.spans[index].keys()) 
+
     
     def sampleNext(self,spansPath,numSpansPath,depth,availableActionIDs,usedActionIDs): 
         #print spansPath.keys()
@@ -221,8 +220,6 @@ class searchMCTS:
             print("sampling a path ends by controlled search with depth %s ... "%depth)
             return (depth == 0, termValue)
         else: 
-            #print("continue sampling node ... ")
-            #allChildren = initialiseRegions(self.model,self.image,spansPath.keys())
 
             randomActionIndex = random.choice(list(set(availableActionIDs)-set(usedActionIDs))) #random.randint(0, len(allChildren)-1)
             (span,numSpan,_) = self.actions[randomActionIndex]

@@ -164,7 +164,7 @@ def dense_solve_prep(model,dataBasics,nfeatures,nfilters,wv,bv,activations0,acti
 
 def initialiseRegions(model,image,manipulated):
     allRegions = []
-    num = numOfFeatures
+    num = image.size/featureDims
     newManipulated1 = []
     newManipulated2 = manipulated
     while num > 0 : 

@@ -17,15 +17,11 @@ def usual_configuration(dataset):
         startLayer = 0
 
         # the maximal layer to work until 
-        maxLayer = 1
-        
-        # search approach
-        #searchApproach = "heuristic"
-        searchApproach = "mcts"
+        maxLayer = 2
 
         ## number of features of each layer 
         # in the paper, dims_L = numOfFeatures * featureDims
-        numOfFeatures = 0
+        numOfFeatures = 1
         
         ## control by distance
         controlledSearch = ("euclidean",0.1)
@@ -40,7 +36,6 @@ def usual_configuration(dataset):
         #enumerationMethod = "convex"
         enumerationMethod = "line"
 
-
         #checkingMode = "specificLayer"
         checkingMode = "stepwise"
         
@@ -48,7 +43,7 @@ def usual_configuration(dataset):
         exitWhen = "foundAll"
         #exitWhen = "foundFirst"
         
-        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)
+        return (startIndexOfImage,startLayer,maxLayer,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)
         
     elif dataset == "mnist": 
 
@@ -61,12 +56,8 @@ def usual_configuration(dataset):
         # the maximal layer to work until 
         maxLayer = -1
         
-        # search approach
-        #searchApproach = "heuristic"
-        searchApproach = "mcts"
-
-        ## number of features of each layer 
-        numOfFeatures = 156 # 921 # 
+        ## number of features of each layer, used for heuristic search 
+        numOfFeatures = 150  
         
         ## control by distance
         #controlledSearch = ("euclidean",0.3)
@@ -78,10 +69,6 @@ def usual_configuration(dataset):
         MCTS_level_maximal_time = 60
         MCTS_all_maximal_time = 300
         MCTS_multi_samples = 5
-        
-        # use linear restrictions or conv filter restriction
-        inverseFunction = "point"
-        #inverseFunction = "area"
 
         # point-based or line-based, or only work with a specific point
         enumerationMethod = "convex"
@@ -94,8 +81,7 @@ def usual_configuration(dataset):
         #exitWhen = "foundAll"
         exitWhen = "foundFirst"
         
-    
-        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)
+        return (startIndexOfImage,startLayer,maxLayer,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)
         
         
     elif dataset == "gtsrb": 
@@ -108,13 +94,9 @@ def usual_configuration(dataset):
         startLayer = -1
         # the maximal layer to work until 
         maxLayer = -1
-        
-        # search approach
-        #searchApproach = "heuristic"
-        searchApproach = "mcts"
 
         ## number of features of each layer 
-        numOfFeatures = 307 # 3000
+        numOfFeatures = 500 
         
         ## control by distance
         #controlledSearch = ("euclidean",0.3)
@@ -140,7 +122,7 @@ def usual_configuration(dataset):
         exitWhen = "foundFirst"
         
     
-        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)
+        return (startIndexOfImage,startLayer,maxLayer,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)
         
     elif dataset == "cifar10": 
     
@@ -152,13 +134,9 @@ def usual_configuration(dataset):
         startLayer = -1
         # the maximal layer to work until 
         maxLayer = -1
-        
-        # search approach
-        searchApproach = "heuristic"
-        #searchApproach = "mcts"
 
         ## number of features of each layer 
-        numOfFeatures = 204 # 540
+        numOfFeatures = 500
         
         ## control by distance
         #controlledSearch = ("euclidean",0.3)
@@ -181,7 +159,7 @@ def usual_configuration(dataset):
         #exitWhen = "foundAll"
         exitWhen = "foundFirst"
         
-        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)
+        return (startIndexOfImage,startLayer,maxLayer,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)
 
     elif dataset == "imageNet": 
     
@@ -193,10 +171,6 @@ def usual_configuration(dataset):
         startLayer = 0
         # the maximal layer to work until 
         maxLayer = 1
-
-        # search approach
-        #searchApproach = "heuristic"
-        searchApproach = "mcts"
 
         ## number of features of each layer 
         numOfFeatures = 20000
@@ -223,4 +197,4 @@ def usual_configuration(dataset):
         exitWhen = "foundFirst"
         
     
-        return (startIndexOfImage,startLayer,maxLayer,searchApproach,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)
+        return (startIndexOfImage,startLayer,maxLayer,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)

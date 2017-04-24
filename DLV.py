@@ -20,7 +20,6 @@ import random
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
-
 from loadData import loadData 
 from regionSynth import regionSynth, initialiseRegion
 from precisionSynth import precisionSynth
@@ -36,8 +35,6 @@ from dataCollection import dataCollection
 
 from inputManipulation import applyManipulation,assignManipulationSimple
 
-import theano
-import theano.tensor as T
         
 def main():
 
@@ -67,11 +64,12 @@ numOfPointsAfterEachFeature = 1
 
 def handleOne(model,dc,startIndexOfImage):
 
-
     # get an image to interpolate
     global np
     image = NN.getImage(model,startIndexOfImage)
     print("the shape of the input is "+ str(image.shape))
+    
+    image = np.array([3.58747339,1.11101673])
             
     dc.initialiseIndex(startIndexOfImage)
     originalImage = copy.deepcopy(image)
@@ -87,13 +85,14 @@ def handleOne(model,dc,startIndexOfImage):
         start_time = time.time()
             
         # only these layers need to be checked
-        if layerType in ["Convolution2D", "Dense"] and searchApproach == "heuristic": 
+        if layerType in ["Convolution2D", "Dense", "InputLayer"] and k >= 0 : 
                     
             dc.initialiseLayer(k)
     
             st = searchTree(image,k)
             st.addImages(model,[image])
 
+            print("\n================================================================")
             print "\nstart checking the safety of layer "+str(k)
         
             (originalClass,originalConfident) = NN.predictWithImage(model,image)
@@ -190,7 +189,7 @@ def handleOne(model,dc,startIndexOfImage):
                 print "(6) no adversarial example is found in this layer within the distance restriction." 
             st.destructor()
             
-        elif layerType in ["Input"] and searchApproach in ["mcts"]: 
+        elif layerType in ["Input"]  and k < 0: 
     
             print "directly handling the image ... "
     
@@ -251,6 +250,7 @@ def handleOne(model,dc,startIndexOfImage):
                 path0="%s/%s_currentBest.png"%(directory_pic_string,startIndexOfImage)
                 dataBasics.save(-1,image1,path0)
                 
+                runningTime_all = time.time() - runningTime_all
                 numberOfMoves += 1
 
             (_,bestSpans,bestNumSpans) = st.bestCase
@@ -279,91 +279,10 @@ def handleOne(model,dc,startIndexOfImage):
                 dc.addManipulationPercentage(percent)
                 
             st.destructor()
-
-
-        elif layerType in ["Input"] and searchApproach in ["heuristic"]: 
-        
-            print "directly handling the image ... "
-    
-            dc.initialiseLayer(k)
-    
-            # initialise a search tree
-            st = searchTree(image,k)
-
-            (originalClass,originalConfident) = NN.predictWithImage(model,image)
-            st.addImages(model,(-1,-1),[(image,originalConfident)],[],0) 
-            
-            nsn = 0 
-            while st.emptyQueue() == False :  
-                nsn += 1
-                index = st.getOneUnexplored()
-                print "\n==============================================================="
-                print "Round: %s"%(str(nsn))
-                print "handling image labelled with %s"%(str(index))
-                print "number of images remaining in the queue: %s"%(len(st.rk))
-                print "number of visited images: %s"%(len(st.visitedImages))
-
                 
-                st.addVisitedImage(st.images[index])
-                (image0,span,numSpan,numDimsToMani,stepsUpToNow) = st.getInfo(index)
-                print "number of steps up to now: %s"%(stepsUpToNow+1)
-                print "number of dimensions have been modified: %s"%(len(st.manipulated[index][-1]+st.manipulated[index][0]))
-
-
-
-                image1 = applyManipulation(image0,span,numSpan)
-                print "appying manipulations on dimensions %s"%(span.keys())
-                
-                (class1,confident1) = NN.predictWithImage(model,image1)
-                re = class1 != originalClass
-                print "confidence : %s"%(confident1)
-                print "number of dimensions have been modified : %s"%(np.sum(image1 != st.images[(-1,-1)]))
-                print "Euclidean distance : %s"%(euclideanDistance(image1,st.images[(-1,-1)]))
-                print "L1 distance : %s"%(l1Distance(image1,st.images[(-1,-1)]))
-                print "manipulation percentage : %s"%(diffPercent(image1,st.images[(-1,-1)]))
-
-                
-                path1 = "%s/%s_%s_%s_into_%s_with_confidence_%s.png"%(directory_pic_string,nsn,startIndexOfImage,originalClass,class1,confident1)
-                dataBasics.save(index[0],image1, path1)
-                
-                if re == True: 
-                    path1 = "%s/%s_%s_modified_into_%s_with_confidence_%s.png"%(directory_pic_string,startIndexOfImage,originalClass,class1,confident1)
-                    dataBasics.save(index[0],image0, path1)
-                    wk = [image0]
-                    (re,percent,eudist,l1dist) = reportInfo(image,wk)
-                
-                (distMethod,distVal) = controlledSearch
-                if distMethod == "euclidean": 
-                    termByDist = euclideanDistance(image1,st.images[(-1,-1)]) > distVal
-                elif distMethod == "L1": 
-                    termByDist = l1Distance(image1,st.images[(-1,-1)]) > distVal
-                elif distMethod == "Percentage": 
-                    termByDist = diffPercent(image1,st.images[(-1,-1)]) > distVal
-                elif distMethod == "NumDiffs": 
-                    termByDist = numDiffs(image1,st.images[(-1,-1)]) + featureDims > distVal
-                termByDist = st.hasVisited(image1) or termByDist
-                
-                #print st.manipulated[index]
-                if termByDist == False: 
-                    c = st.computeCost(model,image1)
-                    print "add images ... "
-                    index = st.addImages(model,index,[(image1,c)],st.manipulated[index][-1]+st.manipulated[index][0],stepsUpToNow+1)
-                    
-                st.removeProcessed(index,0)
-                print "removed the image %s"%(str(index))
-                
-            if re == True: 
-                print "euclidean distance %s"%(eudist)
-                print "L1 distance %s\n"%(l1dist)
-                print "manipulated percentage distance %s\n"%(percent)
-                dc.addEuclideanDistance(eudist)
-                dc.addl1Distance(l1dist)
-                (ocl,ocf) = NN.predictWithImage(model,wk[0])
-                dc.addConfidence(ocf)
-                break
-                
-            st.destructor()
- 
+        else: 
+            print("do not know how to handle the layer %s of type %s"%(k,layerType))
+            return
                 
         runningTime = time.time() - start_time   
         dc.addRunningTime(runningTime)

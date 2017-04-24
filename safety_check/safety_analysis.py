@@ -28,6 +28,7 @@ from networkBasics import *
 from configuration import * 
 
 
+
 def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp):
 
     originalIndex = copy.deepcopy(index)
@@ -385,15 +386,8 @@ def conv_solve_prep(model,dataBasics,string,originalLayer2Consider,layer2Conside
     if originalLayer2Consider > layer2Consider: 
         (bl1,newInput) = conv_safety_solve(layer2Consider,nfeatures,nfilters,filterCollection,biasCollection,input,activations,prevSpan,prevNumSpan,span,numSpan,cp)
     else: 
-        #global enumerationMethod
-        #enumerationMethodTemp = copy.deepcopy(enumerationMethod)
-        #enumerationMethod = "point"
         (bl1,newInput) = conv_safety_solve(layer2Consider,nfeatures,nfilters,filterCollection,biasCollection,input,activations,prevSpan,prevNumSpan,span,numSpan,cp)
-        #enumerationMethod = copy.deepcopy(enumerationMethodTemp)
         
-    #dataBasics.save(input2, string+"_"+str(point)+".png")
-    #print("bl1="+str(bl1)+"   newInput="+str(len(newInput)))
-
     nprint("completed a round of processing of the entire image ")
     return (bl1,newInput)
     
