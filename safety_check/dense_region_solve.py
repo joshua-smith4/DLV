@@ -21,6 +21,23 @@ from scipy import ndimage
 
 from configuration import *
 
+
+############################################################
+#
+#  a parameter to decide whether 
+#  FIXME: check to see if they are really needed/used
+#
+################################################################
+
+# 1) the stretch is to decide a dimension of the next layer on 
+#     the entire region of the current layer
+# 2) the condense is to decide several (depends on refinementRate) dimensions 
+#     of the next layer on a manipulation of a single dimension of the current layer
+
+#regionSynthMethod = "stretch"
+regionSynthMethod = "condense"
+
+
 def dense_region_solve(nfeatures,nfilters,filters,bias,activations0,activations1,span,numSpan,inds):  
 
     if regionSynthMethod == "stretch": 

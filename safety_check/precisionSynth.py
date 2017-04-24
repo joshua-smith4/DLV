@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-compupute p_k according to e_k = (nextSpan,nextNumSpan), e_{k-1} = (cl,gl) and p_{k-1}
+compupute p_k according to e_k = (nextSpan,nextNumSpan), e_{k-1} = (span,numSpan) and p_{k-1}
 author: Xiaowei Huang
 """
 
@@ -22,7 +22,16 @@ from basics import *
 The following is an overapproximation
 """
 
-def precisionSynth(layer2Consider,nextSpan,nextNumSpan):
+
+
+def precisionSynth(model,image,layer2Consider,span,numSpan,nextSpan,nextNumSpan):
+
+    if enumerationMethod == "line":
+        return precSynthFull(model,image,layer2Consider,span,numSpan,nextSpan,nextNumSpan)
+    elif enumerationMethod == "convex":  
+        return precSynthSimp(model,image,layer2Consider,span,numSpan,nextSpan,nextNumSpan)
+
+def precSynthSimp(model,image,layer2Consider,span,numSpan,nextSpan,nextNumSpan):
 
     if layer2Consider in errorBounds.keys(): 
         pk = errorBounds[layer2Consider]
@@ -37,10 +46,10 @@ def precisionSynth(layer2Consider,nextSpan,nextNumSpan):
     return (nextSpan,nextNumSpan,pk)
 
 
-"""
 
-def precisionSynth(model,dataset,image,layer2Consider,cl,gl,nextSpan,nextNumSpan,pk):
+def precSynthFull(model,image,layer2Consider,span,numSpan,nextSpan,nextNumSpan):
 
+    pk = min(span.values())
 
     config = NN.getConfig(model)
 
@@ -67,7 +76,7 @@ def precisionSynth(model,dataset,image,layer2Consider,cl,gl,nextSpan,nextNumSpan
         nfilters = numberOfFilters(wv2Consider)
         # features can be seen as the inputs for a convolutional layer
         nfeatures = numberOfFeatures(wv2Consider)
-        npk = conv_solve_prep(model,dataBasics,nfeatures,nfilters,wv2Consider,bv2Consider,activations0,activations1,cl,gl,nextSpan,nextNumSpan,pk)
+        npk = conv_solve_prep(model,dataBasics,nfeatures,nfilters,wv2Consider,bv2Consider,activations0,activations1,span,numSpan,nextSpan,nextNumSpan,pk)
         
     elif layerType == "Dense":  
         print "dense layer, synthesising precision ..."
@@ -75,7 +84,7 @@ def precisionSynth(model,dataset,image,layer2Consider,cl,gl,nextSpan,nextNumSpan
         nfilters = numberOfFilters(wv2Consider)
         # features can be seen as the inputs for a convolutional layer
         nfeatures = numberOfFeatures(wv2Consider)
-        npk = dense_solve_prep(model,dataBasics,nfeatures,nfilters,wv2Consider,bv2Consider,activations0,activations1,cl,gl,nextSpan,nextNumSpan,pk)
+        npk = dense_solve_prep(model,dataBasics,nfeatures,nfilters,wv2Consider,bv2Consider,activations0,activations1,span,numSpan,nextSpan,nextNumSpan,pk)
         
     elif layerType == "InputLayer":  
         print "inputLayer layer, synthesising precision ..."
@@ -83,10 +92,15 @@ def precisionSynth(model,dataset,image,layer2Consider,cl,gl,nextSpan,nextNumSpan
     else: 
         npk = copy.copy(pk)
 
-    return npk
+    for k in nextSpan.keys(): 
+        length = nextSpan[k] * nextNumSpan[k]
+        nextNumSpan[k] = math.ceil(length / float(npk))
+        nextSpan[k] = npk
+        
+    return (nextSpan,nextNumSpan,npk)
     
     
-def conv_solve_prep(model,dataBasics,nfeatures,nfilters,wv,bv,activations0,activations1,cl,gl,nextSpan,nextNumSpan,pk):
+def conv_solve_prep(model,dataBasics,nfeatures,nfilters,wv,bv,activations0,activations1,span,numSpan,nextSpan,nextNumSpan,pk):
 
     # space holders for computation values
     biasCollection = {}
@@ -108,13 +122,13 @@ def conv_solve_prep(model,dataBasics,nfeatures,nfilters,wv,bv,activations0,activ
             filterCollection[l,k] = flipedFilter
             #print filter.shape
             
-    npk = conv_precision_solve(nfeatures,nfilters,filterCollection,biasCollection,activations0,activations1,cl,gl,nextSpan,nextNumSpan,pk)
+    npk = conv_precision_solve(nfeatures,nfilters,filterCollection,biasCollection,activations0,activations1,span,numSpan,nextSpan,nextNumSpan,pk)
     #print("found the region to work ")
     
     return npk
     
     
-def dense_solve_prep(model,dataBasics,nfeatures,nfilters,wv,bv,activations0,activations1,cl,gl,nextSpan,nextNumSpan,pk):
+def dense_solve_prep(model,dataBasics,nfeatures,nfilters,wv,bv,activations0,activations1,span,numSpan,nextSpan,nextNumSpan,pk):
 
     # space holders for computation values
     biasCollection = {}
@@ -128,9 +142,9 @@ def dense_solve_prep(model,dataBasics,nfeatures,nfilters,wv,bv,activations0,acti
             for l in range(nfeatures): 
                 biasCollection[l,c-1] = w
             
-    npk = dense_precision_solve(nfeatures,nfilters,filterCollection,biasCollection,activations0,activations1,cl,gl,nextSpan,nextNumSpan,pk)
+    npk = dense_precision_solve(nfeatures,nfilters,filterCollection,biasCollection,activations0,activations1,span,numSpan,nextSpan,nextNumSpan,pk)
     #print("found the region to work ")
     
     return npk
     
-"""
+

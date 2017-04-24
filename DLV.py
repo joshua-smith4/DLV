@@ -69,7 +69,7 @@ def handleOne(model,dc,startIndexOfImage):
     image = NN.getImage(model,startIndexOfImage)
     print("the shape of the input is "+ str(image.shape))
     
-    image = np.array([3.58747339,1.11101673])
+    if dataset == "twoDcurve": image = np.array([3.58747339,1.11101673])
             
     dc.initialiseIndex(startIndexOfImage)
     originalImage = copy.deepcopy(image)
@@ -132,7 +132,8 @@ def handleOne(model,dc,startIndexOfImage):
                     (nextSpan,nextNumSpan,numDimsToMani) = regionSynth(model,dataset,image0,st.manipulated[t],t,span,numSpan,numDimsToMani)
                     st.addManipulated(t,nextSpan.keys())
 
-                    (nextSpan,nextNumSpan,npre) = precisionSynth(t,nextSpan,nextNumSpan)
+                    #(nextSpan,nextNumSpan,npre) = precisionSynth(t,nextSpan,nextNumSpan)
+                    (nextSpan,nextNumSpan,npre) = precisionSynth(model,image0,t,span,numSpan,nextSpan,nextNumSpan)
                     
                     print "dimensions to be considered: %s"%(nextSpan)
                     print "spans for the dimensions: %s"%(nextNumSpan)
@@ -230,7 +231,7 @@ def handleOne(model,dc,startIndexOfImage):
                         st.backPropagation(node,value)
                     if childTerminated == True: break
                     runningTime_level = time.time() - start_time_level   
-                    print("best possible one is %s"%(str(st.bestCase)))
+                    print("best possible one is %s"%(st.showBestCase()))
                 bestChild = st.bestChild(st.rootIndex)
                 #st.collectUselessPixels(st.rootIndex)
                 st.makeOneMove(bestChild)

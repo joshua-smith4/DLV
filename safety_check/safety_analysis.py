@@ -98,7 +98,8 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
             
         nprint("\nin round: %s / %s"%(round, allRounds))
         nprint("layer: " + str(layer2Consider))
-        nprint("point %s"%(counter_numSpan))
+        nprint("counter_numSpan %s"%(counter_numSpan))
+        nprint("numSpan %s"%(numSpan))
         #print "maximal point %s"%(numSpan)
         #print "activations1=%s"%(activations1)
 
@@ -253,13 +254,11 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
             counter_numSpans[originalLayer2Consider] = copy.deepcopy(counter_numSpan)      
             round += 1
             rn += 1
-        
-            #print("1%s---%s"%(rkupdated,rk))
-
             
             #path2 = directory_pic_string+"/temp%s_(round=%s).png"%(rn,round)
             #path2 = directory_pic_string+"/temp.png"
             #dataBasics.save(index[0],newInput, path2)
+        
         else: 
             rs += 1   
             
@@ -281,7 +280,6 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
             round += 1
             
             #print("2%s---%s"%(rkupdated,rk))
-
 
     print("ran througn the neural network for %s times."%(rn))
     #path2 = directory_pic_string+"/temp%s_%s.png"%(howfar,originalLayer2Consider)

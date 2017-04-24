@@ -43,8 +43,6 @@ def network_parameters(dataset):
 #
 #######################################################
     
-
-
 # which dataset to analyse
     if dataset == "mnist": 
         NN = NN_mnist
@@ -54,7 +52,6 @@ def network_parameters(dataset):
         directory_pic_string = makedirectory("data/mnist_pic")
         
 # ce: the region definition for layer 0, i.e., e_0
-        featureDims = 5 # 20 #  20
         span = 255/float(255)
         numSpan = 1
         errorBounds = {}
@@ -68,7 +65,6 @@ def network_parameters(dataset):
         directory_pic_string = makedirectory("data/gtsrb_pic")
         
 # ce: the region definition for layer 0, i.e., e_0
-        featureDims = 10
         span = 255/float(255)
         numSpan = 1
         errorBounds = {}
@@ -82,7 +78,6 @@ def network_parameters(dataset):
         directory_pic_string = makedirectory("data/twoDcurve_pic")
 
 # ce: the region definition for layer 0, i.e., e_0
-        featureDims = 2
         span = 255/float(255) 
         numSpan = 1
         errorBounds = {}
@@ -96,7 +91,6 @@ def network_parameters(dataset):
         directory_pic_string = makedirectory("data/cifar10_pic")
  
 # ce: the region definition for layer 0, i.e., e_0
-        featureDims = 15
         span = 255/float(255)
         numSpan = 1
         errorBounds = {}
@@ -110,7 +104,6 @@ def network_parameters(dataset):
         directory_pic_string = makedirectory("data/imageNet_pic")
 
 # ce: the region definition for layer 0, i.e., e_0
-        featureDims = 5
         span = 125
         numSpan = 1
         errorBounds = {}
@@ -123,8 +116,7 @@ def network_parameters(dataset):
 #######################################################
     
     filterSize = 3 
-
-    return (featureDims,span,numSpan,errorBounds,boundOfPixelValue,NN,dataBasics,directory_model_string,directory_statistics_string,directory_pic_string,filterSize)
+    return (span,numSpan,errorBounds,boundOfPixelValue,NN,dataBasics,directory_model_string,directory_statistics_string,directory_pic_string,filterSize)
 
 def makedirectory(directory_name):
     if not os.path.exists(directory_name):

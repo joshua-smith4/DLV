@@ -22,6 +22,7 @@ def usual_configuration(dataset):
         ## number of features of each layer 
         # in the paper, dims_L = numOfFeatures * featureDims
         numOfFeatures = 1
+        featureDims = 2
         
         ## control by distance
         controlledSearch = ("euclidean",0.1)
@@ -42,22 +43,21 @@ def usual_configuration(dataset):
         # exit whenever an adversarial example is found
         exitWhen = "foundAll"
         #exitWhen = "foundFirst"
-        
-        return (startIndexOfImage,startLayer,maxLayer,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)
-        
+                
     elif dataset == "mnist": 
 
         # which image to start with or work with 
         # from the database
-        startIndexOfImage = 5422
+        startIndexOfImage = 5423
         
         # the start layer to work from 
-        startLayer = -1
+        startLayer = 0
         # the maximal layer to work until 
-        maxLayer = -1
+        maxLayer = 0
         
         ## number of features of each layer, used for heuristic search 
         numOfFeatures = 150  
+        featureDims = 5 # 20 #  20
         
         ## control by distance
         #controlledSearch = ("euclidean",0.3)
@@ -80,9 +80,7 @@ def usual_configuration(dataset):
         # exit whenever an adversarial example is found
         #exitWhen = "foundAll"
         exitWhen = "foundFirst"
-        
-        return (startIndexOfImage,startLayer,maxLayer,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)
-        
+                
         
     elif dataset == "gtsrb": 
 
@@ -97,6 +95,7 @@ def usual_configuration(dataset):
 
         ## number of features of each layer 
         numOfFeatures = 500 
+        featureDims = 10
         
         ## control by distance
         #controlledSearch = ("euclidean",0.3)
@@ -120,10 +119,7 @@ def usual_configuration(dataset):
         # exit whenever an adversarial example is found
         #exitWhen = "foundAll"
         exitWhen = "foundFirst"
-        
-    
-        return (startIndexOfImage,startLayer,maxLayer,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)
-        
+                
     elif dataset == "cifar10": 
     
         # which image to start with or work with 
@@ -137,6 +133,8 @@ def usual_configuration(dataset):
 
         ## number of features of each layer 
         numOfFeatures = 500
+        featureDims = 15
+
         
         ## control by distance
         #controlledSearch = ("euclidean",0.3)
@@ -151,7 +149,6 @@ def usual_configuration(dataset):
         enumerationMethod = "convex"
         #enumerationMethod = "line"
 
-
         #checkingMode = "specificLayer"
         checkingMode = "stepwise"
         
@@ -159,8 +156,6 @@ def usual_configuration(dataset):
         #exitWhen = "foundAll"
         exitWhen = "foundFirst"
         
-        return (startIndexOfImage,startLayer,maxLayer,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)
-
     elif dataset == "imageNet": 
     
         # which image to start with or work with 
@@ -174,6 +169,7 @@ def usual_configuration(dataset):
 
         ## number of features of each layer 
         numOfFeatures = 20000
+        featureDims = 200
         
         ## control by distance
         controlledSearch = ("euclidean",0.1)
@@ -197,4 +193,4 @@ def usual_configuration(dataset):
         exitWhen = "foundFirst"
         
     
-        return (startIndexOfImage,startLayer,maxLayer,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)
+    return (featureDims,startIndexOfImage,startLayer,maxLayer,numOfFeatures,controlledSearch,MCTS_all_maximal_time, MCTS_level_maximal_time,MCTS_multi_samples,enumerationMethod,checkingMode,exitWhen)

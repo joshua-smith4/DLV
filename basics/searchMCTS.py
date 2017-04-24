@@ -134,7 +134,7 @@ class searchMCTS:
         allValues = {}
         for childIndex in self.children[index]: 
             allValues[childIndex] = self.cost[childIndex]
-        print("finding best children from %s"%(allValues))
+        nprint("finding best children from %s"%(allValues))
         return max(allValues.iteritems(), key=operator.itemgetter(1))[0]
         
     def treeTraversal(self,index):
@@ -249,7 +249,8 @@ class searchMCTS:
         print "terminated by controlled search"
         return dist > distVal 
         
-
+    def showBestCase(self):
+        return "(%s,%s)"%(self.bestCase[0],self.bestCase[1].keys())
         
     def euclideanDist(self,index): 
         image1 = applyManipulation(self.image,self.spans[index],self.numSpans[index])
