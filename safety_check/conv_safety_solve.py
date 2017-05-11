@@ -118,7 +118,6 @@ def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activ
             pstr = eval("variable[1,1,%s,%s,%s] < %s"%(k+1,x,y,upper))
             pstr = And(eval("variable[1,1,%s,%s,%s] > %s"%(k+1,x,y,lower)), pstr)
             pstr = And(eval("variable[1,1,%s,%s,%s] != %s"%(k+1,x,y,activations[k][x][y])), pstr)
-            #print ("%s    %s    %s    %s"%(activations[k][x][y],avg,upper,lower))
         s.add(pstr)
         c += 1        
         

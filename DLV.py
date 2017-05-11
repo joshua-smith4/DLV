@@ -129,10 +129,10 @@ def handleOne(model,dc,startIndexOfImage):
 
                     print "(2) synthesise region from %s..."%(span.keys())
                      # ne: next region, i.e., e_{k+1}
+                    #print "manipulated: %s"%(st.manipulated[t])
                     (nextSpan,nextNumSpan,numDimsToMani) = regionSynth(model,dataset,image0,st.manipulated[t],t,span,numSpan,numDimsToMani)
                     st.addManipulated(t,nextSpan.keys())
 
-                    #(nextSpan,nextNumSpan,npre) = precisionSynth(t,nextSpan,nextNumSpan)
                     (nextSpan,nextNumSpan,npre) = precisionSynth(model,image0,t,span,numSpan,nextSpan,nextNumSpan)
                     
                     print "dimensions to be considered: %s"%(nextSpan)
@@ -155,7 +155,7 @@ def handleOne(model,dc,startIndexOfImage):
                             if len(rk) > numOfPointsAfterEachFeature: 
                                 rk = random.sample(rk, numOfPointsAfterEachFeature)
                             diffs = diffImage(image0,rk[0])
-                            print("the dimensions of the images that are changed in the previous round: %s"%diffs)
+                            print("the dimensions of the images that are changed in the this round: %s"%diffs)
                             if len(diffs) == 0: 
                                 st.clearManipulated(k)
                                 return 
