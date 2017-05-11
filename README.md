@@ -17,7 +17,7 @@ To run the program, one needs to install the following packages:
 
 Use the following command to call the program: 
 
-           python main.py
+           python DLV.py
 
 Please use the file ''configuration.py'' to set the parameters for the system to run. 
 
