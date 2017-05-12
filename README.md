@@ -10,8 +10,8 @@ Together with the software, there are two documents in Documents/ directory, one
 To run the program, one needs to install the following packages: 
 
            Python 2.7
-           Theano
-           Keras
+           Theano 0.9
+           Keras 1.2.2
 
 (2) Usage: 
 
