@@ -95,12 +95,12 @@ def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activ
             pstr = eval("variable[1,1,%s,%s,%s] < %s" %(k+1,x,y,activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] + epsilon))
             pstr = And(eval("variable[1,1,%s,%s,%s] > %s "%(k+1,x,y,activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] - epsilon)), pstr)
         elif enumerationMethod == "convex" or enumerationMethod == "point":
-            #if activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] >= 0: 
-            #    upper = activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] + pk
-            #    lower = -1 * (activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)]) - pk
-            #else: 
-            #    upper = -1 * (activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)]) + pk
-            #    lower = activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] - pk
+            if activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] >= 0: 
+                upper = activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] + pk
+                lower = -1 * (activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)]) - pk
+            else: 
+                upper = -1 * (activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)]) + pk
+                lower = activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] - pk
                 
             #if span[(k,x,y)] > 0 : 
             #    upper = activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] + epsilon
@@ -109,12 +109,12 @@ def conv_safety_solve(layer2Consider,nfeatures,nfilters,filters,bias,input,activ
             #    upper = activations[k][x][y] - span[(k,x,y)] * numSpan[(k,x,y)] + epsilon
             #    lower = activations[k][x][y] + span[(k,x,y)] * numSpan[(k,x,y)] - epsilon 
                 
-            if span[(k,x,y)] > 0 : 
-                upper = activations[k][x][y] + span[(k,x,y)]  + epsilon
-                lower = activations[k][x][y] - epsilon - span[(k,x,y)]
-            else: 
-                upper = activations[k][x][y] + epsilon - span[(k,x,y)]
-                lower = activations[k][x][y] + span[(k,x,y)] - epsilon 
+            #if span[(k,x,y)] > 0 : 
+            #    upper = activations[k][x][y] + span[(k,x,y)]  + epsilon
+            #    lower = activations[k][x][y] - epsilon - span[(k,x,y)]
+            #else: 
+            #    upper = activations[k][x][y] + epsilon - span[(k,x,y)]
+            #    lower = activations[k][x][y] + span[(k,x,y)] - epsilon 
             pstr = eval("variable[1,1,%s,%s,%s] < %s"%(k+1,x,y,upper))
             pstr = And(eval("variable[1,1,%s,%s,%s] > %s"%(k+1,x,y,lower)), pstr)
             pstr = And(eval("variable[1,1,%s,%s,%s] != %s"%(k+1,x,y,activations[k][x][y])), pstr)
