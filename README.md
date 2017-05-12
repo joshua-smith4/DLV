@@ -11,7 +11,7 @@ To run the program, one needs to install the following packages:
 
            Python 2.7
            Theano 0.9
-           Keras 1.2.2
+           Keras 1.2.2  (Note: the software currently does not work well with Keras 2.x because of image dimension ordering problems, please use a previous 1.x version)
 
 (2) Usage: 
 
