@@ -43,7 +43,7 @@ def regionSynth(model,dataset,image,manipulated,layer2Consider,span,numSpan,numD
     else: activations0 = NN.getActivationValue(model,layer2Consider-1,image)
     activations1 = NN.getActivationValue(model,layer2Consider,image)
 
-    if layerType == "Convolution2D":  
+    if layerType == "Convolution2D" or layerType == "Conv2D":  
         print "convolutional layer, synthesising region ..."
         if len(activations1.shape) == 3: 
             inds = getTop3D(model,image,activations1,manipulated,span.keys(),numDimsToMani,layer2Consider)

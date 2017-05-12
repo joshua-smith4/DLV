@@ -73,12 +73,41 @@ def read_dataset():
     
     return (X_train,Y_train,X_test,Y_test, batch_size, nb_epoch)
 
+'''
 def build_model():
     """
     define neural network model
     """
     
+    model = Sequential()
+
+    model.add(Convolution2D(nb_filters, nb_conv, nb_conv,
+                            border_mode='valid',
+                            input_shape=(1, img_rows, img_cols)))
+    model.add(Activation('relu'))
+    model.add(Convolution2D(nb_filters, nb_conv, nb_conv))
+    model.add(Activation('relu'))
+    model.add(MaxPooling2D(pool_size=(nb_pool, nb_pool)))
+    model.add(Dropout(0.25))
+
+    model.add(Flatten())
+    model.add(Dense(128))
+    model.add(Activation('relu'))
+    model.add(Dropout(0.5))
+    model.add(Dense(nb_classes))
+    model.add(Activation('softmax'))
+
+    model.compile(loss='categorical_crossentropy',
+                  optimizer='adadelta',
+                  metrics=['accuracy'])
+
+    return model
+''' 
     
+def build_model():
+    """
+    define neural network model
+    """
     
     model = Sequential()
 

@@ -84,9 +84,7 @@ def loadData():
         model = NN.read_model_from_file('%s/mnist%s.mat'%(directory_model_string,ae),'%s/mnist%s.json'%(directory_model_string,ae))
         print("Model loaded!")
         #test(model)
-        
-
-        
+                
     elif whichMode == "train" and dataset == "gtsrb": 
     
         X_train, Y_train = dataBasics.read_dataset()
