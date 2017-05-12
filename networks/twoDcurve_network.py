@@ -90,7 +90,8 @@ def read_model_from_file(weightFile,modelFile):
     for idx in range(1, 4):
         weight_1 = 2 * idx - 2
         weight_2 = 2 * idx - 1
-        model.layers[idx].set_weights([weights['weights'][0, weight_1], weights['weights'][0, weight_2].flatten()])
+        weight0 = weights['weights'][0, weight_1].reshape(model.layers[idx].get_weights()[0].shape)
+        model.layers[idx].set_weights([weight0, weights['weights'][0, weight_2].flatten()])
 
     return model
     

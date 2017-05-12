@@ -113,7 +113,7 @@ def safety_analysis(model,dataset,layer2Consider,imageIndex,st,index,cl2,gl2,cp)
         # call different solving approaches according to 
         # the type of the layer and the type of the algorithm
         # FIXME: need to expand this to work with other cases, e.g., MaxPooling2D, Convolution3D
-        if layerType == "Convolution2D":
+        if layerType == "Convolution2D" or layerType == "Conv2D":
             nprint("convolutional layer, back-propagating ...") 
             if layer2Consider == 0 : 
                 activations0 = copy.deepcopy(originalImage)

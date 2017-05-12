@@ -51,7 +51,7 @@ def usual_configuration(dataset):
         startIndexOfImage = 5423
         
         # the start layer to work from 
-        startLayer = 0
+        startLayer = -1
         # the maximal layer to work until 
         maxLayer = 0
         
@@ -95,7 +95,7 @@ def usual_configuration(dataset):
 
         ## number of features of each layer 
         numOfFeatures = 500 
-        featureDims = 10
+        featureDims = 5
         
         ## control by distance
         #controlledSearch = ("euclidean",0.3)
@@ -129,11 +129,11 @@ def usual_configuration(dataset):
         # the start layer to work from 
         startLayer = -1
         # the maximal layer to work until 
-        maxLayer = -1
+        maxLayer = 0
 
         ## number of features of each layer 
         numOfFeatures = 500
-        featureDims = 15
+        featureDims = 5
 
         
         ## control by distance

@@ -112,8 +112,6 @@ def numberOfFilters(wv):
 def numberOfFeatures(wv):
     return np.amax((zip (*((zip (*wv))[0])))[1])
     
-    
-    
 def otherPixels(image, ps):
     ops = []
     if len(image.shape) == 2: 

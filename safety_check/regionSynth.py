@@ -19,7 +19,6 @@ import imageNet_network as NN_imageNet
 from conv_region_solve import conv_region_solve
 from dense_region_solve import dense_region_solve
 from regionByActivation import *
-from regionByDerivative import *
 
 from basics import *
 from networkBasics import *

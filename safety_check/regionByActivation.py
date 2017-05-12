@@ -37,7 +37,7 @@ def initialiseRegionActivation(model,manipulated,image):
     
     #print len(manipulated)
 
-    if layerType == "Convolution2D":
+    if layerType == "Convolution2D" or layerType == "Conv2D":
 
         nextSpan = {}
         nextNumSpan = {}

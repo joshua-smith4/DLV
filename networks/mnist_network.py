@@ -78,6 +78,8 @@ def build_model():
     define neural network model
     """
     
+    
+    
     model = Sequential()
 
     model.add(Convolution2D(nb_filters, nb_conv, nb_conv,
@@ -326,7 +328,9 @@ def read_model_from_file(weightFile,modelFile):
         
         weight_1 = 2 * idx - 2
         weight_2 = 2 * idx - 1
-        model.layers[lvl].set_weights([weights['weights'][0, weight_1], weights['weights'][0, weight_2].flatten()])
+
+        weight0 = weights['weights'][0, weight_1].reshape(model.layers[lvl].get_weights()[0].shape)
+        model.layers[lvl].set_weights([weight0, weights['weights'][0, weight_2].flatten()])
 
     return model
     
@@ -354,7 +358,8 @@ def read_autoencoder_from_file(weightFile,modelFile,layerToCut):
         
         weight_1 = 2 * idx - 2
         weight_2 = 2 * idx - 1
-        model.layers[lvl-5].set_weights([weights['weights'][0, weight_1], weights['weights'][0, weight_2].flatten()])
+        weight0 = weights['weights'][0, weight_1].reshape(model.layers[lvl-5].get_weights()[0].shape)
+        model.layers[lvl-5].set_weights([weight0, weights['weights'][0, weight_2].flatten()])
 
     return model
     
@@ -371,7 +376,8 @@ def read_model_and_autoencoder_from_file(model,weightFile,modelFile,cutLayer):
         
         weight_1 = 2 * idx - 2
         weight_2 = 2 * idx - 1
-        model.layers[lvl].set_weights([weights['weights'][0, weight_1], weights['weights'][0, weight_2].flatten()])
+        weight0 = weights['weights'][0, weight_1].reshape(model.layers[lvl].get_weights()[0].shape)
+        model.layers[lvl].set_weights([weight0, weights['weights'][0, weight_2].flatten()])
 
     return model
 
@@ -390,7 +396,8 @@ def dynamic_read_model_from_file(cutmodel,weightFile,modelFile,startLayer):
         weight_1 = 2 * idx - 2
         weight_2 = 2 * idx - 1
         if lvl-startLayer >= 0: 
-            cutmodel.layers[lvl-startLayer].set_weights([weights['weights'][0, weight_1], weights['weights'][0, weight_2].flatten()])
+            weight0 = weights['weights'][0, weight_1].reshape(model.layers[lvl-startLayer].get_weights()[0].shape)
+            cutmodel.layers[lvl-startLayer].set_weights([weight0, weights['weights'][0, weight_2].flatten()])
 
     return cutmodel
     

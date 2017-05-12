@@ -105,7 +105,8 @@ def read_model_from_file(img_channels, img_rows, img_cols, nb_classes, weightFil
         
         weight_1 = 2 * idx - 2
         weight_2 = 2 * idx - 1
-        model.layers[lvl].set_weights([weights['weights'][0, weight_1], weights['weights'][0, weight_2].flatten()])
+        weight0 = weights['weights'][0, weight_1].reshape(model.layers[lvl].get_weights()[0].shape)
+        model.layers[lvl].set_weights([weight0, weights['weights'][0, weight_2].flatten()])
 
     return model
 

@@ -35,8 +35,11 @@ from dataCollection import dataCollection
 
 from inputManipulation import applyManipulation,assignManipulationSimple
 
+from keras import backend as K
         
 def main():
+
+    #K.set_image_data_format("channels_first")
 
     model = loadData()
     dc = dataCollection()
@@ -85,7 +88,7 @@ def handleOne(model,dc,startIndexOfImage):
         start_time = time.time()
             
         # only these layers need to be checked
-        if layerType in ["Convolution2D", "Dense", "InputLayer"] and k >= 0 : 
+        if layerType in ["Convolution2D","Conv2D", "Dense", "InputLayer"] and k >= 0 : 
                     
             dc.initialiseLayer(k)
     

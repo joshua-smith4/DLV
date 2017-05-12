@@ -70,7 +70,7 @@ def precSynthFull(model,image,layer2Consider,span,numSpan,nextSpan,nextNumSpan):
 
     wv2Consider, bv2Consider = getWeight(wv,bv,layer2Consider)
 
-    if layerType == "Convolution2D":  
+    if layerType == "Convolution2D" or layerType == "Conv2D":  
         print "convolutional layer, synthesising precision ..."
         # filters can be seen as the output of a convolutional layer
         nfilters = numberOfFilters(wv2Consider)
