@@ -7,9 +7,8 @@ Together with the software, there are two documents in Documents/ directory, one
 
 (1) Installation: 
 
-To run the program, one needs to install the following packages: 
-
-           
+To run the program, one needs to install the following packages:            
+           
            Python 2.7 
            
            conda install opencv numpy scikit-image cvxopt  (need to install Anaconda first)
