@@ -21,7 +21,7 @@ To run the program, one needs to install the following packages:
            
 (2) Check the backend of Keras: 
 
-The backend of Keras needs to be changed by editing the ~/.keras/keras.json file into the following format: 
+The backend of Keras needs to be changed by editing the ~/.keras/keras.json file : 
 
     "backend": "theano",
     "image_dim_ordering": "th"
