@@ -9,7 +9,7 @@ Together with the software, there are two documents in Documents/ directory, one
 
 To run the program, one needs to install the following packages: 
 
-           Python 2.7 (please use the commands "conda install opencv numpy scikit-image cvxopt" and "pip install stopit" to install other software packages)
+           Python 2.7 (please use the commands "conda install opencv numpy scikit-image cvxopt" and "pip install stopit" to install other software packages) 
            Theano 0.9
            Keras 1.2.2  (Note: the software currently does not work well with Keras 2.x because of image dimension ordering problems, please use a previous 1.x version)
            z3 (pip install pySMT z3) 
