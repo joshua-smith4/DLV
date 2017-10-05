@@ -19,6 +19,8 @@ To run the program, one needs to install the following packages:
            
            pip install pySMT z3
            
+           Note: there is some comparability problem on OpenCV. Please use version 2.4.8. 
+           
 (2) Check the backend of Keras: 
 
 The backend of Keras needs to be changed by editing the ~/.keras/keras.json file : 
