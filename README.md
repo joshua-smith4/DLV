@@ -11,7 +11,7 @@ To run the program, one needs to install the following packages:
            
            Python 2.7 
            
-           conda install opencv numpy scikit-image cvxopt  (need to install Anaconda first)
+           conda install opencv numpy scikit-image cvxopt  (need to install Anaconda first, see https://docs.anaconda.com/anaconda/install/)
            
            pip install stopit
            
