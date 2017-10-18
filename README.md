@@ -40,7 +40,5 @@ Use the following command to call the program:
 
 Please use the file ''configuration.py'' to set the parameters for the system to run. 
 
-(5) Frequently Asked Questions
-
 
 Xiaowei Huang
