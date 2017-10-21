@@ -7,11 +7,11 @@ Together with the software, there are two documents in Documents/ directory, one
 
 (1) Installation: 
 
-To run the program, one needs to install the following packages:            
+To run the program, one needs to install the following packages:
            
            Python 2.7 
            
-           conda install opencv numpy scikit-image cvxopt  (need to install Anaconda first)
+           conda install opencv numpy scikit-image cvxopt  (need to install Anaconda first, see https://docs.anaconda.com/anaconda/install/)
            
            pip install stopit
            
@@ -39,7 +39,6 @@ Use the following command to call the program:
            python DLV.py
 
 Please use the file ''configuration.py'' to set the parameters for the system to run. 
-
 
 
 Xiaowei Huang
