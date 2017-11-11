@@ -169,7 +169,7 @@ def getWeightVector(model, layer2Consider):
     	 index=model.layers.index(layer)
          h=layer.get_weights()
          
-         if len(h) > 0 and index in [0,2]  and index <= layer2Consider: 
+         if len(h) > 0 and index in [0,1,4,5,8,9]  and index <= layer2Consider: 
          # for convolutional layer
              ws = h[0]
              bs = h[1]
@@ -194,7 +194,7 @@ def getWeightVector(model, layer2Consider):
                      # (feature, filter, matrix)
                      weightVector.append(((index,j),(index,i),v[j-1]))
                      
-         elif len(h) > 0 and index in [7,10]  and index <= layer2Consider: 
+         elif len(h) > 0 and index in [13,15]  and index <= layer2Consider: 
          # for fully-connected layer
              ws = h[0]
              bs = h[1]
