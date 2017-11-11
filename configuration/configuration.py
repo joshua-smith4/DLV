@@ -18,8 +18,8 @@ from usual_configuration import *
 
 # which dataset to work with
 #dataset = "twoDcurve"
-dataset = "mnist"
-#dataset = "gtsrb"
+#dataset = "mnist"
+dataset = "gtsrb"
 #dataset = "cifar10"
 #dataset = "imageNet"
 
