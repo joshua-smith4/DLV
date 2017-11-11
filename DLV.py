@@ -283,8 +283,8 @@ def handleOne(model,dc,startIndexOfImage):
             st.destructor()
                 
         else: 
-            print("do not know how to handle the layer %s of type %s"%(k,layerType))
-            return
+            print("layer %s is of type %s, skipping"%(k,layerType))
+            #return
                 
         runningTime = time.time() - start_time   
         dc.addRunningTime(runningTime)
