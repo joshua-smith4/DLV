@@ -31,6 +31,7 @@ from networkBasics import *
 
 from searchTree import searchTree
 from searchMCTS import searchMCTS
+from mcts_twoPlayer import mcts_twoPlayer
 from dataCollection import dataCollection
 
 from inputManipulation import applyManipulation,assignManipulationSimple
@@ -62,6 +63,9 @@ def main():
 
 ## how many branches to expand 
 numOfPointsAfterEachFeature = 1
+
+mcts_mode  = "sift_twoPlayer" 
+#mcts_mode  = "singlePlayer" 
 
 def handleOne(model,dc,startIndexOfImage):
 
@@ -191,7 +195,118 @@ def handleOne(model,dc,startIndexOfImage):
                 print "(6) no adversarial example is found in this layer within the distance restriction." 
             st.destructor()
             
-        elif layerType in ["Input"]  and k < 0: 
+        elif layerType in ["Input"]  and k < 0 and mcts_mode  == "sift_twoPlayer" : 
+    
+            print "directly handling the image ... "
+    
+            dc.initialiseLayer(k)
+            
+            (originalClass,originalConfident) = NN.predictWithImage(model,image)
+            origClassStr = dataBasics.LABELS(int(originalClass))
+            path0="%s/%s_original_as_%s_with_confidence_%s.png"%(directory_pic_string,startIndexOfImage,origClassStr,originalConfident)
+            dataBasics.save(-1,originalImage, path0)
+    
+            # initialise a search tree
+            st= mcts_twoPlayer(model,model,image,image,-1,"cooperator")
+            st.initialiseActions()
+
+            st.setManipulationType("sift_twoPlayer")
+
+            start_time_all = time.time()
+            runningTime_all = 0
+            numberOfMoves = 0
+            while st.terminalNode(st.rootIndex) == False and st.terminatedByControlledSearch(st.rootIndex) == False and runningTime_all <= MCTS_all_maximal_time: 
+                print("the number of moves we have made up to now: %s"%(numberOfMoves))
+                eudist = st.euclideanDist(st.rootIndex)
+                l1dist = st.l1Dist(st.rootIndex)
+                l0dist = st.l0Dist(st.rootIndex)
+                percent = st.diffPercent(st.rootIndex)
+                diffs = st.diffImage(st.rootIndex)
+                print("euclidean distance %s"%(eudist))
+                print("L1 distance %s"%(l1dist))
+                print("L0 distance %s"%(l0dist))
+                print("manipulated percentage distance %s"%(percent))
+                print("manipulated dimensions %s"%(diffs))
+
+                start_time_level = time.time()
+                runningTime_level = 0
+                childTerminated = False
+                while runningTime_level <= MCTS_level_maximal_time: 
+                    (leafNode,availableActions) = st.treeTraversal(st.rootIndex)
+                    newNodes = st.initialiseExplorationNode(leafNode,availableActions)
+                    for node in newNodes: 
+                        (childTerminated, value) = st.sampling(node,availableActions)
+                        #if childTerminated == True: break
+                        st.backPropagation(node,value)
+                    #if childTerminated == True: break
+                    runningTime_level = time.time() - start_time_level   
+                    nprint("best possible one is %s"%(str(st.bestCase)))
+                bestChild = st.bestChild(st.rootIndex)
+                #st.collectUselessPixels(st.rootIndex)
+                st.makeOneMove(bestChild)
+                
+                image1 = st.applyManipulationToGetImage(st.spans[st.rootIndex],st.numSpans[st.rootIndex])
+                diffs = st.diffImage(st.rootIndex)
+                path0="%s/%s_temp_%s.png"%(directory_pic_string,startIndexOfImage,len(diffs))
+                dataBasics.save(-1,image1,path0)
+                (newClass,newConfident) = NN.predictWithImage(model,image1)
+                print("confidence: %s"%(newConfident))
+                
+                if childTerminated == True: break
+                
+                # store the current best
+                (_,bestSpans,bestNumSpans) = st.bestCase
+                image1 = st.applyManipulationToGetImage(bestSpans,bestNumSpans)
+                path0="%s/%s_currentBest.png"%(directory_pic_string,startIndexOfImage)
+                dataBasics.save(-1,image1,path0)
+                
+                numberOfMoves += 1
+                runningTime_all = time.time() - start_time_all  
+        
+            (_,bestSpans,bestNumSpans) = st.bestCase
+            #image1 = applyManipulation(st.image,st.spans[st.rootIndex],st.numSpans[st.rootIndex])
+            image1 = st.applyManipulationToGetImage(bestSpans,bestNumSpans)
+            (newClass,newConfident) = NN.predictWithImage(model,image1)
+            newClassStr = dataBasics.LABELS(int(newClass))
+            re = newClass != originalClass
+                
+            if re == True:     
+                path0="%s/%s_%s_%s_modified_into_%s_with_confidence_%s.png"%(directory_pic_string,startIndexOfImage,"sift_twoPlayer", origClassStr,newClassStr,newConfident)
+                dataBasics.save(-1,image1,path0)
+                path0="%s/%s_diff.png"%(directory_pic_string,startIndexOfImage)
+                dataBasics.save(-1,np.subtract(image,image1),path0)
+                print("\nfound an adversary image within prespecified bounded computational resource. The following is its information: ")
+                print("difference between images: %s"%(diffImage(image,image1)))
+        
+                print("number of adversarial examples found: %s"%(st.numAdv))
+    
+                eudist = euclideanDistance(st.image,image1)
+                l1dist = l1Distance(st.image,image1)
+                l0dist = l0Distance(st.image,image1)
+                percent = diffPercent(st.image,image1)
+                print("euclidean distance %s"%(eudist))
+                print("L1 distance %s"%(l1dist))
+                print("L0 distance %s"%(l0dist))
+                print("manipulated percentage distance %s"%(percent))
+                print("class is changed into %s with confidence %s\n"%(newClassStr, newConfident))
+                dc.addRunningTime(time.time() - start_time_all)
+                dc.addConfidence(newConfident)
+                dc.addManipulationPercentage(percent)
+                dc.addEuclideanDistance(eudist)
+                dc.addl1Distance(l1dist)
+                dc.addl0Distance(l0dist)
+
+                path0="%s/%s_original_as_%s_heatmap.png"%(directory_pic_string,startIndexOfImage,origClassStr)
+                plt.imshow(GMM(image),interpolation='none')
+                plt.savefig(path0)
+                path1="%s/%s_%s_%s_modified_into_%s_heatmap.png"%(directory_pic_string,startIndexOfImage,"sift_twoPlayer", origClassStr,newClassStr)
+                plt.imshow(GMM(image1),interpolation='none')
+                plt.savefig(path1)
+            else: 
+                print("\nfailed to find an adversary image within prespecified bounded computational resource. ")
+
+            
+        elif layerType in ["Input"]  and k < 0 and mcts_mode  == "singlePlayer" : 
     
             print "directly handling the image ... "
     
@@ -281,6 +396,7 @@ def handleOne(model,dc,startIndexOfImage):
                 dc.addManipulationPercentage(percent)
                 
             st.destructor()
+            
                 
         else: 
             print("layer %s is of type %s, skipping"%(k,layerType))

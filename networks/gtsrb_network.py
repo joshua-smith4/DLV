@@ -27,17 +27,26 @@ from keras.callbacks import LearningRateScheduler, ModelCheckpoint
 
 from gtsrb import * 
 
-
 batch_size = 32
 nb_epoch = 30
 IMG_SIZE = 32
-NUM_CLASSES = 43
+img_rows, img_cols = 32, 32
+img_channels = 3
+nb_classes = 43
 lr = 0.01
 
 def build_model():
     """
     define neural network model
     """
+    
+    if K.backend() == 'tensorflow': 
+        K.set_learning_phase(0)
+    
+    if K.backend() == 'tensorflow': 
+        inputShape = (img_rows,img_cols,img_channels)
+    else: 
+        inputShape = (img_channels,img_rows,img_cols)
     
     model = Sequential()
 
@@ -120,16 +129,25 @@ def read_model_from_file(weightFile,modelFile):
               
 def getImage(model,n_in_tests):
 
+    X, Y = read_dataset()
+    return X[n_in_tests]
+    
+    '''
     import pandas as pd
     import os
 
     test = pd.read_csv('networks/gtsrb/GT-final_test.csv',sep=';')
 
-
     file_name = test['Filename'][n_in_tests]
     img_path = os.path.join('networks/gtsrb/Final_Test/Images/',file_name)
     
     return preprocess_img(io.imread(img_path))
+    '''
+    
+def getLabel(model,n_in_tests):
+
+    X, Y = read_dataset()
+    return Y[n_in_tests]
     
 def getConfig(model):
 

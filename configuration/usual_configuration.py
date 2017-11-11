@@ -29,8 +29,8 @@ def usual_configuration(dataset):
         #controlledSearch = ("L1",0.05)
         
         # MCTS_level_maximal_time
-        MCTS_level_maximal_time = 300
-        MCTS_all_maximal_time = 1800
+        MCTS_level_maximal_time = 30
+        MCTS_all_maximal_time = 120
         MCTS_multi_samples = 3
 
         # point-based or line-based, or only work with a specific point
@@ -66,8 +66,8 @@ def usual_configuration(dataset):
         #controlledSearch = ("NumDiffs",30)
         
         # MCTS_level_maximal_time
-        MCTS_level_maximal_time = 60
-        MCTS_all_maximal_time = 300
+        MCTS_level_maximal_time = 30
+        MCTS_all_maximal_time = 120
         MCTS_multi_samples = 5
 
         # point-based or line-based, or only work with a specific point
@@ -86,7 +86,7 @@ def usual_configuration(dataset):
 
         # which image to start with or work with 
         # from the database
-        startIndexOfImage = 1
+        startIndexOfImage = 4895
         
         # the start layer to work from 
         startLayer = -1
@@ -104,8 +104,8 @@ def usual_configuration(dataset):
         #controlledSearch = ("NumDiffs",30)
         
         # MCTS_level_maximal_time
-        MCTS_level_maximal_time = 300
-        MCTS_all_maximal_time = 1800
+        MCTS_level_maximal_time = 30
+        MCTS_all_maximal_time = 120
         MCTS_multi_samples = 3
 
         # point-based or line-based, or only work with a specific point
@@ -124,7 +124,7 @@ def usual_configuration(dataset):
     
         # which image to start with or work with 
         # from the database
-        startIndexOfImage = 385
+        startIndexOfImage = 386
         
         # the start layer to work from 
         startLayer = -1
@@ -141,8 +141,8 @@ def usual_configuration(dataset):
         controlledSearch = ("L1",0.25)
         
         # MCTS_level_maximal_time
-        MCTS_level_maximal_time = 300
-        MCTS_all_maximal_time = 1800
+        MCTS_level_maximal_time = 30
+        MCTS_all_maximal_time = 120
         MCTS_multi_samples = 3
 
         # point-based or line-based, or only work with a specific point

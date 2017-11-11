@@ -54,7 +54,8 @@ def euclideanDistance(image1,image2):
 def l1Distance(image1,image2):
     return np.sum(np.absolute(np.subtract(image1,image2)))/float(image1.size)
 
-
+def l0Distance(image1,image2):
+    return np.count_nonzero(np.absolute(np.subtract(image1,image2)))
 
 def normalisation(y):
     for k in range(len(y)): 
@@ -93,6 +94,71 @@ def mergeTwoDicts(x,y):
     z.update(y)
     return z
     
+    
+############################################################
+#
+#  SIFT auxiliary functions
+#
+################################################################
+
+def withKL(dist,const,image1,image2):
+
+    import scipy
+    dist1, dist2 = GMM(image1), GMM(image2)
+    return dist + const * scipy.stats.entropy(dist1.flatten(),dist2.flatten())
+
+    
+def GMM(image):
+
+    import cv2
+    sift = cv2.SIFT() # cv2.SURF(400) #    cv2.xfeatures2d.SIFT_create()
+    image1 = copy.deepcopy(image)
+    if np.max(image1) <= 1: 
+        image1 = (image1*255).astype(np.uint8)
+    else: 
+        image1 = image1.astype(np.uint8)
+        
+        
+    if max(image1.shape) < 100 and K.backend() == 'theano' and len(image1.shape) == 3 : 
+        image1 = image1.reshape(image1.shape[1],image1.shape[2],image1.shape[0])
+        image1 = cv2.resize(image1, (0,0), fx=imageEnlargeProportion, fy=imageEnlargeProportion)
+        kp, des = sift.detectAndCompute(image1,None)
+        image1 = image1.reshape(image1.shape[2],image1.shape[0],image1.shape[1])
+    elif max(image1.shape) < 100 and (K.backend() == 'tensorflow' or (K.backend() == 'theano' and len(image1.shape) == 2)): 
+        image1 = cv2.resize(image1, (0,0), fx=imageEnlargeProportion, fy=imageEnlargeProportion)
+        kp, des = sift.detectAndCompute(image1,None)
+    elif K.backend() == 'theano' and (image1.shape) == 3: 
+        #kp, des = SIFT_Filtered(image1)
+        image1 = image1.reshape(image1.shape[1],image1.shape[2],image1.shape[0])
+        kp, des = sift.detectAndCompute(image1,None)
+        image1 = image1.reshape(image1.shape[2],image1.shape[0],image1.shape[1])
+    else: 
+        #kp, des = SIFT_Filtered(image1)
+        kp, des = sift.detectAndCompute(image1,None)
+        
+    return  getDistribution(image1, kp)   
+
+def getDistribution(image, kp):
+
+    import matplotlib.pyplot as plt
+    import scipy
+    from scipy.stats import multivariate_normal
+    import scipy.stats
+    import numpy.linalg
+    
+    dist = np.zeros(image.shape[:2])
+    i = 1
+    for  k in kp: 
+        #print(i)
+        i += 1
+        a = np.array((k.pt[0],k.pt[1]))
+        for i in range(len(dist)): 
+            for j in range(len(dist[0])): 
+                b = np.array((i,j))
+                dist2 = numpy.linalg.norm(a - b)
+                dist[i][j] += scipy.stats.norm.pdf(dist2, loc=0.0, scale=k.size) * k.response
+                    
+    return dist / np.sum(dist)
     
 ############################################################
 #
