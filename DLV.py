@@ -32,6 +32,7 @@ from networkBasics import *
 from searchTree import searchTree
 from searchMCTS import searchMCTS
 from mcts_twoPlayer import mcts_twoPlayer
+from initialiseSiftKeypoints import GMM
 from dataCollection import dataCollection
 
 from inputManipulation import applyManipulation,assignManipulationSimple
@@ -296,12 +297,12 @@ def handleOne(model,dc,startIndexOfImage):
                 dc.addl1Distance(l1dist)
                 dc.addl0Distance(l0dist)
 
-                path0="%s/%s_original_as_%s_heatmap.png"%(directory_pic_string,startIndexOfImage,origClassStr)
-                plt.imshow(GMM(image),interpolation='none')
-                plt.savefig(path0)
-                path1="%s/%s_%s_%s_modified_into_%s_heatmap.png"%(directory_pic_string,startIndexOfImage,"sift_twoPlayer", origClassStr,newClassStr)
-                plt.imshow(GMM(image1),interpolation='none')
-                plt.savefig(path1)
+                #path0="%s/%s_original_as_%s_heatmap.png"%(directory_pic_string,startIndexOfImage,origClassStr)
+                #plt.imshow(GMM(image),interpolation='none')
+                #plt.savefig(path0)
+                #path1="%s/%s_%s_%s_modified_into_%s_heatmap.png"%(directory_pic_string,startIndexOfImage,"sift_twoPlayer", origClassStr,newClassStr)
+                #plt.imshow(GMM(image1),interpolation='none')
+                #plt.savefig(path1)
             else: 
                 print("\nfailed to find an adversary image within prespecified bounded computational resource. ")
 

@@ -124,7 +124,7 @@ def usual_configuration(dataset):
     
         # which image to start with or work with 
         # from the database
-        startIndexOfImage = 386
+        startIndexOfImage = 1
         
         # the start layer to work from 
         startLayer = -1
@@ -142,7 +142,7 @@ def usual_configuration(dataset):
         
         # MCTS_level_maximal_time
         MCTS_level_maximal_time = 30
-        MCTS_all_maximal_time = 120
+        MCTS_all_maximal_time = 30
         MCTS_multi_samples = 3
 
         # point-based or line-based, or only work with a specific point

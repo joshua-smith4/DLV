@@ -395,3 +395,37 @@ def CreateGaussianMixtureModel(image, kp, dimension=0):
         A[np.argmax(A)] = A[np.argmax(A)] + val_to_add
     return A, observations
 
+
+def GMM(image):
+
+    import cv2
+    sift = cv2.SIFT() # cv2.SURF(400) #    cv2.xfeatures2d.SIFT_create()
+    image1 = copy.deepcopy(image)
+    if np.max(image1) <= 1: 
+        image1 = (image1*255).astype(np.uint8)
+    else: 
+        image1 = image1.astype(np.uint8)
+
+    if dataset == "imageNet": 
+        imageEnlargeProportion = 1
+    else: 
+        imageEnlargeProportion = 2
+
+    if max(image1.shape) < 100 and K.backend() == 'theano' and len(image1.shape) == 3 : 
+        image1 = image1.reshape(image1.shape[1],image1.shape[2],image1.shape[0])
+        image1 = cv2.resize(image1, (0,0), fx=imageEnlargeProportion, fy=imageEnlargeProportion)
+        kp, des = sift.detectAndCompute(image1,None)
+        image1 = image1.reshape(image1.shape[2],image1.shape[0],image1.shape[1])
+    elif max(image1.shape) < 100 and (K.backend() == 'tensorflow' or (K.backend() == 'theano' and len(image1.shape) == 2)): 
+        image1 = cv2.resize(image1, (0,0), fx=imageEnlargeProportion, fy=imageEnlargeProportion)
+        kp, des = sift.detectAndCompute(image1,None)
+    elif K.backend() == 'theano' and (image1.shape) == 3: 
+        #kp, des = SIFT_Filtered(image1)
+        image1 = image1.reshape(image1.shape[1],image1.shape[2],image1.shape[0])
+        kp, des = sift.detectAndCompute(image1,None)
+        image1 = image1.reshape(image1.shape[2],image1.shape[0],image1.shape[1])
+    else: 
+        #kp, des = SIFT_Filtered(image1)
+        kp, des = sift.detectAndCompute(image1,None)
+        
+    return  getDistribution(image1, kp)  
