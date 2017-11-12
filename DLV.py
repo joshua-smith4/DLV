@@ -120,6 +120,7 @@ def handleOne(model,dc,startIndexOfImage):
                 # for every image
                 # start from the first hidden layer
                 t = 0
+                re = False
                 while True and index != (-1,-1): 
 
                     # pick the first element of the queue

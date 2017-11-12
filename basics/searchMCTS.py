@@ -196,21 +196,21 @@ class searchMCTS:
         #print euclideanDistance(self.image,image1), newConfident, newClass
         (distMethod,distVal) = controlledSearch
         if distMethod == "euclidean": 
-            dist = 1 - euclideanDistance(image1,self.image) 
+            dist = euclideanDistance(activations1,self.activations) 
             termValue = 0.0
-            termByDist = dist < 1 - distVal
+            termByDist = dist > distVal
         elif distMethod == "L1": 
-            dist = 1 - l1Distance(image1,self.image) 
+            dist = l1Distance(activations1,self.activations) 
             termValue = 0.0
-            termByDist = dist < 1 - distVal
+            termByDist = dist > distVal
         elif distMethod == "Percentage": 
-            dist = 1 - diffPercent(image1,self.image)
+            dist = diffPercent(activations1,self.activations)
             termValue = 0.0
-            termByDist = dist < 1 - distVal
+            termByDist = dist > distVal
         elif distMethod == "NumDiffs": 
-            dist = self.image.size - diffPercent(image1,self.image) * self.image.size
+            dist =  diffPercent(activations1,self.activations) * self.activations.size
             termValue = 0.0
-            termByDist = dist < self.image.size - distVal
+            termByDist = dist > distVal
 
         if newClass != self.originalClass: 
             print("sampling a path ends in a terminal node with depth %s... "%depth)

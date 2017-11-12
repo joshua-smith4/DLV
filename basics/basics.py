@@ -49,10 +49,10 @@ def numDiffs(image1,image2):
 
     
 def euclideanDistance(image1,image2):
-    return math.sqrt(np.sum(np.square(np.subtract(image1,image2)))/float(image1.size))
+    return math.sqrt(np.sum(np.square(np.subtract(image1,image2))))
     
 def l1Distance(image1,image2):
-    return np.sum(np.absolute(np.subtract(image1,image2)))/float(image1.size)
+    return np.sum(np.absolute(np.subtract(image1,image2)))
 
 def l0Distance(image1,image2):
     return np.count_nonzero(np.absolute(np.subtract(image1,image2)))

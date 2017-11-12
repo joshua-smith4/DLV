@@ -342,21 +342,21 @@ class mcts_twoPlayer:
         (newClass,newConfident) = self.predictWithActivations(activations1)
         (distMethod,distVal) = controlledSearch
         if distMethod == "euclidean": 
-            dist = 1000 - euclideanDistance(activations1,self.activations) 
+            dist = euclideanDistance(activations1,self.activations) 
             termValue = 0.0
-            termByDist = dist < 1 - distVal
+            termByDist = dist > distVal
         elif distMethod == "L1": 
-            dist = 1000 - l1Distance(activations1,self.activations) 
+            dist = l1Distance(activations1,self.activations) 
             termValue = 0.0
-            termByDist = dist < 1 - distVal
+            termByDist = dist > distVal
         elif distMethod == "Percentage": 
-            dist = 1 - diffPercent(activations1,self.activations)
+            dist = diffPercent(activations1,self.activations)
             termValue = 0.0
-            termByDist = dist < 1 - distVal
+            termByDist = dist > distVal
         elif distMethod == "NumDiffs": 
-            dist = self.activations.size - diffPercent(activations1,self.activations) * self.activations.size
+            dist =  diffPercent(activations1,self.activations) * self.activations.size
             termValue = 0.0
-            termByDist = dist < self.activations.size - distVal
+            termByDist = dist > distVal
 
         #if termByDist == False and newConfident < 0.5 and self.depth <= 3: 
         #    termByDist = True
