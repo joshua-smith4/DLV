@@ -168,9 +168,10 @@ def handleOne(model,dc,startIndexOfImage):
                         
                             st.addImages(model,rk)
                             st.removeProcessed(imageIndex)
-                            (re,percent,eudist,l1dist) = reportInfo(image,wk)
+                            (re,percent,eudist,l1dist,l0dist) = reportInfo(image,wk)
                             print "euclidean distance %s"%(euclideanDistance(image,rk[0]))
                             print "L1 distance %s"%(l1Distance(image,rk[0]))
+                            print "L0 distance %s"%(l0Distance(image,rk[0]))
                             print "manipulated percentage distance %s\n"%(diffPercent(image,rk[0]))
                             break
                         else: 
@@ -185,9 +186,11 @@ def handleOne(model,dc,startIndexOfImage):
                     dc.addManipulationPercentage(percent)
                     print "euclidean distance %s"%(eudist)
                     print "L1 distance %s"%(l1dist)
+                    print "L0 distance %s"%(l0dist)
                     print "manipulated percentage distance %s\n"%(percent)
                     dc.addEuclideanDistance(eudist)
                     dc.addl1Distance(l1dist)
+                    dc.addl0Distance(l0dist)
                     (ocl,ocf) = NN.predictWithImage(model,wk[0])
                     dc.addConfidence(ocf)
                     break
@@ -329,10 +332,12 @@ def handleOne(model,dc,startIndexOfImage):
                 print("the number of moves we have made up to now: %s"%(numberOfMoves))
                 eudist = st.euclideanDist(st.rootIndex)
                 l1dist = st.l1Dist(st.rootIndex)
+                l0dist = st.l0Dist(st.rootIndex)
                 percent = st.diffPercent(st.rootIndex)
                 diffs = st.diffImage(st.rootIndex)
                 print "euclidean distance %s"%(eudist)
                 print "L1 distance %s"%(l1dist)
+                print "L0 distance %s"%(l0dist)
                 print "manipulated percentage distance %s"%(percent)
                 print "manipulated dimensions %s"%(diffs)
 
@@ -387,13 +392,16 @@ def handleOne(model,dc,startIndexOfImage):
             if re == True: 
                 eudist = euclideanDistance(st.image,image1)
                 l1dist = l1Distance(st.image,image1)
+                l0dist = l0Distance(st.image,image1)
                 percent = diffPercent(st.image,image1)
                 print "euclidean distance %s"%(eudist)
                 print "L1 distance %s"%(l1dist)
+                print "L0 distance %s"%(l0dist)
                 print "manipulated percentage distance %s"%(percent)
                 print "class is changed into %s with confidence %s\n"%(newClassStr, newConfident)
                 dc.addEuclideanDistance(eudist)
                 dc.addl1Distance(l1dist)
+                dc.addl0Distance(l0dist)
                 dc.addManipulationPercentage(percent)
                 
             st.destructor()
@@ -420,14 +428,15 @@ def reportInfo(image,wk):
     # exit only when we find an adversarial example
     if wk == []:    
         print "(5) no adversarial example is found in this round."  
-        return (False,0,0,0)
+        return (False,0,0,0,0)
     else: 
         print "(5) an adversarial example has been found."
         image0 = wk[0]
         eudist = euclideanDistance(image,image0)
         l1dist = l1Distance(image,image0)
+        l0dist = l0Distance(image,image0)
         percent = diffPercent(image,image0)
-        return (True,percent,eudist,l1dist)
+        return (True,percent,eudist,l1dist,l0dist)
         
 if __name__ == "__main__":
 

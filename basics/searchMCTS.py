@@ -260,6 +260,10 @@ class searchMCTS:
         image1 = applyManipulation(self.image,self.spans[index],self.numSpans[index])
         return l1Distance(self.image,image1)
         
+    def l0Dist(self,index): 
+        image1 = applyManipulation(self.image,self.spans[index],self.numSpans[index])
+        return l0Distance(self.image,image1)
+        
     def diffImage(self,index): 
         image1 = applyManipulation(self.image,self.spans[index],self.numSpans[index])
         return diffImage(self.image,image1)

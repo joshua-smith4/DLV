@@ -51,9 +51,9 @@ def usual_configuration(dataset):
         startIndexOfImage = 5424
         
         # the start layer to work from 
-        startLayer = -1
+        startLayer = 0
         # the maximal layer to work until 
-        maxLayer = -1
+        maxLayer = 0
         
         ## number of features of each layer, used for heuristic search 
         numOfFeatures = 150  
@@ -86,7 +86,7 @@ def usual_configuration(dataset):
 
         # which image to start with or work with 
         # from the database
-        startIndexOfImage = 4895
+        startIndexOfImage = 1
         
         # the start layer to work from 
         startLayer = -1
@@ -142,7 +142,7 @@ def usual_configuration(dataset):
         
         # MCTS_level_maximal_time
         MCTS_level_maximal_time = 30
-        MCTS_all_maximal_time = 30
+        MCTS_all_maximal_time = 120
         MCTS_multi_samples = 3
 
         # point-based or line-based, or only work with a specific point
