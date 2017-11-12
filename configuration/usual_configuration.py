@@ -48,7 +48,7 @@ def usual_configuration(dataset):
 
         # which image to start with or work with 
         # from the database
-        startIndexOfImage = 1
+        startIndexOfImage = 3
         
         # the start layer to work from 
         startLayer = -1
@@ -61,13 +61,13 @@ def usual_configuration(dataset):
         
         ## control by distance
         #controlledSearch = ("euclidean",10)
-        controlledSearch = ("L1",20)
+        controlledSearch = ("L1",40)
         #controlledSearch = ("Percentage",0.12)
         #controlledSearch = ("NumDiffs",30)
         
         # MCTS_level_maximal_time
         MCTS_level_maximal_time = 30
-        MCTS_all_maximal_time = 30
+        MCTS_all_maximal_time = 120
         MCTS_multi_samples = 5
 
         # point-based or line-based, or only work with a specific point
@@ -91,7 +91,7 @@ def usual_configuration(dataset):
         # the start layer to work from 
         startLayer = -1
         # the maximal layer to work until 
-        maxLayer = -1
+        maxLayer = 0
 
         ## number of features of each layer 
         numOfFeatures = 500 
