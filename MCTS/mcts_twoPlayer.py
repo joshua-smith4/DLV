@@ -24,7 +24,6 @@ from decisionTree import decisionTree
 from initialiseSiftKeypoints import initialiseSiftKeypointsTwoPlayer
 
 from re_training import re_training
-from analyseAdv import analyseAdv
 
 
 effectiveConfidenceWhenChanging = 0 
@@ -86,7 +85,7 @@ class mcts_twoPlayer:
         
         # number of adversarial exmaples
         self.numAdv = 0
-        self.analyseAdv = analyseAdv(activations)
+        #self.analyseAdv = analyseAdv(activations)
         
         # useless points
         self.usefulPixels = {}
@@ -377,7 +376,7 @@ class mcts_twoPlayer:
             
             #self.decisionTree.addOnePath(dist,self.spansPath,self.numSpansPath)
             self.numAdv += 1
-            self.analyseAdv.addAdv(activations1)
+            #self.analyseAdv.addAdv(activations1)
             self.getUsefulPixels(self.accDims,self.d)
                 
             self.re_training.addDatum(activations1,self.originalClass,newClass)
