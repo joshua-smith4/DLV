@@ -39,7 +39,7 @@ The backend of Keras needs to be changed by editing the ~/.keras/keras.json file
     
 (3) Download dataset and network paramters. 
 
-    If you want to train a network for GTSRB, Please downlaod the dataset file X.h5 file from http://benchmark.ini.rub.de/?section=gtsdb&subsection=dataset to networks/ directory. For details on download networks and datasets for imageNet, please refer to the document. 
+    If you want to train a network for GTSRB, Please download the dataset file X.h5 file from https://www.dropbox.com/s/2brjdjghhnmw6i7/X.h5?dl=0 to networks/ directory. For details on download networks and datasets for imageNet, please refer to the document. 
 
 (4) Usage: 
 
