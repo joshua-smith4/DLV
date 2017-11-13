@@ -51,6 +51,14 @@ def read_dataset():
 
 def build_model(img_channels, img_rows, img_cols, nb_classes):
 
+    if K.backend() == 'tensorflow': 
+        K.set_learning_phase(0)
+    
+    if K.backend() == 'tensorflow': 
+        inputShape = (img_rows,img_cols,img_channels)
+    else: 
+        inputShape = (img_channels,img_rows,img_cols)
+
     model = Sequential()
 
     model.add(Convolution2D(32, 3, 3, border_mode='same',
@@ -88,6 +96,14 @@ def build_model_and_autoencoder(img_channels, img_rows, img_cols, nb_classes, la
     define autoencoder model
     this one connect the conv levels from the model
     """
+    
+    if K.backend() == 'tensorflow': 
+        K.set_learning_phase(0)
+    
+    if K.backend() == 'tensorflow': 
+        inputShape = (img_rows,img_cols,img_channels)
+    else: 
+        inputShape = (img_channels,img_rows,img_cols)
 
     model = Sequential()
 
@@ -198,6 +214,14 @@ def build_model_autoencoder(img_channels, img_rows, img_cols, nb_classes):
     """
     define neural network model
     """
+    
+    if K.backend() == 'tensorflow': 
+        K.set_learning_phase(0)
+    
+    if K.backend() == 'tensorflow': 
+        inputShape = (img_rows,img_cols,img_channels)
+    else: 
+        inputShape = (img_channels,img_rows,img_cols)
     
     # build model
     input_img = Input(shape=(img_channels, img_rows, img_cols))
@@ -312,7 +336,10 @@ def read_model_and_autoencoder_from_file(model,weightFile,modelFile,cutLayer):
 def getImage(model,n_in_tests):
 
     (X_train, y_train), (X_test, y_test) = cifar10.load_data()
-    X_test = X_test.reshape(X_test.shape[0], img_channels, img_rows, img_cols)
+    if K.backend() == 'tensorflow': 
+        X_test = X_test.reshape(X_test.shape[0], img_rows, img_cols, img_channels)
+    else: 
+        X_test = X_test.reshape(X_test.shape[0], img_channels, img_rows, img_cols)
     X_test = X_test.astype('float32')
     X_test = X_test.astype('float32')
 
@@ -321,6 +348,27 @@ def getImage(model,n_in_tests):
     
     Y_test = np_utils.to_categorical(y_test, nb_classes)
     image = X_test[n_in_tests:n_in_tests+1]
+    
+    #print(np.amax(image),np.amin(image))
+        
+    return np.squeeze(image)
+    
+def getLabel(model,n_in_tests):
+
+    (X_train, y_train), (X_test, y_test) = cifar10.load_data()
+
+    if K.backend() == 'tensorflow': 
+        X_test = X_test.reshape(X_test.shape[0], img_rows, img_cols, img_channels)
+    else: 
+        X_test = X_test.reshape(X_test.shape[0], img_channels, img_rows, img_cols)
+    X_test = X_test.astype('float32')
+    X_test = X_test.astype('float32')
+
+    
+    X_test /= 255
+    
+    Y_test = np_utils.to_categorical(y_test, nb_classes)
+    image = Y_test[n_in_tests:n_in_tests+1]
     
     #print(np.amax(image),np.amin(image))
         

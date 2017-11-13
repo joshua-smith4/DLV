@@ -25,12 +25,12 @@ def usual_configuration(dataset):
         featureDims = 2
         
         ## control by distance
-        controlledSearch = ("euclidean",0.1)
+        controlledSearch = ("euclidean",1)
         #controlledSearch = ("L1",0.05)
         
         # MCTS_level_maximal_time
-        MCTS_level_maximal_time = 300
-        MCTS_all_maximal_time = 1800
+        MCTS_level_maximal_time = 30
+        MCTS_all_maximal_time = 120
         MCTS_multi_samples = 3
 
         # point-based or line-based, or only work with a specific point
@@ -48,26 +48,26 @@ def usual_configuration(dataset):
 
         # which image to start with or work with 
         # from the database
-        startIndexOfImage = 5424
+        startIndexOfImage = 3
         
         # the start layer to work from 
         startLayer = -1
         # the maximal layer to work until 
-        maxLayer = -1
+        maxLayer = 2
         
         ## number of features of each layer, used for heuristic search 
         numOfFeatures = 150  
         featureDims = 5 
         
         ## control by distance
-        #controlledSearch = ("euclidean",0.3)
-        controlledSearch = ("L1",0.02)
+        #controlledSearch = ("euclidean",10)
+        controlledSearch = ("L1",40)
         #controlledSearch = ("Percentage",0.12)
         #controlledSearch = ("NumDiffs",30)
         
         # MCTS_level_maximal_time
-        MCTS_level_maximal_time = 60
-        MCTS_all_maximal_time = 300
+        MCTS_level_maximal_time = 30
+        MCTS_all_maximal_time = 120
         MCTS_multi_samples = 5
 
         # point-based or line-based, or only work with a specific point
@@ -86,26 +86,26 @@ def usual_configuration(dataset):
 
         # which image to start with or work with 
         # from the database
-        startIndexOfImage = 4894
+        startIndexOfImage = 1
         
         # the start layer to work from 
         startLayer = -1
         # the maximal layer to work until 
-        maxLayer = -1
+        maxLayer = 0
 
         ## number of features of each layer 
         numOfFeatures = 500 
         featureDims = 5
         
         ## control by distance
-        #controlledSearch = ("euclidean",0.3)
-        controlledSearch = ("L1",0.15)
+        #controlledSearch = ("euclidean",10)
+        controlledSearch = ("L1",20)
         #controlledSearch = ("Percentage",0.12)
         #controlledSearch = ("NumDiffs",30)
         
         # MCTS_level_maximal_time
-        MCTS_level_maximal_time = 300
-        MCTS_all_maximal_time = 1800
+        MCTS_level_maximal_time = 30
+        MCTS_all_maximal_time = 120
         MCTS_multi_samples = 3
 
         # point-based or line-based, or only work with a specific point
@@ -124,7 +124,7 @@ def usual_configuration(dataset):
     
         # which image to start with or work with 
         # from the database
-        startIndexOfImage = 385
+        startIndexOfImage = 1
         
         # the start layer to work from 
         startLayer = -1
@@ -137,12 +137,12 @@ def usual_configuration(dataset):
 
         
         ## control by distance
-        #controlledSearch = ("euclidean",0.3)
-        controlledSearch = ("L1",0.25)
+        #controlledSearch = ("euclidean",10)
+        controlledSearch = ("L1",20)
         
         # MCTS_level_maximal_time
-        MCTS_level_maximal_time = 300
-        MCTS_all_maximal_time = 1800
+        MCTS_level_maximal_time = 30
+        MCTS_all_maximal_time = 120
         MCTS_multi_samples = 3
 
         # point-based or line-based, or only work with a specific point
@@ -163,17 +163,17 @@ def usual_configuration(dataset):
         startIndexOfImage = 1
         
         # the start layer to work from 
-        startLayer = 0
+        startLayer = -1
         # the maximal layer to work until 
-        maxLayer = 1
+        maxLayer = 0
 
         ## number of features of each layer 
         numOfFeatures = 20000
         featureDims = 200
         
         ## control by distance
-        controlledSearch = ("euclidean",0.1)
-        #controlledSearch = ("L1",0.05)
+        controlledSearch = ("euclidean",100)
+        #controlledSearch = ("L1",50)
         
         # MCTS_level_maximal_time
         MCTS_level_maximal_time = 300
@@ -185,8 +185,8 @@ def usual_configuration(dataset):
         #enumerationMethod = "line"
         #enumerationMethod = "point"
 
-        checkingMode = "specificLayer"
-        #checkingMode = "stepwise"
+        #checkingMode = "specificLayer"
+        checkingMode = "stepwise"
         
         # exit whenever an adversarial example is found
         #exitWhen = "foundAll"

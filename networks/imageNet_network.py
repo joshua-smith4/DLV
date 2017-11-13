@@ -36,6 +36,14 @@ def read_dataset():
 
 def build_model(img_channels, img_rows, img_cols, nb_classes):
 
+    if K.backend() == 'tensorflow': 
+        K.set_learning_phase(0)
+    
+    if K.backend() == 'tensorflow': 
+        inputShape = (img_rows,img_cols,img_channels)
+    else: 
+        inputShape = (img_channels,img_rows,img_cols)
+
     model = Sequential()
     model.add(ZeroPadding2D((1,1),input_shape=(img_channels, img_rows, img_cols)))
     model.add(Convolution2D(64, 3, 3, activation='relu'))
@@ -169,9 +177,10 @@ def getImage(model,n_in_tests):
     
     #print(np.amax(im),np.amin(im))
 
-    im = np.expand_dims(im, axis=0)
+    if K.backend() == 'tensorflow':
+        im = im.reshape(img_rows,img_cols,img_channels)
     
-    return np.squeeze(im)
+    return im #np.squeeze(im)
     
     
 def readImage(path):

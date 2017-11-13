@@ -18,7 +18,7 @@ from keras.utils import np_utils
 
 # for mnist
 from keras.datasets import mnist
-
+import tensorflow as tf
 
 #
 
@@ -28,6 +28,7 @@ import mnist as mm
 batch_size = 128
 nb_classes = 10
 nb_epoch = 12
+img_channels = 1
 
 # input image dimensions
 img_rows, img_cols = 28, 28
@@ -56,9 +57,14 @@ def read_dataset():
 
     # the data, shuffled and split between train and test sets
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
-
-    X_train = X_train.reshape(X_train.shape[0], 1, img_rows, img_cols)
-    X_test = X_test.reshape(X_test.shape[0], 1, img_rows, img_cols)
+    
+    if K.backend() == 'tensorflow':
+        X_train = X_train.reshape(X_train.shape[0], img_rows, img_cols, img_channels)
+        X_test = X_test.reshape(X_test.shape[0], img_rows, img_cols, img_channels)
+    else:
+        X_train = X_train.reshape(X_train.shape[0], img_channels, img_rows, img_cols)
+        X_test = X_test.reshape(X_test.shape[0], img_channels, img_rows, img_cols)
+    
     X_train = X_train.astype('float32')
     X_test = X_test.astype('float32')
     X_train /= 255
@@ -109,6 +115,15 @@ def build_model():
     define neural network model
     """
     
+    if K.backend() == 'tensorflow': 
+        K.set_learning_phase(0)
+    
+    if K.backend() == 'tensorflow': 
+        inputShape = (img_rows,img_cols,img_channels)
+    else: 
+        inputShape = (img_channels,img_rows,img_cols)
+
+    
     model = Sequential()
 
     model.add(Convolution2D(nb_filters, nb_conv, nb_conv,
@@ -141,6 +156,11 @@ def build_model_and_autoencoder(layerToCut):
     this one connect the first two conv levels from the model
     
     """
+    
+    if K.backend() == 'tensorflow': 
+        inputShape = (img_rows,img_cols,img_channels)
+    else: 
+        inputShape = (img_channels,img_rows,img_cols)
 
     model = Sequential()
 
@@ -226,6 +246,12 @@ def dynamic_build_model(startLayer,inputShape):
     """
     define neural network model
     """
+    
+    if K.backend() == 'tensorflow': 
+        inputShape = (img_rows,img_cols,img_channels)
+    else: 
+        inputShape = (img_channels,img_rows,img_cols)
+    
     firstLayerDone = False
     model = Sequential()
     
@@ -351,15 +377,16 @@ def read_model_from_file(weightFile,modelFile):
     model = build_model()
     model.summary()
     
-    weights = sio.loadmat(weightFile)
-    model = model_from_json(open(modelFile).read())
-    for (idx,lvl) in [(1,0),(2,2),(3,7),(4,10)]:
+    if K.backend() == 'tensorflow': 
+        model.load_weights('networks/mnist/mnist_tensorflow.h5')
+    else: 
+        weights = sio.loadmat(weightFile)
+        model = model_from_json(open(modelFile).read())
+        for (idx,lvl) in [(1,0),(2,2),(3,7),(4,10)]:
         
-        weight_1 = 2 * idx - 2
-        weight_2 = 2 * idx - 1
-
-        weight0 = weights['weights'][0, weight_1].reshape(model.layers[lvl].get_weights()[0].shape)
-        model.layers[lvl].set_weights([weight0, weights['weights'][0, weight_2].flatten()])
+            weight_1 = 2 * idx - 2
+            weight_2 = 2 * idx - 1
+            model.layers[lvl].set_weights([weights['weights'][0, weight_1], weights['weights'][0, weight_2].flatten()])
 
     return model
     
@@ -442,24 +469,50 @@ def dynamic_read_model_from_file(cutmodel,weightFile,modelFile,startLayer):
 def getImage(model,n_in_tests):
 
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
-    X_test = X_test.reshape(X_test.shape[0], 1, img_rows, img_cols)
+    if K.backend() == 'tensorflow': 
+        X_test = X_test.reshape(X_test.shape[0], img_rows, img_cols, 1)
+    else: 
+        X_test = X_test.reshape(X_test.shape[0], 1, img_rows, img_cols)
     X_test = X_test.astype('float32')
     X_test /= 255
     
     Y_test = np_utils.to_categorical(y_test, nb_classes)
     image = X_test[n_in_tests:n_in_tests+1]
-    return np.squeeze(image)
+    if K.backend() == 'tensorflow':
+        return image[0]
+    else: 
+        return np.squeeze(image)
     
 def getImages(model,n_in_tests1,n_in_tests2):
 
     (X_train, y_train), (X_test, y_test) = mnist.load_data()
-    X_test = X_test.reshape(X_test.shape[0], 1, img_rows, img_cols)
+    if K.backend() == 'tensorflow': 
+        X_test = X_test.reshape(X_test.shape[0], img_rows, img_cols, 1)
+    else: 
+        X_test = X_test.reshape(X_test.shape[0], 1, img_rows, img_cols)
     X_test = X_test.astype('float32')
     X_test /= 255
     
     Y_test = np_utils.to_categorical(y_test, nb_classes)
     image2 = X_test[n_in_tests1:n_in_tests2]
     return np.squeeze(image2)
+    
+def getLabel(model,n_in_tests):
+
+    (X_train, y_train), (X_test, y_test) = mnist.load_data()
+    if K.backend() == 'tensorflow': 
+        X_test = X_test.reshape(X_test.shape[0], img_rows, img_cols, 1)
+    else: 
+        X_test = X_test.reshape(X_test.shape[0], 1, img_rows, img_cols)
+    X_test = X_test.astype('float32')
+    X_test /= 255
+    
+    Y_test = np_utils.to_categorical(y_test, nb_classes)
+    image = Y_test[n_in_tests:n_in_tests+1]
+    if K.backend() == 'tensorflow':
+        return image[0]
+    else: 
+        return np.squeeze(image)
     
 def readImage(path):
 
@@ -501,7 +554,9 @@ def get_activations(model, layer, X_batch):
     
 def predictWithImage(model,newInput):
 
-    if len(newInput.shape) == 2: 
+    if len(newInput.shape) == 2 and K.backend() == 'tensorflow': 
+        newInput2 = np.expand_dims(np.expand_dims(newInput, axis=2), axis=0)
+    elif len(newInput.shape) == 2 and K.backend() == 'theano': 
         newInput2 = np.expand_dims(np.expand_dims(newInput, axis=0), axis=0)
     else: 
         newInput2 = np.expand_dims(newInput, axis=0)
