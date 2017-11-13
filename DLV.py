@@ -11,7 +11,7 @@ sys.path.append('networks')
 sys.path.append('safety_check')
 sys.path.append('configuration')
 sys.path.append('basics')
-
+sys.path.append('MCTS')
 
 import time
 import numpy as np
