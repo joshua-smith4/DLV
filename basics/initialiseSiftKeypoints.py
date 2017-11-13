@@ -52,7 +52,7 @@ def initialiseSiftKeypointsTwoPlayer(model,image,manipulated):
     elif max(image1.shape) < 100 and (K.backend() == 'tensorflow' or (K.backend() == 'theano' and len(image1.shape) == 2)): 
         image1 = cv2.resize(image1, (0,0), fx=imageEnlargeProportion, fy=imageEnlargeProportion)
         kp = SIFT_Filtered_twoPlayer(image1)
-    elif K.backend() == 'theano' and (image1.shape) == 3: 
+    elif K.backend() == 'theano' and len(image1.shape) == 3: 
         #kp, des = SIFT_Filtered(image1)
         image1 = image1.reshape(image1.shape[1],image1.shape[2],image1.shape[0])
         kp = SIFT_Filtered_twoPlayer(image1)

@@ -163,9 +163,9 @@ def usual_configuration(dataset):
         startIndexOfImage = 1
         
         # the start layer to work from 
-        startLayer = 0
+        startLayer = -1
         # the maximal layer to work until 
-        maxLayer = 1
+        maxLayer = 0
 
         ## number of features of each layer 
         numOfFeatures = 20000
@@ -185,8 +185,8 @@ def usual_configuration(dataset):
         #enumerationMethod = "line"
         #enumerationMethod = "point"
 
-        checkingMode = "specificLayer"
-        #checkingMode = "stepwise"
+        #checkingMode = "specificLayer"
+        checkingMode = "stepwise"
         
         # exit whenever an adversarial example is found
         #exitWhen = "foundAll"

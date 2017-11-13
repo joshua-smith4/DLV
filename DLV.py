@@ -88,6 +88,7 @@ def handleOne(model,dc,startIndexOfImage):
     while k <= maxLayer: 
     
         layerType = getLayerType(model, k)
+        re = False
         start_time = time.time()
             
         # only these layers need to be checked
