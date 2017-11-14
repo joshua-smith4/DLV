@@ -51,7 +51,7 @@ def usual_configuration(dataset):
         startIndexOfImage = 4
         
         # the start layer to work from 
-        startLayer = 0
+        startLayer = -1
         # the maximal layer to work until 
         maxLayer = 2
         

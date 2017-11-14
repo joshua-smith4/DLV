@@ -65,8 +65,8 @@ def main():
 ## how many branches to expand 
 numOfPointsAfterEachFeature = 1
 
-mcts_mode  = "sift_twoPlayer" 
-#mcts_mode  = "singlePlayer" 
+#mcts_mode  = "sift_twoPlayer" 
+mcts_mode  = "singlePlayer" 
 
 def handleOne(model,dc,startIndexOfImage):
 
