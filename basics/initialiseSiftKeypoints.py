@@ -136,27 +136,41 @@ def getPoints_twoPlayer(image, kps):
     import operator
     import random
     points = {}
-    for x in range(len(image)): 
-       for y in range(len(image[0])): 
-            ps = 0
-            maxk = -1
-            for i in range(1, len(kps)+1): 
-               k = kps[i-1]
-               dist2 = np.linalg.norm(np.array([x,y]) - np.array([k.pt[0],k.pt[1]]))
-               ps2 = norm.pdf(dist2, loc=0.0, scale=k.size)
-               if ps2 > ps: 
-                   ps = ps2
-                   maxk = i
-            #maxk = max(ps.iteritems(), key=operator.itemgetter(1))[0]
-            if maxk in points.keys(): 
-                points[maxk].append((x,y))
-            else: points[maxk] = [(x,y)]
-    if maxNumOfPointPerKeyPoint > 0: 
-        for mk in points.keys():
-            beginingNum = len(points[mk])
-            for i in range(beginingNum - maxNumOfPointPerKeyPoint): 
-                points[mk].remove(random.choice(points[mk]))
-    return points
+    if dataset != "imageNet": 
+        for x in range(max(image.shape)): 
+            for y in range(max(image.shape)): 
+                ps = 0
+                maxk = -1
+                for i in range(1, len(kps)+1): 
+                   k = kps[i-1]
+                   dist2 = np.linalg.norm(np.array([x,y]) - np.array([k.pt[0],k.pt[1]]))
+                   ps2 = norm.pdf(dist2, loc=0.0, scale=k.size)
+                   if ps2 > ps: 
+                       ps = ps2
+                       maxk = i
+                #maxk = max(ps.iteritems(), key=operator.itemgetter(1))[0]
+                if maxk in points.keys(): 
+                    points[maxk].append((x,y))
+                else: points[maxk] = [(x,y)]
+        if maxNumOfPointPerKeyPoint > 0: 
+            for mk in points.keys():
+                beginingNum = len(points[mk])
+                for i in range(beginingNum - maxNumOfPointPerKeyPoint): 
+                    points[mk].remove(random.choice(points[mk]))
+        return points
+    else: 
+        kps = kps[:200]
+        eachNum = max(image.shape) ** 2 / len(kps)
+        maxk = 1
+        points[maxk] = []
+        for x in range(max(image.shape)): 
+            for y in range(max(image.shape)): 
+                if len(points[maxk]) <= eachNum: 
+                    points[maxk].append((x,y))
+                else: 
+                    maxk += 1
+                    points[maxk] = [(x,y)]   
+        return points             
     
 
     

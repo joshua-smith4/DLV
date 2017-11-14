@@ -48,7 +48,7 @@ def usual_configuration(dataset):
 
         # which image to start with or work with 
         # from the database
-        startIndexOfImage = 3
+        startIndexOfImage = 4
         
         # the start layer to work from 
         startLayer = -1
@@ -165,7 +165,7 @@ def usual_configuration(dataset):
         # the start layer to work from 
         startLayer = -1
         # the maximal layer to work until 
-        maxLayer = 0
+        maxLayer = 1
 
         ## number of features of each layer 
         numOfFeatures = 20000
