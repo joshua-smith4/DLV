@@ -196,19 +196,19 @@ class searchMCTS:
         #print euclideanDistance(self.image,image1), newConfident, newClass
         (distMethod,distVal) = controlledSearch
         if distMethod == "euclidean": 
-            dist = euclideanDistance(activations1,self.activations) 
+            dist = euclideanDistance(image1,self.activations) 
             termValue = 0.0
             termByDist = dist > distVal
         elif distMethod == "L1": 
-            dist = l1Distance(activations1,self.activations) 
+            dist = l1Distance(image1,self.activations) 
             termValue = 0.0
             termByDist = dist > distVal
         elif distMethod == "Percentage": 
-            dist = diffPercent(activations1,self.activations)
+            dist = diffPercent(image1,self.activations)
             termValue = 0.0
             termByDist = dist > distVal
         elif distMethod == "NumDiffs": 
-            dist =  diffPercent(activations1,self.activations) * self.activations.size
+            dist =  diffPercent(image1,self.activations) * self.activations.size
             termValue = 0.0
             termByDist = dist > distVal
 
