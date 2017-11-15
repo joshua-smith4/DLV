@@ -9,7 +9,7 @@ import sys
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import cv2
-import numpy as np, cv
+import numpy as np
 from keras import backend as K
 from scipy.stats import truncnorm, norm
 
@@ -125,6 +125,7 @@ def SIFT_Filtered_twoPlayer(image): #threshold=0.0):
     #equ = cv2.equalizeHist(image)
     #image = np.hstack((image,equ))
     sift = cv2.SIFT() # cv2.SURF(400) #    cv2.xfeatures2d.SIFT_create()
+
     kp, des = sift.detectAndCompute(image,None)
     if len(kp) == 0 : 
         print("cannot find keypoint, please try other approach ... ")
