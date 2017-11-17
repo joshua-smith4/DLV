@@ -388,7 +388,7 @@ class mcts_twoPlayer:
 
             return (self.depth == 0, dist)
         elif termByDist == True: 
-            nprint("sampling a path ends by controlled search with self.depth %s ... "%self.depth)
+            print("sampling a path ends by controlled search with self.depth %s ... "%self.depth)
             self.re_training.addDatum(activations1,self.originalClass,newClass)
             return (self.depth == 0, termValue)
         elif list(set(self.availableActionIDs[k])-set(self.usedActionIDs[k])) == []: 

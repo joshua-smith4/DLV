@@ -172,7 +172,7 @@ def usual_configuration(dataset):
         featureDims = 200
         
         ## control by distance
-        controlledSearch = ("euclidean",100)
+        controlledSearch = ("L1",1000)
         #controlledSearch = ("L1",50)
         
         # MCTS_level_maximal_time
