@@ -365,7 +365,7 @@ class mcts_twoPlayer:
 
         if newClass != self.originalClass and newConfident > effectiveConfidenceWhenChanging:
             # and newClass == dataBasics.next_index(self.originalClass,self.originalClass): 
-            nprint("sampling a path ends in a terminal node with self.depth %s... "%self.depth)
+            print("sampling a path ends in a terminal node with self.depth %s... "%self.depth)
             
             #print("L1 distance: %s"%(l1Distance(self.activations,activations1)))
             #print(self.activations.shape)
@@ -388,7 +388,7 @@ class mcts_twoPlayer:
 
             return (self.depth == 0, dist)
         elif termByDist == True: 
-            print("sampling a path ends by controlled search with self.depth %s ... "%self.depth)
+            nprint("sampling a path ends by controlled search with self.depth %s ... "%self.depth)
             self.re_training.addDatum(activations1,self.originalClass,newClass)
             return (self.depth == 0, termValue)
         elif list(set(self.availableActionIDs[k])-set(self.usedActionIDs[k])) == []: 
