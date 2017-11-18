@@ -163,13 +163,13 @@ def usual_configuration(dataset):
         startIndexOfImage = 1
         
         # the start layer to work from 
-        startLayer = -1
+        startLayer = 1
         # the maximal layer to work until 
         maxLayer = 1
 
         ## number of features of each layer 
         numOfFeatures = 20000
-        featureDims = 200
+        featureDims = 5
         
         ## control by distance
         controlledSearch = ("L1",10000)

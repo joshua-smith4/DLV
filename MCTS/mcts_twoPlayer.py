@@ -383,7 +383,7 @@ class mcts_twoPlayer:
             if self.bestCase[0] < dist: 
                 self.numConverge += 1
                 self.bestCase = (dist,self.spansPath,self.numSpansPath)
-                path0="%s/%s_currentBest_%s.png"%(directory_pic_string,startIndexOfImage,self.numConverge)
+                path0="%s/%s_currentBest_%s_as_%s_with_confidence_%s.png"%(directory_pic_string,startIndexOfImage,self.numConverge,dataBasics.LABELS(int(newClass)),newConfident)
                 dataBasics.save(-1,activations1,path0)
 
             return (self.depth == 0, dist)
