@@ -11,7 +11,7 @@ To run the program, one needs to install the following packages:
            
            Python 2.7 
            
-           conda install opencv numpy scikit-image cvxopt  (need to install Anaconda first, see https://docs.anaconda.com/anaconda/install/)
+           conda install opencv numpy=1.13 scikit-image cvxopt  (need to install Anaconda first, see https://docs.anaconda.com/anaconda/install/)
            
            pip install stopit
            
@@ -19,7 +19,7 @@ To run the program, one needs to install the following packages:
            
            pip install pySMT z3
            
-           Note: there is some comparability problem on OpenCV. Please use version 2.4.8. 
+           Note: there is some comparability problem on OpenCV. Please use version 2.4.*. 
            
            The z3 pacakge needs to be properly installed. You can follow the instruction: https://github.com/Z3Prover/z3, or run the following commands (tested on Mac OS): 
            
