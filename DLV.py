@@ -17,8 +17,9 @@ import time
 import numpy as np
 import copy 
 import random
-import matplotlib.pyplot as plt
 import matplotlib as mpl
+mpl.use('TkAgg')
+import matplotlib.pyplot as plt
 
 from loadData import loadData 
 from regionSynth import regionSynth, initialiseRegion
